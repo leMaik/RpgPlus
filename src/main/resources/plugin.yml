@@ -1,0 +1,9 @@
+name: RpgPlus
+version: VERSION
+
+main: de.craften.plugins.rpgplus.RpgPlus
+load: STARTUP #for world generation
+
+commands: []
+
+permissions: []
