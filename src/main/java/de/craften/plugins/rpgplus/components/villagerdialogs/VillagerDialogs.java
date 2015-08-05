@@ -17,7 +17,5 @@ public class VillagerDialogs extends PluginComponentBase implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             event.getPlayer().sendMessage("Du hast einen Villager angeklickt.");
         }
-
     }
-
 }
