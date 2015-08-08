@@ -1,11 +1,12 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 /**
  * An entity that can walk to waypoints.
  */
-public interface MovingManagedEntity extends ManagedEntity {
+public interface MovingManagedEntity<T extends Entity> extends ManagedEntity<T> {
     /**
      * Get the current destination of this entity.
      *
