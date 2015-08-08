@@ -28,4 +28,11 @@ public interface ManagedEntity<T extends Entity> {
      * @return underlying entity
      */
     T getEntity();
+
+    /**
+     * Check if this entity may take damage.
+     *
+     * @return true if this entity may take damage, false if not
+     */
+    boolean isTakingDamage();
 }

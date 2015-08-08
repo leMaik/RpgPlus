@@ -2,8 +2,13 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -11,22 +16,17 @@ import java.util.UUID;
 /**
  * A manager for entities.
  */
-public class EntityManager extends PluginComponentBase {
+public class EntityManager extends PluginComponentBase implements Listener {
     private Map<UUID, ManagedEntity> entities;
-    private Map<UUID, ManagedEntity> newEntities; //second map so we don't need to copy before iterating
 
     @Override
     protected void onActivated() {
         entities = new HashMap<>();
-        newEntities = new HashMap<>();
 
         runTaskTimer(new Runnable() {
             @Override
             public void run() {
-                entities.putAll(newEntities);
-                newEntities.clear();
-
-                for (ManagedEntity entity : entities.values()) {
+                for (ManagedEntity entity : new ArrayList<ManagedEntity>(entities.values())) {
                     switch (entity.getMovementType()) {
                         case FROZEN:
                             entity.getEntity().teleport(entity.getLocalLocation());
@@ -59,13 +59,39 @@ public class EntityManager extends PluginComponentBase {
         //TODO implement moving
     }
 
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        ManagedEntity entity = getEntity(event.getEntity().getUniqueId());
+        if (entity != null && !entity.isTakingDamage()) {
+            event.setCancelled(true);
+        }
+    }
+
     /**
      * Register the given entity.
      *
      * @param entity entity to register
      */
     public void registerEntity(ManagedEntity entity) {
-        newEntities.put(entity.getEntity().getUniqueId(), entity);
+        entities.put(entity.getEntity().getUniqueId(), entity);
+    }
+
+    /**
+     * Unregister the given entity.
+     *
+     * @param entity entity to unregister
+     */
+    public void unregisterEntity(ManagedEntity entity) {
+        entities.remove(entity.getEntity().getUniqueId());
+    }
+
+    /**
+     * Unregister the given entity.
+     *
+     * @param entity entity to unregister
+     */
+    public void unregisterEntity(Entity entity) {
+        entities.remove(entity.getUniqueId());
     }
 
     /**
