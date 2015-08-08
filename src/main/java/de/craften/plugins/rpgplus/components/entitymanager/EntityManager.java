@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -67,6 +68,11 @@ public class EntityManager extends PluginComponentBase implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        unregisterEntity(event.getEntity());
+    }
+
     /**
      * Register the given entity.
      *
@@ -102,5 +108,16 @@ public class EntityManager extends PluginComponentBase implements Listener {
      */
     public ManagedEntity getEntity(UUID id) {
         return entities.get(id);
+    }
+
+    /**
+     * Get a managed entity of an unmanaged entity.
+     *
+     * @param entity unmanaged entity
+     * @return managed entity of the given entity or null if no such entity is registered
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> ManagedEntity<T> getEntity(T entity) {
+        return entities.get(entity.getUniqueId());
     }
 }
