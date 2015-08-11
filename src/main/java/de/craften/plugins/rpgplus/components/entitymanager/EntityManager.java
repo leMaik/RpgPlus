@@ -26,10 +26,11 @@ import java.util.UUID;
  */
 public class EntityManager extends PluginComponentBase implements Listener {
     private Map<UUID, ManagedEntity> entities;
-    private Multimap<UUID, Player> nearbyPlayers = MultimapBuilder.hashKeys().arrayListValues().build();
+    private Multimap<UUID, Player> nearbyPlayers;
 
     protected void onActivated() {
         entities = new HashMap<>();
+        nearbyPlayers = MultimapBuilder.hashKeys().arrayListValues().build();
 
         runTaskTimer(new Runnable() {
             @Override
