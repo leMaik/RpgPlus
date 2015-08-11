@@ -2,10 +2,14 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -67,6 +71,25 @@ public class EntityManager extends PluginComponentBase implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        ManagedEntity entity = getEntity(event.getEntity());
+        unregisterEntity(entity);
+
+        if (entity instanceof CustomDrops) {
+            Player killer = event.getEntity().getKiller();
+            if (killer != null) {
+                event.setDroppedExp(((CustomDrops) entity).getExp((Player) killer));
+
+                Location location = event.getEntity().getLocation();
+                World world = location.getWorld();
+                for (ItemStack items : ((CustomDrops) entity).getDrops((Player) killer)) {
+                    world.dropItemNaturally(location, items);
+                }
+            }
+        }
+    }
+
     /**
      * Register the given entity.
      *
@@ -102,5 +125,16 @@ public class EntityManager extends PluginComponentBase implements Listener {
      */
     public ManagedEntity getEntity(UUID id) {
         return entities.get(id);
+    }
+
+    /**
+     * Get a managed entity of an unmanaged entity.
+     *
+     * @param entity unmanaged entity
+     * @return managed entity of the given entity or null if no such entity is registered
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> ManagedEntity<T> getEntity(T entity) {
+        return entities.get(entity.getUniqueId());
     }
 }
