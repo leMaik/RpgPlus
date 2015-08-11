@@ -1,5 +1,7 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -9,6 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -22,8 +26,8 @@ import java.util.UUID;
  */
 public class EntityManager extends PluginComponentBase implements Listener {
     private Map<UUID, ManagedEntity> entities;
+    private Multimap<UUID, Player> nearbyPlayers = MultimapBuilder.hashKeys().arrayListValues().build();
 
-    @Override
     protected void onActivated() {
         entities = new HashMap<>();
 
@@ -90,6 +94,46 @@ public class EntityManager extends PluginComponentBase implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        for (ManagedEntity entity : entities.values()) {
+            if (entity instanceof NearbyPlayerAware) {
+                handleNearbyPlayers(entity, event);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        for (ManagedEntity entity : entities.values()) {
+            //remove all references to this player
+            nearbyPlayers.remove(entity.getEntity().getUniqueId(), event.getPlayer());
+        }
+    }
+
+    private void handleNearbyPlayers(ManagedEntity entity, PlayerMoveEvent event) {
+        assert entity instanceof NearbyPlayerAware;
+        NearbyPlayerAware npaEntity = (NearbyPlayerAware) entity;
+        Location playerLocation = event.getTo();
+        Location entityLocation = entity.getEntity().getLocation();
+
+        if (playerLocation.getWorld().equals(entityLocation.getWorld())) {
+            double distanceSquared = playerLocation.distanceSquared(entityLocation);
+            double radiusSquared = npaEntity.getPlayerAwareRadius() * npaEntity.getPlayerAwareRadius();
+            boolean justEntered = !nearbyPlayers.containsKey(entity.getEntity().getUniqueId());
+
+            if (distanceSquared <= radiusSquared) {
+                npaEntity.onPlayerNearby(event.getPlayer(), justEntered, distanceSquared);
+                nearbyPlayers.put(entity.getEntity().getUniqueId(), event.getPlayer());
+            } else {
+                nearbyPlayers.remove(entity.getEntity().getUniqueId(), event.getPlayer());
+                if (!justEntered) {
+                    npaEntity.onPlayerGone(event.getPlayer());
+                }
+            }
+        }
+    }
+
     /**
      * Register the given entity.
      *
@@ -106,6 +150,7 @@ public class EntityManager extends PluginComponentBase implements Listener {
      */
     public void unregisterEntity(ManagedEntity entity) {
         entities.remove(entity.getEntity().getUniqueId());
+        nearbyPlayers.removeAll(entity.getEntity().getUniqueId());
     }
 
     /**
