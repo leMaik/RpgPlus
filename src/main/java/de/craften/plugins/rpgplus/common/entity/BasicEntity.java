@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.common.entity;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 
 /**
@@ -9,21 +10,33 @@ import org.bukkit.util.Vector;
  */
 public abstract class BasicEntity {
 
+    //the id of the entity
     protected int id;
 
+    //the name of the entity
     protected String name;
+    //should the name be showed to all?
     protected boolean visibleName;
 
+    //the current location where the entity is and where it looks
     protected Location location;
+    //the vector for the movement
     protected Vector velocity;
 
+    //is the entity alive
     protected boolean isAlive;
+    //is it allowed to take damage?
+    protected boolean isTakingDamage;
 
+    //the maximum health
     protected double health;
+    //the current health
     protected double currentHealth;
 
+    //is it hostile?
     protected boolean friendly;
 
+    //what type of entity is it
     protected EntityType type;
 
     public abstract void spawn();
@@ -31,6 +44,8 @@ public abstract class BasicEntity {
     public abstract void despawn();
 
     public abstract void update();
+
+    public abstract void onPlayerInteract(PlayerInteractEntityEvent event);
 
     public int getId() {
         return id;
@@ -110,5 +125,13 @@ public abstract class BasicEntity {
 
     public void setType(EntityType type) {
         this.type = type;
+    }
+
+    public boolean isTakingDamage() {
+        return isTakingDamage;
+    }
+
+    public void setTakingDamage(boolean isTakingTamage) {
+        this.isTakingDamage = isTakingTamage;
     }
 }
