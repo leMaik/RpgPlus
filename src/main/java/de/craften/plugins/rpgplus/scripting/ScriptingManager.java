@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.scripting;
 
-import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.scripting.api.RpgPlusObject;
+import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
@@ -9,12 +10,13 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.File;
 
-public class ScriptingManager {
+public class ScriptingManager extends PluginComponentBase {
     private Globals globals;
 
-    public ScriptingManager(RpgPlus plugin) {
+    @Override
+    protected void onActivated() {
         globals = JsePlatform.standardGlobals();
-        globals.set("rpgplus", new RpgPlusObject(plugin));
+        globals.set("rpgplus", new RpgPlusObject(this));
         LuaC.install(globals);
     }
 

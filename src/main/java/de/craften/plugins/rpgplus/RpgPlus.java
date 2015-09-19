@@ -17,7 +17,8 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        scriptingManager = new ScriptingManager(this);
+        scriptingManager = new ScriptingManager();
+        scriptingManager.activateFor(this);
 
         new WelcomeComponent().activateFor(this);
 
@@ -32,5 +33,9 @@ public class RpgPlus extends JavaPlugin {
         for (PluginComponent c : components) {
             c.activateFor(this);
         }
+    }
+
+    public ScriptingManager getScriptingManager() {
+        return scriptingManager;
     }
 }

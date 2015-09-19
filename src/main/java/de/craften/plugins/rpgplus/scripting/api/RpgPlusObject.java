@@ -1,15 +1,15 @@
-package de.craften.plugins.rpgplus.scripting;
+package de.craften.plugins.rpgplus.scripting.api;
 
-import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
-class RpgPlusObject extends LuaTable {
+public class RpgPlusObject extends LuaTable {
 
-    RpgPlusObject(final RpgPlus plugin) {
+    public RpgPlusObject(final ScriptingManager plugin) {
         set("log", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs varargs) {
@@ -33,5 +33,10 @@ class RpgPlusObject extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+
+        //Functions to register and unregister event handlers
+        ScriptEventManager events = new ScriptEventManager();
+        plugin.registerEvents(events);
+        events.installOn(this);
     }
 }
