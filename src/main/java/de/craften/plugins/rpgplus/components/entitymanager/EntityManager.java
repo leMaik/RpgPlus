@@ -18,10 +18,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A manager for entities.
@@ -181,6 +178,15 @@ public class EntityManager extends PluginComponentBase implements Listener {
      */
     public ManagedEntity getEntity(UUID id) {
         return entities.get(id);
+    }
+
+    /**
+     * Get all entities.
+     *
+     * @return all entities
+     */
+    public Collection<ManagedEntity> getEntities() {
+        return entities.values();
     }
 
     /**

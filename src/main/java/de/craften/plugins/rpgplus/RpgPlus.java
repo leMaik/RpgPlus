@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus;
 
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.villagerdialogs.VillagerDialogs;
 import de.craften.plugins.rpgplus.components.welcome.WelcomeComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
@@ -33,6 +34,13 @@ public class RpgPlus extends JavaPlugin {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
         } catch (ScriptErrorException e) {
             getLogger().log(Level.WARNING, "Could not run demo script", e);
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        for (ManagedEntity entity : entityManager.getEntities()) {
+            entity.getEntity().remove();
         }
     }
 
