@@ -1,5 +1,7 @@
 package de.craften.plugins.rpgplus;
 
+import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
+import de.craften.plugins.rpgplus.components.villagerdialogs.VillagerDialogs;
 import de.craften.plugins.rpgplus.components.welcome.WelcomeComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
@@ -14,13 +16,18 @@ import java.util.logging.Level;
  */
 public class RpgPlus extends JavaPlugin {
     private ScriptingManager scriptingManager;
+    private EntityManager entityManager;
 
     @Override
     public void onEnable() {
         scriptingManager = new ScriptingManager();
         scriptingManager.activateFor(this);
 
+        entityManager = new EntityManager();
+        entityManager.activateFor(this);
+
         new WelcomeComponent().activateFor(this);
+        new VillagerDialogs().activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
@@ -37,5 +44,14 @@ public class RpgPlus extends JavaPlugin {
 
     public ScriptingManager getScriptingManager() {
         return scriptingManager;
+    }
+
+    /**
+     * Get the entity manager.
+     *
+     * @return the entity manager
+     */
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }
