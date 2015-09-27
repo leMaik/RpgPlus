@@ -23,5 +23,4 @@ public enum MovementType {
      * Move to the destination waypoint. Only works with {@link MovingManagedEntity}.
      */
     TRAVEL_WAYPOINTS
-
 }

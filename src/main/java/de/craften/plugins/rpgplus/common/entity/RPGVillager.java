@@ -3,7 +3,6 @@ package de.craften.plugins.rpgplus.common.entity;
 
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -11,20 +10,16 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 /**
  * Created by Marcel on 08.08.15.
- *
+ * <p/>
  * A class for every property a RPGVillager can have
  */
 public class RPGVillager extends BasicEntity implements ManagedEntity<Villager> {
-
     //the points it should walk to
     private List<Waypoint> waypoints;
-
-    //the text that will be show by interaction
-    private String[] dialogText;
-    //the array index from dialogText
-    private int currentDialog;
 
     //if a player blocked the villager
     private boolean blocked;
@@ -45,9 +40,6 @@ public class RPGVillager extends BasicEntity implements ManagedEntity<Villager> 
         this.currentHealth = health;
         this.friendly = friendly;
         this.type = EntityType.VILLAGER;
-
-        this.dialogText = dialogText;
-        this.currentDialog = 0;
     }
 
     /**
@@ -87,44 +79,8 @@ public class RPGVillager extends BasicEntity implements ManagedEntity<Villager> 
 
     }
 
-    /**
-     * do the stuff, when the player interacts with the villager
-     * now only text will be shown
-     * TODO
-     *
-     * @param event the PlayerInteractEntityEvent
-     */
     @Override
     public void onPlayerInteract(PlayerInteractEntityEvent event) {
-
-        if (blocked) {
-            if (blockingPlayer == event.getPlayer()) {
-                event.getPlayer().sendMessage(dialogText[currentDialog]);
-                if (dialogText.length == currentDialog + 1) {
-                    currentDialog = 0;
-                    blocked = false;
-                    blockingPlayer = null;
-                } else {
-                    currentDialog++;
-                }
-            } else {
-                event.getPlayer().sendMessage("Villager is currently busy with " + blockingPlayer.getName() + "!");
-            }
-        } else {
-            blockingPlayer = event.getPlayer();
-            blocked = true;
-
-            event.getPlayer().sendMessage(dialogText[currentDialog]);
-            if (dialogText.length == currentDialog + 1) {
-                currentDialog = 0;
-                blocked = false;
-                blockingPlayer = null;
-            } else {
-                currentDialog++;
-            }
-        }
-
-        event.setCancelled(true);
 
     }
 

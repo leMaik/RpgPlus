@@ -2,8 +2,6 @@ package de.craften.plugins.rpgplus;
 
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
-import de.craften.plugins.rpgplus.components.villagerdialogs.VillagerDialogs;
-import de.craften.plugins.rpgplus.components.welcome.WelcomeComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.util.components.PluginComponent;
@@ -26,9 +24,6 @@ public class RpgPlus extends JavaPlugin {
 
         entityManager = new EntityManager();
         entityManager.activateFor(this);
-
-        new WelcomeComponent().activateFor(this);
-        new VillagerDialogs().activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
