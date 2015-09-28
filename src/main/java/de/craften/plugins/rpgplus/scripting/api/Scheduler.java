@@ -70,28 +70,23 @@ public class Scheduler extends LuaTable {
         set("repeat", new VarArgFunction() {
             @Override
             public LuaValue invoke(final Varargs varargs) {
-                return new VarArgFunction() {
-                    @Override
-                    public LuaValue invoke(final Varargs varargs) {
-                        if (varargs.narg() == 2) {
-                            return LuaValue.valueOf(plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
-                                    varargs.checkfunction(2).invoke(varargs);
-                                }
-                            }, 0, varargs.checklong(1)));
-                        } else if (varargs.narg() == 3) {
-                            return LuaValue.valueOf(plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
-                                    varargs.checkfunction(3).invoke(varargs);
-                                }
-                            }, varargs.checklong(1), varargs.checklong(2)));
-                        } else {
-                            throw new LuaError("Invalid number of arguments, expected 2 or 3.");
+                if (varargs.narg() == 2) {
+                    return LuaValue.valueOf(plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            varargs.checkfunction(2).invoke(varargs);
                         }
-                    }
-                };
+                    }, 0, varargs.checklong(1)));
+                } else if (varargs.narg() == 3) {
+                    return LuaValue.valueOf(plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            varargs.checkfunction(3).invoke(varargs);
+                        }
+                    }, varargs.checklong(1), varargs.checklong(2)));
+                } else {
+                    throw new LuaError("Invalid number of arguments, expected 2 or 3.");
+                }
             }
         });
 
