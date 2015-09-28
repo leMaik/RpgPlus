@@ -53,6 +53,18 @@ public class Scheduler extends LuaTable {
         set("delay", new TwoArgFunction() {
             @Override
             public LuaValue call(final LuaValue delay, final LuaValue function) {
+                return LuaValue.valueOf(plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        function.checkfunction().invoke();
+                    }
+                }, delay.checklong()));
+            }
+        });
+
+        set("delayed", new TwoArgFunction() {
+            @Override
+            public LuaValue call(final LuaValue delay, final LuaValue function) {
                 return new VarArgFunction() {
                     @Override
                     public LuaValue invoke(final Varargs varargs) {
