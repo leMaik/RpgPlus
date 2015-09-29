@@ -58,8 +58,6 @@ public class RpgPlusObject extends LuaTable {
             }
         });
 
-        set("scheduler", new Scheduler(RpgPlus.getPlugin(RpgPlus.class)));
-
         //Functions to register and unregister event handlers
         ScriptEventManager events = new ScriptEventManager();
         plugin.registerEvents(events);

@@ -9,7 +9,7 @@ import org.luaj.vm2.lib.TwoArgFunction;
 public class rpgplus extends TwoArgFunction {
     @Override
     public LuaValue call(LuaValue moduleName, LuaValue environment) {
-        LuaTable library = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getMainLibrary();
+        LuaTable library = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getMainModule();
         environment.set("rpgplus", library);
         return library;
     }
