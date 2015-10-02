@@ -11,6 +11,7 @@ import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
@@ -41,15 +42,22 @@ public class RpgPlusObject extends LuaTable {
             }
         });
 
-        set("registerVillager", new VarArgFunction() {
+        set("registerVillager", new TwoArgFunction() {
             @Override
-            public Varargs invoke(final Varargs varargs) {
-                RPGVillager villager = new RPGVillager(varargs.checkjstring(1), true,
-                        new Location(Bukkit.getWorld(varargs.checkjstring(2)), varargs.checkdouble(3), varargs.checkdouble(4), varargs.checkdouble(5)),
+            public LuaValue call(LuaValue options, final LuaValue interactCallback) {
+                RPGVillager villager = new RPGVillager(
+                        options.get("name").checkjstring(),
+                        true,
+                        new Location(
+                                Bukkit.getWorld(options.get("world").checkjstring()),
+                                options.get("x").checkdouble(),
+                                options.get("y").checkdouble(),
+                                options.get("z").checkdouble()),
                         new Vector(0, 0, 0), 1, true, new String[0]) {
+
                     @Override
                     public void onPlayerInteract(PlayerInteractEntityEvent event) {
-                        varargs.checkfunction(6).invoke(CoerceJavaToLua.coerce(event));
+                        interactCallback.checkfunction().invoke(CoerceJavaToLua.coerce(event));
                     }
                 };
                 villager.spawn();
