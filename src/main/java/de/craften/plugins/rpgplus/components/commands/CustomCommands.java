@@ -28,13 +28,17 @@ public class CustomCommands extends PluginComponentBase {
     }
 
     public void registerCommand(String[] commandPath, CommandHandler handler) {
-        getCommandMap().register(commandPath[0], new DispatchedComand(commandPath[0]));
-        CommandHandler firstCommandHandler = handlers.get(commandPath[0]);
-        if (!(firstCommandHandler instanceof CommandDispatcher)) {
-            firstCommandHandler = new CommandDispatcher();
-            handlers.put(commandPath[0], firstCommandHandler);
+        if (commandPath.length == 1) {
+            registerCommand(commandPath[0], handler);
+        } else {
+            getCommandMap().register(commandPath[0], new DispatchedComand(commandPath[0]));
+            CommandHandler firstCommandHandler = handlers.get(commandPath[0]);
+            if (!(firstCommandHandler instanceof CommandDispatcher)) {
+                firstCommandHandler = new CommandDispatcher();
+                handlers.put(commandPath[0], firstCommandHandler);
+            }
+            ((CommandDispatcher) firstCommandHandler).registerCommand(Arrays.asList(commandPath).subList(1, commandPath.length), handler);
         }
-        ((CommandDispatcher) firstCommandHandler).registerCommand(Arrays.asList(commandPath).subList(1, commandPath.length), handler);
     }
 
     private class DispatchedComand extends Command {

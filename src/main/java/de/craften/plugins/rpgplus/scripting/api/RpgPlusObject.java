@@ -2,9 +2,11 @@ package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.common.entity.RPGVillager;
+import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 import org.luaj.vm2.LuaError;
@@ -14,6 +16,8 @@ import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+
+import java.util.List;
 
 public class RpgPlusObject extends LuaTable {
 
@@ -62,6 +66,36 @@ public class RpgPlusObject extends LuaTable {
                 };
                 villager.spawn();
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(villager);
+                return LuaValue.NIL;
+            }
+        });
+
+        set("command", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue command, final LuaValue handler) {
+                String[] commandPath;
+                if (command.istable()) {
+                    commandPath = new String[command.checktable().length()];
+                    for (int i = 0; i < commandPath.length; i++) {
+                        commandPath[i] = command.get(i + 1).checkjstring();
+                    }
+                } else {
+                    commandPath = new String[]{command.checkjstring()};
+                }
+                
+                RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(commandPath, new CommandHandler() {
+                    @Override
+                    public boolean onCommand(CommandSender sender, String command, List<String> args) {
+                        LuaValue[] luaArgs = new LuaValue[args.size()];
+                        for (int i = 0; i < luaArgs.length; i++) {
+                            luaArgs[i] = LuaValue.valueOf(args.get(i));
+                        }
+
+                        return handler
+                                .invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs))
+                                .optboolean(1, true);
+                    }
+                });
                 return LuaValue.NIL;
             }
         });
