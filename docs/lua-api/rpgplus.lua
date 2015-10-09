@@ -12,3 +12,11 @@ function log(level, message) end
 -- @param interact a function that is invoked when a player right-clicks the villager
 --
 function registerVillager(options, interact) end
+
+--- Registers a command.
+-- @param command the command, either a string or a list of the command and all nested commands
+-- @param handler a function that handles the command, it is invoked with the sender, the command and the arguments.
+-- Note that if the command is a nested command, the command parameter is the last command and the arguments are
+-- anything the sender entered after that command
+--
+function command(command, handler) end
