@@ -8,37 +8,30 @@ import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A component to register commands directly.
  */
 public class CustomCommands extends PluginComponentBase {
-    private Map<String, CommandHandler> handlers;
+    private CommandDispatcher.Root dispatcher;
 
     @Override
     protected void onActivated() {
-        handlers = new HashMap<>();
+        dispatcher = new CommandDispatcher.Root();
     }
 
     public void registerCommand(String command, CommandHandler handler) {
-        getCommandMap().register(command, new DispatchedComand(command));
-        handlers.put(command, handler);
+        if (getCommandMap().getCommand(command) == null) {
+            getCommandMap().register(command, new DispatchedComand(command));
+        }
+        dispatcher.registerCommand(command, handler);
     }
 
     public void registerCommand(String[] commandPath, CommandHandler handler) {
-        if (commandPath.length == 1) {
-            registerCommand(commandPath[0], handler);
-        } else {
+        if (getCommandMap().getCommand(commandPath[0]) == null) {
             getCommandMap().register(commandPath[0], new DispatchedComand(commandPath[0]));
-            CommandHandler firstCommandHandler = handlers.get(commandPath[0]);
-            if (!(firstCommandHandler instanceof CommandDispatcher)) {
-                firstCommandHandler = new CommandDispatcher();
-                handlers.put(commandPath[0], firstCommandHandler);
-            }
-            ((CommandDispatcher) firstCommandHandler).registerCommand(Arrays.asList(commandPath).subList(1, commandPath.length), handler);
         }
+        dispatcher.registerCommand(Arrays.asList(commandPath), handler);
     }
 
     private class DispatchedComand extends Command {
@@ -48,11 +41,7 @@ public class CustomCommands extends PluginComponentBase {
 
         @Override
         public boolean execute(CommandSender sender, String command, String[] args) {
-            CommandHandler handler = handlers.get(command);
-            if (handler != null) {
-                return handler.onCommand(sender, command, Arrays.asList(args));
-            }
-            return false;
+            return dispatcher.onCommand(sender, command, Arrays.asList(args));
         }
     }
 
