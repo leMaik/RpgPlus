@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus;
 
+import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
@@ -16,6 +17,7 @@ import java.util.logging.Level;
 public class RpgPlus extends JavaPlugin {
     private ScriptingManager scriptingManager;
     private EntityManager entityManager;
+    private CustomCommands commandManager;
 
     @Override
     public void onEnable() {
@@ -24,6 +26,9 @@ public class RpgPlus extends JavaPlugin {
 
         entityManager = new EntityManager();
         entityManager.activateFor(this);
+
+        commandManager = new CustomCommands();
+        commandManager.activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
@@ -56,5 +61,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    /**
+     * Gets the manager for custom commands.
+     *
+     * @return the custom command manager
+     */
+    public CustomCommands getCommandManager() {
+        return commandManager;
     }
 }
