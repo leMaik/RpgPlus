@@ -20,3 +20,11 @@ function registerVillager(options, interact) end
 -- anything the sender entered after that command
 --
 function command(command, handler) end
+
+--- Registers a command that can only be executed by a player (not by the console or by a command block).
+-- @param command the command, either a string or a list of the command and all nested commands
+-- @param handler a function that handles the command, it is invoked with the sender, the command and the arguments.
+-- Note that if the command is a nested command, the command parameter is the last command and the arguments are
+-- anything the sender entered after that command
+--
+function playercommand(command, handler) end
