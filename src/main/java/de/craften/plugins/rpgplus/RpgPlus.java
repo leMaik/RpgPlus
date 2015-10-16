@@ -24,15 +24,13 @@ public class RpgPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         scriptingManager = new ScriptingManager();
-        scriptingManager.activateFor(this);
-
         entityManager = new EntityManager();
-        entityManager.activateFor(this);
-
         commandManager = new CustomCommands();
-        commandManager.activateFor(this);
-
         timerManager = new TimerComponent();
+
+        scriptingManager.activateFor(this);
+        entityManager.activateFor(this);
+        commandManager.activateFor(this);
         timerManager.activateFor(this);
 
         try {
