@@ -100,4 +100,30 @@ public class TimerComponentTest {
         mockTimer.tick();
         verify(callback, times(3)).run(); //all missed callbacks should be invoked
     }
+
+    @Test
+    public void testRemoveHandler() throws Exception {
+        World mockWorld = mock(World.class);
+        when(mockWorld.getTime()).thenReturn((long) 42);
+        when(mockWorld.getName()).thenReturn("world");
+        final Server mockServer = mock(Server.class);
+        when(mockServer.getWorld("world")).thenReturn(mockWorld);
+        Runnable callback = mock(Runnable.class);
+        Runnable callback2 = mock(Runnable.class);
+
+        TimerComponent mockTimer = new TimerComponent() {
+            @Override
+            public Server getServer() {
+                return mockServer;
+            }
+        };
+
+        int handler = mockTimer.addHandler(mockWorld, 42, callback);
+        mockTimer.addHandler(mockWorld, 42, callback2);
+        mockTimer.tick();
+        mockTimer.removeHandler(handler);
+        mockTimer.tick();
+        verify(callback, times(1)).run(); //only once (before the handler is removed)
+        verify(callback2, times(2)).run(); //other timers should not be removed
+    }
 }
