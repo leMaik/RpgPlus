@@ -4,55 +4,40 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
+import de.craften.plugins.rpgplus.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.luaj.vm2.*;
+import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ThreeArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Manager for timed callbacks that scripts may register using <code>rpgplus.timer.at()</code> and unregister using
  * <code>rpgplus.timer.off()</code>.
  */
 public class ScriptTimedEventManager extends LuaTable {
-    public ScriptTimedEventManager() {
-        final TimerComponent timer = RpgPlus.getPlugin(RpgPlus.class).getTimerManager();
+    public ScriptTimedEventManager(final RpgPlus plugin) {
+        final TimerComponent timer = plugin.getTimerManager();
 
         set("at", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue world, LuaValue time, LuaValue callback) {
                 int id;
                 if (time.islong()) {
-                    id = timer.addHandler(Bukkit.getWorld(world.checkjstring()), time.checklong(), asRunnable(callback));
+                    id = timer.addHandler(plugin.getServer().getWorld(world.checkjstring()), time.checklong(), asRunnable(callback));
                 } else {
-                    id = timer.addHandler(Bukkit.getWorld(world.checkjstring()), toTime(time.checkjstring()), asRunnable(callback));
+                    id = timer.addHandler(plugin.getServer().getWorld(world.checkjstring()), toTime(time.checkjstring()), asRunnable(callback));
                 }
                 return LuaValue.valueOf(id);
             }
         });
 
-        //TODO implement removal of timers
-        /*set("off", new TwoArgFunction() {
+        set("off", new OneArgFunction() {
             @Override
-            public LuaValue call(LuaValue arg1, LuaValue arg2) {
-                if (arg1.isfunction()) {
-                    Iterator<Map.Entry<Long, LuaFunction>> iterator = callbacks.entries().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<Long, LuaFunction> entry = iterator.next();
-                        if (entry.getValue().equals(arg1)) {
-                            iterator.remove();
-                        }
-                    }
-                } else if (arg2.isnil()) {
-                    callbacks.removeAll(arg1.checklong());
-                } else {
-                    callbacks.remove(arg1.checklong(), arg2.checkfunction());
-                }
+            public LuaValue call(LuaValue luaValue) {
+                timer.removeHandler(luaValue.checkint());
                 return LuaValue.NIL;
             }
-        });*/
+        });
     }
 
     private static Runnable asRunnable(final LuaValue luaFunction) {
@@ -67,10 +52,23 @@ public class ScriptTimedEventManager extends LuaTable {
     private long toTime(String string) {
         switch (string) {
             case "midnight":
-                return 0;
-            //TODO add more time aliases
+                return 18_000; //0:00
+            case "day":
+                return 1_000; //7:00 (/time set day)
+            case "night":
+                return 13_000; //19:00 (/time set night)
+            case "noon":
+                return 6_000; //12:00
+            case "morning":
+                return 0; //6:00
+            case "evening":
+                return 11_615; //17:37
             default:
-                throw new LuaError(string + " is not a valid time alias");
+                try {
+                    return TimeUtil.ticksOfTime(string);
+                } catch (IllegalArgumentException e) {
+                    throw new LuaError(string + " is not a valid time alias");
+                }
         }
     }
 }
