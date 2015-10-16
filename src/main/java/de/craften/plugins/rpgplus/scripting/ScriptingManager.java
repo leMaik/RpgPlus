@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.scripting;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.RpgPlusObject;
 import de.craften.plugins.rpgplus.scripting.api.Scheduler;
+import de.craften.plugins.rpgplus.scripting.api.ScriptTimedEventManager;
 import de.craften.plugins.rpgplus.scripting.api.Trading;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.luaj.vm2.Globals;
@@ -19,6 +20,7 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaTable rpgPlusObject;
     private LuaValue schedulerModule;
     private LuaValue tradingModule;
+    private LuaValue timerModule;
 
     @Override
     protected void onActivated() {
@@ -28,6 +30,7 @@ public class ScriptingManager extends PluginComponentBase {
         rpgPlusObject = new RpgPlusObject(this);
         schedulerModule = new Scheduler(RpgPlus.getPlugin(RpgPlus.class));
         tradingModule = new Trading(RpgPlus.getPlugin(RpgPlus.class));
+        timerModule = new ScriptTimedEventManager(RpgPlus.getPlugin(RpgPlus.class));
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -49,5 +52,9 @@ public class ScriptingManager extends PluginComponentBase {
 
     public LuaValue getTradingModule() {
         return tradingModule;
+    }
+
+    public LuaValue getTimerModule() {
+        return timerModule;
     }
 }
