@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.util.components;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -93,7 +94,7 @@ public abstract class PluginComponentBase implements PluginComponent {
      *
      * @return currently running server
      */
-    public final Server getServer() {
+    public Server getServer() {
         return plugin.getServer();
     }
 

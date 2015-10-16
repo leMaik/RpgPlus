@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.util.components.PluginComponent;
@@ -18,6 +19,7 @@ public class RpgPlus extends JavaPlugin {
     private ScriptingManager scriptingManager;
     private EntityManager entityManager;
     private CustomCommands commandManager;
+    private TimerComponent timerManager;
 
     @Override
     public void onEnable() {
@@ -29,6 +31,9 @@ public class RpgPlus extends JavaPlugin {
 
         commandManager = new CustomCommands();
         commandManager.activateFor(this);
+
+        timerManager = new TimerComponent();
+        timerManager.activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
@@ -70,5 +75,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public CustomCommands getCommandManager() {
         return commandManager;
+    }
+
+    /**
+     * Gets the manager for timers.
+     *
+     * @return the timer manager
+     */
+    public TimerComponent getTimerManager() {
+        return timerManager;
     }
 }
