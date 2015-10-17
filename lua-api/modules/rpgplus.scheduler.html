@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>RpgPlus</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/rpgplus.html">rpgplus</a></li>
+  <li><strong>rpgplus.scheduler</strong></li>
+  <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
+  <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>rpgplus.scheduler</code></h1>
+<p>Provides scheduler functions.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#async">async (fn)</a></td>
+	<td class="summary">Creates a new function that will call the given function asynchronously when invoked.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#sync">sync (fn)</a></td>
+	<td class="summary">Creates a new function that will run the given function in the Bukkit main thread when invoked.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delay">delay (delay, fn)</a></td>
+	<td class="summary">Calls a function after a given delay.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#delayed">delayed (delay, fn)</a></td>
+	<td class="summary">Creates a new function that will invoke the given function after the given delay when called.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#repeating">repeating (delay, period, fn)</a></td>
+	<td class="summary">Starts to periodically call the given function after the given delay with the given period.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#cancel">cancel (taskId)</a></td>
+	<td class="summary">Cancels the task with the given ID.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "async"></a>
+    <strong>async (fn)</strong>
+    </dt>
+    <dd>
+    Creates a new function that will call the given function asynchronously when invoked.
+ Parameters are passed through.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fn</span>
+         function that should be called asynchronously
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a new function
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "sync"></a>
+    <strong>sync (fn)</strong>
+    </dt>
+    <dd>
+    Creates a new function that will run the given function in the Bukkit main thread when invoked.
+ Parameters are passed througgh. This function only needs to be used inside asynchronous code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fn</span>
+          function that should run in the main thread
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delay"></a>
+    <strong>delay (delay, fn)</strong>
+    </dt>
+    <dd>
+    Calls a function after a given delay.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">delay</span>
+         delay in ticks
+        </li>
+        <li><span class="parameter">fn</span>
+         function to call
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "delayed"></a>
+    <strong>delayed (delay, fn)</strong>
+    </dt>
+    <dd>
+    Creates a new function that will invoke the given function after the given delay when called.
+ Parameters are passed through.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">delay</span>
+         delay in ticks
+        </li>
+        <li><span class="parameter">fn</span>
+          function to call
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "repeating"></a>
+    <strong>repeating (delay, period, fn)</strong>
+    </dt>
+    <dd>
+    Starts to periodically call the given function after the given delay with the given period.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">delay</span>
+         optional delay in ticks; defaults to 0
+        </li>
+        <li><span class="parameter">period</span>
+         period in ticks
+        </li>
+        <li><span class="parameter">fn</span>
+         function to call periodically
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a task ID that can be used by <a href="../modules/rpgplus.scheduler.html#cancel">cancel</a> to cancel the calls
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "cancel"></a>
+    <strong>cancel (taskId)</strong>
+    </dt>
+    <dd>
+    Cancels the task with the given ID.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">taskId</span>
+         task ID
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
+<i style="float:right;">Last updated 2015-10-17 17:34:44 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
