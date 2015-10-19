@@ -3,6 +3,8 @@ package de.craften.plugins.rpgplus;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.storage.Storage;
+import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
@@ -20,6 +22,7 @@ public class RpgPlus extends JavaPlugin {
     private EntityManager entityManager;
     private CustomCommands commandManager;
     private TimerComponent timerManager;
+    private StorageComponent storage;
 
     @Override
     public void onEnable() {
@@ -27,11 +30,13 @@ public class RpgPlus extends JavaPlugin {
         entityManager = new EntityManager();
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
+        storage = new StorageComponent();
 
         scriptingManager.activateFor(this);
         entityManager.activateFor(this);
         commandManager.activateFor(this);
         timerManager.activateFor(this);
+        storage.activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
@@ -82,5 +87,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public TimerComponent getTimerManager() {
         return timerManager;
+    }
+
+    /**
+     * Gets the storage.
+     *
+     * @return the storage
+     */
+    public Storage getStorage() {
+        return storage.getStorage();
     }
 }
