@@ -1,4 +1,4 @@
-package de.craften.plugins.rpgplus.scripting.api;
+package de.craften.plugins.rpgplus.scripting.api.storage;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import org.bukkit.Bukkit;
