@@ -3,11 +3,8 @@ package de.craften.plugins.rpgplus.scripting.api.storage;
 import de.craften.plugins.rpgplus.RpgPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
@@ -21,7 +18,7 @@ public class Storage extends LuaTable {
         set("get", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue defaultValue) {
-                return LuaValue.valueOf(storage.get(key.checkjstring(), defaultValue.checkjstring()));
+                return LuaValueConverter.convert(storage.get(key.checkjstring(), defaultValue.isnil() ? null : defaultValue.checkjstring()));
             }
         });
 

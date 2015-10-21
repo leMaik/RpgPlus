@@ -48,7 +48,7 @@ public class LuaValueConverter {
         return table;
     }
 
-    private static LuaValue convert(String value) {
+    public static LuaValue convert(String value) {
         if (value.equalsIgnoreCase("true")) {
             return LuaValue.TRUE;
         } else if (value.equalsIgnoreCase("false")) {
