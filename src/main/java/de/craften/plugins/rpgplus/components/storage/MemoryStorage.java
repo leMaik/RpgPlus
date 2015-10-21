@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.components.storage;
 
 import org.bukkit.OfflinePlayer;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,6 +26,17 @@ public class MemoryStorage implements Storage {
     }
 
     @Override
+    public Map<String, String> getAll(String key) {
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, String> entry : storage.entrySet()) {
+            if (entry.getKey().startsWith(key + ".")) {
+                result.put(entry.getKey().substring(key.length() + 1), entry.getValue());
+            }
+        }
+        return result;
+    }
+
+    @Override
     public void set(String key, String value) {
         storage.put(key, value);
     }
@@ -42,6 +54,21 @@ public class MemoryStorage implements Storage {
         }
         String value = playerStorage.get(key);
         return value != null ? value : defaultValue;
+    }
+
+    @Override
+    public Map<String, String> getAll(OfflinePlayer player, String key) {
+        Map<String, String> playerStorage = playerStorages.get(player.getUniqueId());
+        if (playerStorage == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, String> entry : playerStorage.entrySet()) {
+            if (entry.getKey().startsWith(key + ".")) {
+                result.put(entry.getKey().substring(key.length() + 1), entry.getValue());
+            }
+        }
+        return result;
     }
 
     @Override

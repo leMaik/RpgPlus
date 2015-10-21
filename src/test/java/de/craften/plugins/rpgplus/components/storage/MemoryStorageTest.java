@@ -1,13 +1,13 @@
 package de.craften.plugins.rpgplus.components.storage;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,5 +40,17 @@ public class MemoryStorageTest {
         assertEquals("default", storage.get(mockPlayer, "other", "default"));
 
         assertEquals("default", storage.get(mockPlayer2, "foo", "default"));
+    }
+
+    @Test
+    public void testGetAll() throws Exception {
+        storage.set("this.is.bar", "value");
+        storage.set("this.is.a.test", "value2");
+        storage.set("something", "value3");
+
+        Map<String, String> values = storage.getAll("this.is");
+        assertEquals(2, values.size());
+        assertEquals("value", values.get("bar"));
+        assertEquals("value2", values.get("a.test"));
     }
 }
