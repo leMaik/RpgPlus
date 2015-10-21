@@ -52,6 +52,32 @@ public class TimerComponentTest {
     }
 
     @Test
+    public void testHandlerOnlyCalledOnce() throws Exception { //this one is for issue #15
+        World mockWorld = mock(World.class);
+        when(mockWorld.getTime()).thenReturn((long) 40);
+        when(mockWorld.getName()).thenReturn("world");
+        final Server mockServer = mock(Server.class);
+        when(mockServer.getWorld("world")).thenReturn(mockWorld);
+        Runnable callback = mock(Runnable.class);
+
+        TimerComponent mockTimer = new TimerComponent() {
+            @Override
+            public Server getServer() {
+                return mockServer;
+            }
+        };
+        mockTimer.addHandler(mockWorld, 2, callback);
+
+        when(mockWorld.getTime()).thenReturn((long) 1);
+        mockTimer.tick();
+        when(mockWorld.getTime()).thenReturn((long) 2);
+        mockTimer.tick();
+        when(mockWorld.getTime()).thenReturn((long) 3);
+        mockTimer.tick();
+        verify(callback, times(1)).run(); //callback should only be invoked once
+    }
+
+    @Test
     public void testWithLaggingServer() throws Exception {
         World mockWorld = mock(World.class);
         when(mockWorld.getTime()).thenReturn((long) 40);
