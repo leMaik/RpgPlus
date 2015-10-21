@@ -3,7 +3,6 @@ package de.craften.plugins.rpgplus.scripting.api.storage;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,10 +52,22 @@ public class LuaValueConverter {
             return LuaValue.TRUE;
         } else if (value.equalsIgnoreCase("false")) {
             return LuaValue.FALSE;
-        } else if (value.matches("\\-?\\d+(\\.\\d+)?")) {
-            return LuaValue.valueOf(Double.valueOf(value));
         } else {
-            return LuaValue.valueOf(value);
+            try {
+                return LuaValue.valueOf(Double.parseDouble(value));
+            } catch (NumberFormatException e) {
+                return LuaValue.valueOf(value);
+            }
+        }
+    }
+
+    public static String convert(LuaValue value) {
+        if (value.isboolean()) {
+            return value.checkboolean() ? "true" : "false";
+        } else if (value.isnumber()) {
+            return Double.toString(value.checknumber().checkdouble());
+        } else {
+            return value.tojstring();
         }
     }
 }

@@ -1,7 +1,6 @@
 package de.craften.plugins.rpgplus.components.storage;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 /**
  * A storage.
@@ -25,6 +24,14 @@ public interface Storage {
     void set(String key, String value);
 
     /**
+     * Checks if the storage contains a value for the given key.
+     *
+     * @param key key
+     * @return true if the storage contains a value for the given key, false if not
+     */
+    boolean contains(String key);
+
+    /**
      * Get the value for the given key for the given player.
      *
      * @param player       player
@@ -42,4 +49,13 @@ public interface Storage {
      * @param value  new value
      */
     void set(OfflinePlayer player, String key, String value);
+
+    /**
+     * Checks if the storage contains a value for the given key and player.
+     *
+     * @param player player
+     * @param key    key
+     * @return true if the storage contains a value for the given key and player, false if not
+     */
+    boolean contains(OfflinePlayer player, String key);
 }

@@ -14,25 +14,30 @@ import java.util.Map;
  * Lua module for storage.
  */
 public class Storage extends LuaTable {
-    final de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
-
     public Storage() {
         set("get", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue defaultValue) {
-                return LuaValueConverter.convert(storage.get(key.checkjstring(), defaultValue.isnil() ? null : defaultValue.checkjstring()));
+                de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+                if (storage.contains(key.checkjstring())) {
+                    return LuaValueConverter.convert(storage.get(key.checkjstring(), null));
+                } else {
+                    return defaultValue;
+                }
             }
         });
 
         set("set", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue value) {
+                de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+
                 if (value.istable()) {
                     for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
                         storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
                     }
                 } else {
-                    storage.set(key.checkjstring(), key.checkjstring());
+                    storage.set(key.checkjstring(), LuaValueConverter.convert(value));
                 }
                 return LuaValue.NIL;
             }
@@ -51,19 +56,27 @@ public class Storage extends LuaTable {
             set("get", new TwoArgFunction() {
                 @Override
                 public LuaValue call(LuaValue key, LuaValue defaultValue) {
-                    return LuaValue.valueOf(storage.get(player, key.checkjstring(), defaultValue.checkjstring()));
+                    de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+
+                    if (storage.contains(player, key.checkjstring())) {
+                        return LuaValueConverter.convert(storage.get(player, key.checkjstring(), null));
+                    } else {
+                        return defaultValue;
+                    }
                 }
             });
 
             set("set", new TwoArgFunction() {
                 @Override
                 public LuaValue call(LuaValue key, LuaValue value) {
+                    de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+                    
                     if (value.istable()) {
                         for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
                             storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
                         }
                     } else {
-                        storage.set(player, key.checkjstring(), value.checkjstring());
+                        storage.set(player, key.checkjstring(), LuaValueConverter.convert(value));
                     }
                     return LuaValue.NIL;
                 }

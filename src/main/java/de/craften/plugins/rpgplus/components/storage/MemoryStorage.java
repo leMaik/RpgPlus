@@ -1,7 +1,6 @@
 package de.craften.plugins.rpgplus.components.storage;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +30,11 @@ public class MemoryStorage implements Storage {
     }
 
     @Override
+    public boolean contains(String key) {
+        return storage.containsKey(key);
+    }
+
+    @Override
     public String get(OfflinePlayer player, String key, String defaultValue) {
         Map<String, String> playerStorage = playerStorages.get(player.getUniqueId());
         if (playerStorage == null) {
@@ -48,5 +52,11 @@ public class MemoryStorage implements Storage {
             playerStorages.put(player.getUniqueId(), playerStorage);
         }
         playerStorage.put(key, value);
+    }
+
+    @Override
+    public boolean contains(OfflinePlayer player, String key) {
+        Map<String, String> playerStorage = playerStorages.get(player.getUniqueId());
+        return playerStorage != null && playerStorage.containsKey(key);
     }
 }
