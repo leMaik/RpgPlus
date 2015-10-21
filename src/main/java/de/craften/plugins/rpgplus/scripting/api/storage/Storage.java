@@ -8,6 +8,8 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
+import java.util.Map;
+
 /**
  * Lua module for storage.
  */
@@ -25,7 +27,13 @@ public class Storage extends LuaTable {
         set("set", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue value) {
-                storage.set(key.checkjstring(), key.checkjstring());
+                if (value.istable()) {
+                    for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
+                        storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
+                    }
+                } else {
+                    storage.set(key.checkjstring(), key.checkjstring());
+                }
                 return LuaValue.NIL;
             }
         });
@@ -50,7 +58,13 @@ public class Storage extends LuaTable {
             set("set", new TwoArgFunction() {
                 @Override
                 public LuaValue call(LuaValue key, LuaValue value) {
-                    storage.set(player, key.checkjstring(), value.checkjstring());
+                    if (value.istable()) {
+                        for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
+                            storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
+                        }
+                    } else {
+                        storage.set(player, key.checkjstring(), value.checkjstring());
+                    }
                     return LuaValue.NIL;
                 }
             });
