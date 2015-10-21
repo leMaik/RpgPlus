@@ -3,7 +3,6 @@ package de.craften.plugins.rpgplus.components.timer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.Collection;
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 public class TimerComponent extends PluginComponentBase {
     private Multimap<String, Timer> callbacks = ArrayListMultimap.create();
-    private Map<String, Long> lastTimes = new HashMap<>();
+    private Map<String, Long> skippedTimeStarts = new HashMap<>(); //contains the first tick that was not yet processes for a world
     private int id = 0;
 
     @Override
@@ -36,11 +35,11 @@ public class TimerComponent extends PluginComponentBase {
     protected void tick() {
         for (Map.Entry<String, Collection<Timer>> worldEntry : callbacks.asMap().entrySet()) {
             World world = getServer().getWorld(worldEntry.getKey());
-            long lastTime = getLastTime(world);
+            long firstSkippedTime = firstSkippedTime(world);
             long now = world.getTime();
 
-            if (now < lastTime) {
-                for (long time = lastTime; time < 24_000; time++) {
+            if (now < firstSkippedTime) {
+                for (long time = firstSkippedTime; time < 24_000; time++) {
                     for (Timer timer : worldEntry.getValue()) {
                         if (timer.time == time) {
                             timer.callback.run();
@@ -55,7 +54,7 @@ public class TimerComponent extends PluginComponentBase {
                     }
                 }
             } else {
-                for (long time = lastTime; time <= now; time++) {
+                for (long time = firstSkippedTime; time <= now; time++) {
                     for (Timer timer : worldEntry.getValue()) {
                         if (timer.time == time) {
                             timer.callback.run();
@@ -63,12 +62,12 @@ public class TimerComponent extends PluginComponentBase {
                     }
                 }
             }
-            this.lastTimes.put(world.getName(), world.getTime());
+            this.skippedTimeStarts.put(world.getName(), world.getTime() + 1);
         }
     }
 
-    private long getLastTime(World world) {
-        Long lastTick = this.lastTimes.get(world.getName());
+    private long firstSkippedTime(World world) {
+        Long lastTick = this.skippedTimeStarts.get(world.getName());
         if (lastTick != null) {
             return lastTick;
         }
