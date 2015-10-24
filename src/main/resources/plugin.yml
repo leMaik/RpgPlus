@@ -2,3 +2,5 @@ name: RpgPlus
 version: VERSION
 
 main: de.craften.plugins.rpgplus.RpgPlus
+
+softdepend: [NoteBlockAPI]

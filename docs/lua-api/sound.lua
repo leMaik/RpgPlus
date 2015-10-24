@@ -8,3 +8,9 @@ function playSound(player, sound) end
 -- @param instrument instrument which will playing
 -- @param note note to play
 function playNote(player, instrument, note) end
+
+--- Play a song to a specific player.
+-- @param player player to play the song to
+-- @param song path of the .nbs song file, relative to the script directory
+--
+function playSong(player, song) end
