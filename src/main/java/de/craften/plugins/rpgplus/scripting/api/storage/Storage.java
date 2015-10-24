@@ -1,8 +1,10 @@
 package de.craften.plugins.rpgplus.scripting.api.storage;
 
 import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.components.storage.StorageException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
@@ -18,15 +20,19 @@ public class Storage extends LuaTable {
         set("get", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue defaultValue) {
-                de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
-                if (storage.contains(key.checkjstring())) {
-                    return LuaValueConverter.convert(storage.get(key.checkjstring(), null));
-                } else {
-                    Map<String, String> tableMap = storage.getAll(key.checkjstring());
-                    if (!tableMap.isEmpty()) {
-                        return LuaValueConverter.convertToTable(tableMap);
+                try {
+                    de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+                    if (storage.contains(key.checkjstring())) {
+                        return LuaValueConverter.convert(storage.get(key.checkjstring(), null));
+                    } else {
+                        Map<String, String> tableMap = storage.getAll(key.checkjstring());
+                        if (!tableMap.isEmpty()) {
+                            return LuaValueConverter.convertToTable(tableMap);
+                        }
+                        return defaultValue;
                     }
-                    return defaultValue;
+                } catch (StorageException e) {
+                    throw new LuaError(e);
                 }
             }
         });
@@ -34,16 +40,20 @@ public class Storage extends LuaTable {
         set("set", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue value) {
-                de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+                try {
+                    de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
 
-                if (value.istable()) {
-                    for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
-                        storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
+                    if (value.istable()) {
+                        for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
+                            storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
+                        }
+                    } else {
+                        storage.set(key.checkjstring(), LuaValueConverter.convert(value));
                     }
-                } else {
-                    storage.set(key.checkjstring(), LuaValueConverter.convert(value));
+                    return LuaValue.NIL;
+                } catch (StorageException e) {
+                    throw new LuaError(e);
                 }
-                return LuaValue.NIL;
             }
         });
 
@@ -60,16 +70,20 @@ public class Storage extends LuaTable {
             set("get", new TwoArgFunction() {
                 @Override
                 public LuaValue call(LuaValue key, LuaValue defaultValue) {
-                    de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+                    try {
+                        de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
 
-                    if (storage.contains(player, key.checkjstring())) {
-                        return LuaValueConverter.convert(storage.get(player, key.checkjstring(), null));
-                    } else {
-                        Map<String, String> tableMap = storage.getAll(player, key.checkjstring());
-                        if (!tableMap.isEmpty()) {
-                            return LuaValueConverter.convertToTable(tableMap);
+                        if (storage.contains(player, key.checkjstring())) {
+                            return LuaValueConverter.convert(storage.get(player, key.checkjstring(), null));
+                        } else {
+                            Map<String, String> tableMap = storage.getAll(player, key.checkjstring());
+                            if (!tableMap.isEmpty()) {
+                                return LuaValueConverter.convertToTable(tableMap);
+                            }
+                            return defaultValue;
                         }
-                        return defaultValue;
+                    } catch (StorageException e) {
+                        throw new LuaError(e);
                     }
                 }
             });
@@ -77,16 +91,20 @@ public class Storage extends LuaTable {
             set("set", new TwoArgFunction() {
                 @Override
                 public LuaValue call(LuaValue key, LuaValue value) {
-                    de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
+                    try {
+                        de.craften.plugins.rpgplus.components.storage.Storage storage = RpgPlus.getPlugin(RpgPlus.class).getStorage();
 
-                    if (value.istable()) {
-                        for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
-                            storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
+                        if (value.istable()) {
+                            for (Map.Entry<String, String> entry : LuaValueConverter.convertFromTable(value.checktable()).entrySet()) {
+                                storage.set(key.checkjstring() + "." + entry.getKey(), entry.getValue());
+                            }
+                        } else {
+                            storage.set(player, key.checkjstring(), LuaValueConverter.convert(value));
                         }
-                    } else {
-                        storage.set(player, key.checkjstring(), LuaValueConverter.convert(value));
+                        return LuaValue.NIL;
+                    } catch (StorageException e) {
+                        throw new LuaError(e);
                     }
-                    return LuaValue.NIL;
                 }
             });
         }

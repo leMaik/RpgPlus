@@ -14,8 +14,9 @@ public interface Storage {
      * @param key          key
      * @param defaultValue default value if no value exists
      * @return the value for the given key or the default value
+     * @throws StorageException if getting the value fails
      */
-    String get(String key, String defaultValue);
+    String get(String key, String defaultValue) throws StorageException;
 
     /**
      * Get all subkeys and values for the given key.
@@ -23,24 +24,27 @@ public interface Storage {
      *
      * @param key key to get all subkeys for
      * @return all subkeys and values for the given key
+     * @throws StorageException if getting the values fails
      */
-    Map<String, String> getAll(String key);
+    Map<String, String> getAll(String key) throws StorageException;
 
     /**
      * Set the value for the given key, overwriting the existing value.
      *
      * @param key   key
      * @param value new value
+     * @throws StorageException if setting the value fails
      */
-    void set(String key, String value);
+    void set(String key, String value) throws StorageException;
 
     /**
      * Checks if the storage contains a value for the given key.
      *
      * @param key key
      * @return true if the storage contains a value for the given key, false if not
+     * @throws StorageException if checking if the value exists fails
      */
-    boolean contains(String key);
+    boolean contains(String key) throws StorageException;
 
     /**
      * Get the value for the given key for the given player.
@@ -49,8 +53,9 @@ public interface Storage {
      * @param key          key
      * @param defaultValue default  value if no value exists
      * @return the value for the given kay of the given player or the default value
+     * @throws StorageException if getting the value fails
      */
-    String get(OfflinePlayer player, String key, String defaultValue);
+    String get(OfflinePlayer player, String key, String defaultValue) throws StorageException;
 
     /**
      * Get all subkeys and values for the given key and player.
@@ -59,8 +64,9 @@ public interface Storage {
      * @param player player
      * @param key    key to get all subkeys for
      * @return all subkeys and values for the given key and player
+     * @throws StorageException if getting the values fails
      */
-    Map<String, String> getAll(OfflinePlayer player, String key);
+    Map<String, String> getAll(OfflinePlayer player, String key) throws StorageException;
 
     /**
      * Set the value for the given key and player, overwriting the existing value.
@@ -68,8 +74,9 @@ public interface Storage {
      * @param player player
      * @param key    key
      * @param value  new value
+     * @throws StorageException if setting the value fails
      */
-    void set(OfflinePlayer player, String key, String value);
+    void set(OfflinePlayer player, String key, String value) throws StorageException;
 
     /**
      * Checks if the storage contains a value for the given key and player.
@@ -77,6 +84,7 @@ public interface Storage {
      * @param player player
      * @param key    key
      * @return true if the storage contains a value for the given key and player, false if not
+     * @throws StorageException if checking if the value exists fails
      */
-    boolean contains(OfflinePlayer player, String key);
+    boolean contains(OfflinePlayer player, String key) throws StorageException;
 }

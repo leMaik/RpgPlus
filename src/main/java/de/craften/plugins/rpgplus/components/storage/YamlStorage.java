@@ -28,7 +28,7 @@ public class YamlStorage implements Storage {
     private final FileConfiguration storage;
     private final LoadingCache<UUID, FileConfiguration> playerStorages;
 
-    public YamlStorage(File storageDirectory) {
+    public YamlStorage(File storageDirectory) throws IOException {
         this.storageDirectory = storageDirectory;
         storageFile = new File(storageDirectory, "global.yml");
 
@@ -37,7 +37,7 @@ public class YamlStorage implements Storage {
             try {
                 storage.load(storageFile);
             } catch (IOException | InvalidConfigurationException e) {
-                throw new RuntimeException("Storage corrupted", e);
+                throw new IOException("Storage corrupted", e);
             }
         }
         this.storage = storage;
@@ -81,12 +81,12 @@ public class YamlStorage implements Storage {
     }
 
     @Override
-    public void set(String key, String value) {
+    public synchronized void set(String key, String value) throws StorageException {
         storage.set(key, value);
         try {
             storage.save(storageFile);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StorageException("Could not save global storage", e);
         }
     }
 
@@ -96,7 +96,7 @@ public class YamlStorage implements Storage {
     }
 
     @Override
-    public String get(OfflinePlayer player, String key, String defaultValue) {
+    public String get(OfflinePlayer player, String key, String defaultValue) throws StorageException {
         try {
             ConfigurationSection playerStorage = playerStorages.get(player.getUniqueId());
             if (playerStorage == null) {
@@ -104,38 +104,40 @@ public class YamlStorage implements Storage {
             }
             return playerStorage.getString(key, defaultValue);
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new StorageException(e);
         }
     }
 
     @Override
-    public Map<String, String> getAll(OfflinePlayer player, String key) {
+    public Map<String, String> getAll(OfflinePlayer player, String key) throws StorageException {
         try {
             ConfigurationSection playerStorage = playerStorages.get(player.getUniqueId());
             return ConfigurationSectionUtil.flatten(playerStorage);
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new StorageException(e);
         }
     }
 
     @Override
-    public void set(OfflinePlayer player, String key, String value) {
+    public synchronized void set(OfflinePlayer player, String key, String value) throws StorageException {
         try {
             FileConfiguration playerStorage = playerStorages.get(player.getUniqueId());
             playerStorage.set(key, value);
             playerStorage.save(getFile(player.getUniqueId()));
-        } catch (ExecutionException | IOException e) {
-            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new StorageException(e);
+        } catch (IOException e) {
+            throw new StorageException("Could not save player storage", e);
         }
     }
 
     @Override
-    public boolean contains(OfflinePlayer player, String key) {
+    public boolean contains(OfflinePlayer player, String key) throws StorageException {
         try {
             ConfigurationSection playerStorage = playerStorages.get(player.getUniqueId());
             return playerStorage != null && playerStorage.contains(key);
         } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new StorageException(e);
         }
     }
 }
