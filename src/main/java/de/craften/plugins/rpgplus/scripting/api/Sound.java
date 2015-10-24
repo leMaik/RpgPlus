@@ -17,8 +17,8 @@ public class Sound extends LuaTable {
 
 			@Override
 			public LuaValue call(final LuaValue player, final LuaValue sound) {
-				Player p = (Player) CoerceLuaToJava.coerce(player.checkstring(), Player.class);
-				p.playSound(p.getLocation(), org.bukkit.Sound.valueOf(sound.checkjstring()), 1.0f, 1.0f);
+				Player p = plugin.getServer().getPlayer(player.checkjstring());
+				p.playSound(p.getLocation(), org.bukkit.Sound.valueOf(sound.checkjstring().toUpperCase()), 1.0f, 1.0f);
 				
 				return LuaValue.NIL;
 			}
@@ -29,11 +29,10 @@ public class Sound extends LuaTable {
 			
 			@Override
 			public LuaValue call(final LuaValue player, final LuaValue instrument, final LuaValue note) {
+				Player p = plugin.getServer().getPlayer(player.checkjstring());
+				p.playNote(p.getLocation(), Instrument.valueOf(instrument.checkjstring().toUpperCase()), new Note(note.checkint()));
 				
-				Player p = (Player) CoerceLuaToJava.coerce(player.checkstring(), Player.class);
-				p.playNote(p.getLocation(), Instrument.valueOf(instrument.checkjstring()), new Note(note.checkint()));
-				
-				return null;
+				return LuaValue.NIL;
 			}
 		});
 		
