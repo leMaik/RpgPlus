@@ -1,3 +1,6 @@
+--- Provides sound and music functions.
+-- @module rpgplus.sound
+
 --- Play a sound to a specific player.
 -- @param player player to play the sound to
 -- @param sound sound to play
@@ -12,6 +15,6 @@ function playNote(player, instrument, note) end
 --- Play a song to a specific player.
 -- @param player player to play the song to
 -- @param song path of the .nbs song file, relative to the script directory
--- @return true if the song was started, false if not (due to missing NoteBlockAPI)
+-- @return true if the song was started, false if not (due to missing NoteBlockAPI plugin)
 --
 function playSong(player, song) end
