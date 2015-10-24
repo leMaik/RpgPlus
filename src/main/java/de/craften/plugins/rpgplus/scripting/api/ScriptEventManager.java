@@ -78,11 +78,6 @@ public class ScriptEventManager implements Listener {
     }
 
     @EventHandler
-    public void onPlayerBucket(PlayerBucketEvent event) {
-        callHandlers("player.bucket", event);
-    }
-
-    @EventHandler
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
         callHandlers("player.bucket.fill", event);
     }
@@ -99,7 +94,7 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onPlayerBedEnter(PlayerBedEnterEvent event) {
-        callHandlers("player.bed.endet", event);
+        callHandlers("player.bed.enter", event);
     }
 
     @EventHandler
@@ -234,7 +229,7 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onPlayerEnchant(EnchantItemEvent event) {
-        callHandlers("enchant", event);
+        callHandlers("player.enchant", event);
     }
 
     @EventHandler
@@ -419,7 +414,7 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        callHandlers("inventory.item.craft", event);
+        callHandlers("inventory.craft", event);
     }
 
     @EventHandler
