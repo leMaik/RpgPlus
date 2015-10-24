@@ -5,7 +5,6 @@ import de.craften.plugins.rpgplus.common.entity.RPGVillager;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -140,40 +139,37 @@ public class RpgPlusObject extends LuaTable {
         set("sendMessage", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs varargs) {
-                
-                if(varargs.narg() >= 2) {
-                    Player p = ScriptUtil.getPlayer(varargs.checkvalue(1));
-                    
-                    for (int i = 2; i <= varargs.narg(); i++){
-                        p.sendMessage(varargs.checkjstring(i));
+                if (varargs.narg() >= 2) {
+                    LuaTable players = varargs.opttable(1, LuaTable.listOf(new LuaValue[]{varargs.arg(1)}));
+                    for (int i = 1; i <= players.length(); i++) {
+                        Player p = ScriptUtil.getPlayer(players.get(i));
+                        for (int j = 2; j <= varargs.narg(); j++) {
+                            p.sendMessage(varargs.checkjstring(j));
+                        }
                     }
-                    
                 } else {
                     throw new LuaError("Invalid count of arguments. At least two arguments are required.");
                 }
-                
+
                 return LuaValue.NIL;
             }
         });
-        
+
         set("broadcastMessage", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs varargs) {
-                
                 if (varargs.narg() >= 1) {
-                    
-                    for (int i = 1; i <= varargs.narg(); i++){
+                    for (int i = 1; i <= varargs.narg(); i++) {
                         plugin.getServer().broadcastMessage(varargs.checkjstring(i));
                     }
-                    
                 } else {
                     throw new LuaError("Invalid count of arguments. At least one argument are required.");
                 }
-                
+
                 return LuaValue.NIL;
             }
         });
-        
+
         //Functions to register and unregister event handlers
         ScriptEventManager events = new ScriptEventManager();
         plugin.registerEvents(events);

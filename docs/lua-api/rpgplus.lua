@@ -28,3 +28,14 @@ function command(command, handler) end
 -- anything the sender entered after that command
 --
 function playercommand(command, handler) end
+
+--- Sends a message to the given players.
+-- @param players a list of players to send the message to, if it is only one player, no list is required
+-- @param ... messages to send to the given players
+--
+function sendMessage(players, ...) end
+
+--- Broadcasts a message to all players.
+-- @param ... messages to send to all players
+--
+function broadcastMessage(...) end
