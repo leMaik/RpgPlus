@@ -34,202 +34,202 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        callHandlers("playerJoin", event);
+        callHandlers("player.join", event);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        callHandlers("playerQuit", event);
+        callHandlers("player.join", event);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        callHandlers("playerMove", event);
+        callHandlers("player.move", event);
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        callHandlers("playerDeath", event);
+        callHandlers("player.death", event);
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        callHandlers("playerRespawn", event);
+        callHandlers("player.respawn", event);
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        callHandlers("playerDropItem", event);
+        callHandlers("player.item.drop", event);
     }
 
     @EventHandler
     public void onPlayerItemBreak(PlayerItemBreakEvent event) {
-        callHandlers("playerItemBreak", event);
+        callHandlers("player.item.break", event);
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        callHandlers("playerInteract", event);
+        callHandlers("player.interact", event);
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        callHandlers("playerKick", event);
+        callHandlers("player.kick", event);
     }
 
     @EventHandler
     public void onPlayerBucket(PlayerBucketEvent event) {
-        callHandlers("playerBucket", event);
+        callHandlers("player.bucket", event);
     }
 
     @EventHandler
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-        callHandlers("playerBucketFill", event);
+        callHandlers("player.bucket.fill", event);
     }
 
     @EventHandler
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        callHandlers("playerBucketEmpty", event);
+        callHandlers("player.bucket.empty", event);
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        callHandlers("playerChat", event);
+        callHandlers("player.chat", event);
     }
 
     @EventHandler
     public void onPlayerBedEnter(PlayerBedEnterEvent event) {
-        callHandlers("playerBedEnter", event);
+        callHandlers("player.bed.endet", event);
     }
 
     @EventHandler
     public void onPlayerBedLeave(PlayerBedLeaveEvent event) {
-        callHandlers("playerLeave", event);
+        callHandlers("player.bed.leave", event);
     }
 
     @EventHandler
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
-        callHandlers("playerChangedWorld", event);
+        callHandlers("player.changedWorld", event);
     }
 
     @EventHandler
     public void onPlayerChatTabComplete(PlayerChatTabCompleteEvent event) {
-        callHandlers("playerChatTabComplete", event);
+        callHandlers("player.chatTabComplete", event);
     }
 
     @EventHandler
     public void onPlayerEditBook(PlayerEditBookEvent event) {
-        callHandlers("playerEditBook", event);
+        callHandlers("player.editBook", event);
     }
 
     @EventHandler
     public void onPlayerEggThrow(PlayerEggThrowEvent event) {
-        callHandlers("playerEggThrow", event);
+        callHandlers("player.eggThrow", event);
     }
 
     @EventHandler
     public void onPlayerExpChange(PlayerExpChangeEvent event) {
-        callHandlers("playerExpChange", event);
+        callHandlers("player.expChange", event);
     }
 
     @EventHandler
     public void onPlayerFish(PlayerFishEvent event) {
-        callHandlers("playerFish", event);
+        callHandlers("player.fish", event);
     }
 
     @EventHandler
     public void onPlayerGamemodeChange(PlayerGameModeChangeEvent event) {
-        callHandlers("playerGamemodeChange", event);
+        callHandlers("player.gamemode.change", event);
     }
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        callHandlers("playerInteractAtEntity", event);
+        callHandlers("player.interact.atEntity", event);
     }
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        callHandlers("playerInteractEntity", event);
+        callHandlers("player.interact.entity", event);
     }
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        callHandlers("playerItemConsume", event);
+        callHandlers("player.item.consume", event);
     }
 
     @EventHandler
     public void onPlayerItemHeld(PlayerItemHeldEvent event) {
-        callHandlers("playerItemHeld", event);
+        callHandlers("player.item.held", event);
     }
 
     @EventHandler
     public void onPlayerLevelChange(PlayerLevelChangeEvent event) {
-        callHandlers("playerLevelChange", event);
+        callHandlers("player.levelChange", event);
     }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        callHandlers("playerLogin", event);
+        callHandlers("player.login", event);
     }
 
     @EventHandler
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-        callHandlers("playerPickupItem", event);
+        callHandlers("player.item.pickup", event);
     }
 
     @EventHandler
     public void onPlayerPortal(PlayerPortalEvent event) {
-        callHandlers("playerPortal", event);
+        callHandlers("player.portal", event);
     }
 
     @EventHandler
     public void onPlayerShearEntity(PlayerShearEntityEvent event) {
-        callHandlers("playerShearEntity", event);
+        callHandlers("player.shearEntity", event);
     }
 
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        callHandlers("playerTeleport", event);
+        callHandlers("player.teleport", event);
     }
 
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
-        callHandlers("playerToggleFlight", event);
+        callHandlers("player.toggle.flight", event);
     }
 
     @EventHandler
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
-        callHandlers("playerToggleSneak", event);
+        callHandlers("player.toggle.sneak", event);
     }
 
     @EventHandler
     public void onPlayerToggleSprint(PlayerToggleSprintEvent event) {
-        callHandlers("playerToggleSprint", event);
+        callHandlers("player.toggle.sprint", event);
     }
 
     @EventHandler
     public void onPlayerUnleashEntity(PlayerUnleashEntityEvent event) {
-        callHandlers("playerUnleashEntity", event);
+        callHandlers("player.unleashEntity", event);
     }
 
     @EventHandler
     public void onPlayerVelocity(PlayerVelocityEvent event) {
-        callHandlers("playerVelocity", event);
+        callHandlers("player.velocity", event);
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        callHandlers("blockBreak", event);
+        callHandlers("block.break", event);
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        callHandlers("blockPlace", event);
+        callHandlers("block.place", event);
     }
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
-        callHandlers("blockBurn", event);
+        callHandlers("block.burn", event);
     }
 
     @EventHandler
@@ -239,177 +239,177 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        callHandlers("creatureSpawn", event);
+        callHandlers("entity.spawn", event);
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        callHandlers("entityDamageByEntity", event);
+        callHandlers("entity.damage.byEntity", event);
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        callHandlers("entityDamage", event);
+        callHandlers("entity.damage", event);
     }
 
     @EventHandler
     public void onEntityDamageByBlock(EntityDamageByBlockEvent event) {
-        callHandlers("entityDamageByBlock", event);
+        callHandlers("entity.damage.byBlock", event);
     }
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        callHandlers("entityDeath", event);
+        callHandlers("entity.death", event);
     }
 
     @EventHandler
     public void onFoodLevelChanges(FoodLevelChangeEvent event) {
-        callHandlers("foodLevelChanges", event);
+        callHandlers("entity.foodLevelChange", event);
     }
 
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
-        callHandlers("itemSpawn", event);
+        callHandlers("item.spawn", event);
     }
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent event) {
-        callHandlers("itemDespawn", event);
+        callHandlers("item.despawn", event);
     }
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        callHandlers("projectileLaunch", event);
+        callHandlers("projectile.launch", event);
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        callHandlers("projectileHit", event);
+        callHandlers("projectile.hit", event);
     }
 
     @EventHandler
     public void onEntityTeleport(EntityTeleportEvent event) {
-        callHandlers("entityTeleport", event);
+        callHandlers("entity.teleport", event);
     }
 
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event) {
-        callHandlers("entityTarget", event);
+        callHandlers("entity.target", event);
     }
 
     @EventHandler
     public void onEntityTame(EntityTameEvent event) {
-        callHandlers("entityTame", event);
+        callHandlers("entity.tame", event);
     }
 
     @EventHandler
     public void onEntityInteract(EntityInteractEvent event) {
-        callHandlers("entityInteract", event);
+        callHandlers("entity.interact", event);
     }
 
     @EventHandler
     public void onEntityPortalEnter(EntityPortalEnterEvent event) {
-        callHandlers("entityPortalEnter", event);
+        callHandlers("entity.portal.enter", event);
     }
 
     @EventHandler
     public void onEntityPortal(EntityPortalEvent event) {
-        callHandlers("entityPortal", event);
+        callHandlers("entity.portal", event);
     }
 
     @EventHandler
     public void onEntityPortalExit(EntityPortalExitEvent event) {
-        callHandlers("entityPortalExit", event);
+        callHandlers("entity.portal.exit", event);
     }
 
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        callHandlers("entityRegainHealth", event);
+        callHandlers("entity.health.regain", event);
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        callHandlers("entityExplode", event);
+        callHandlers("entity.explode", event);
     }
 
     @EventHandler
     public void onPlayerLeashEntity(PlayerLeashEntityEvent event) {
-        callHandlers("playerLeashEntity", event);
+        callHandlers("player.leashEntity", event);
     }
 
     @EventHandler
     public void onEntityUnleash(EntityUnleashEvent event) {
-        callHandlers("entityUnleash", event);
+        callHandlers("entity.unleash", event);
     }
 
     @EventHandler
     public void onExpBottle(ExpBottleEvent event) {
-        callHandlers("expBottle", event);
+        callHandlers("entity.expBottle", event);
     }
 
     @EventHandler
     public void onPotionSplash(PotionSplashEvent event) {
-        callHandlers("potionSplash", event);
+        callHandlers("entity.potionSplash", event);
     }
 
     @EventHandler
     public void onHorseJump(HorseJumpEvent event) {
-        callHandlers("horseJump", event);
+        callHandlers("entity.horseJump", event);
     }
 
     @EventHandler
     public void onInvOpen(InventoryOpenEvent event) {
-        callHandlers("inventoryOpen", event);
+        callHandlers("inventory.open", event);
     }
 
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
-        callHandlers("inventoryClick", event);
+        callHandlers("inventory.click", event);
     }
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent event) {
-        callHandlers("inventoryClose", event);
+        callHandlers("inventory.close", event);
     }
 
     @EventHandler
     public void onInvInteract(InventoryInteractEvent event) {
-        callHandlers("inventoryInteract", event);
+        callHandlers("inventory.interact", event);
     }
 
     @EventHandler
     public void onInvMoveItem(InventoryMoveItemEvent event) {
-        callHandlers("inventoryMoveItem", event);
+        callHandlers("inventory.item.move", event);
     }
 
     @EventHandler
     public void onInvPickupItem(InventoryPickupItemEvent event) {
-        callHandlers("inventoryPickupItem", event);
+        callHandlers("inventory.item.pickup", event);
     }
 
     @EventHandler
     public void onInvDrag(InventoryDragEvent event) {
-        callHandlers("inventoryDrag", event);
+        callHandlers("inventory.drag", event);
     }
 
     @EventHandler
     public void onInvCReative(InventoryCreativeEvent event) {
-        callHandlers("inventoryCreative", event);
+        callHandlers("inventory.creative", event);
     }
 
     @EventHandler
     public void onFurnaceBurn(FurnaceBurnEvent event) {
-        callHandlers("furnaceBurn", event);
+        callHandlers("furnace.burn", event);
     }
 
     @EventHandler
     public void onFurnaceExtract(FurnaceExtractEvent event) {
-        callHandlers("furnaceExtract", event);
+        callHandlers("furnace.extract", event);
     }
 
     @EventHandler
     public void onFurnaceSmelt(FurnaceSmeltEvent event) {
-        callHandlers("furnaceSmelt", event);
+        callHandlers("furnace.smelt", event);
     }
 
     @EventHandler
@@ -419,82 +419,82 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onCraftItem(CraftItemEvent event) {
-        callHandlers("craftItem", event);
+        callHandlers("inventory.item.craft", event);
     }
 
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent event) {
-        callHandlers("hangingPlace", event);
+        callHandlers("hanging.place", event);
     }
 
     @EventHandler
     public void onHangingBreak(HangingBreakEvent event) {
-        callHandlers("hangingBreak", event);
+        callHandlers("hanging.break", event);
     }
 
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
-        callHandlers("hangingBreakByEntity", event);
+        callHandlers("hanging.break.byEntity", event);
     }
 
     @EventHandler
     public void onVehicleBlockCollision(VehicleBlockCollisionEvent event) {
-        callHandlers("vehicleBlockCollision", event);
+        callHandlers("vehicle.collision.block", event);
     }
 
     @EventHandler
     public void onVehicleCreate(VehicleCreateEvent event) {
-        callHandlers("vehicleCreate", event);
+        callHandlers("vehicle.create", event);
     }
 
     @EventHandler
     public void onVehicleDamage(VehicleDamageEvent event) {
-        callHandlers("vehicleDamage", event);
+        callHandlers("vehicle.damage", event);
     }
 
     @EventHandler
     public void onVehicleDestroy(VehicleDestroyEvent event) {
-        callHandlers("vehicleDestroy", event);
+        callHandlers("vehicle.destroy", event);
     }
 
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
-        callHandlers("vehicleEnter", event);
+        callHandlers("vehicle.enter", event);
     }
 
     @EventHandler
     public void onVehicleEntityCollision(VehicleEntityCollisionEvent event) {
-        callHandlers("vehicleEntityCollision", event);
+        callHandlers("vehicle.collision.entity", event);
     }
 
     @EventHandler
     public void onVehicleExit(VehicleExitEvent event) {
-        callHandlers("vehicleExit", event);
+        callHandlers("vehicle.exit", event);
     }
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
-        callHandlers("vehicleMove", event);
+        callHandlers("vehicle.move", event);
     }
 
     @EventHandler
     public void onVehicleUpdate(VehicleUpdateEvent event) {
-        callHandlers("vehicleUpdate", event);
+        callHandlers("vehicle.update", event);
     }
 
     @EventHandler
     public void onLightningStrike(LightningStrikeEvent event) {
-        callHandlers("lightningStrike", event);
+        callHandlers("weather.lightningStrike", event);
     }
 
     @EventHandler
     public void onThunderChange(ThunderChangeEvent event) {
-        callHandlers("thunderChange", event);
+        callHandlers("weather.thunderChange", event);
     }
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
-        callHandlers("weatherChange", event);
+        callHandlers("weather.change", event);
     }
 
     //TODO Handle more/all events
