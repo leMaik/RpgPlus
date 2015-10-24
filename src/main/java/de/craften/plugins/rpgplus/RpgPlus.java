@@ -30,7 +30,7 @@ public class RpgPlus extends JavaPlugin {
         entityManager = new EntityManager();
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
-        storage = new StorageComponent();
+        storage = new StorageComponent(new File(getDataFolder(), "storage"));
 
         scriptingManager.activateFor(this);
         entityManager.activateFor(this);
