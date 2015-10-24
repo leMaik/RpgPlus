@@ -140,7 +140,12 @@ public class RpgPlusObject extends LuaTable {
             @Override
             public Varargs invoke(Varargs varargs) {
                 if (varargs.narg() >= 2) {
-                    LuaTable players = varargs.opttable(1, LuaTable.listOf(new LuaValue[]{varargs.arg(1)}));
+                    LuaTable players;
+                    if (varargs.istable(1)) {
+                        players = varargs.checktable(1);
+                    } else {
+                        players = LuaTable.listOf(new LuaValue[]{varargs.arg(1)});
+                    }
                     for (int i = 1; i <= players.length(); i++) {
                         Player p = ScriptUtil.getPlayer(players.get(i));
                         for (int j = 2; j <= varargs.narg(); j++) {
