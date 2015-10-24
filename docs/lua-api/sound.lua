@@ -12,5 +12,6 @@ function playNote(player, instrument, note) end
 --- Play a song to a specific player.
 -- @param player player to play the song to
 -- @param song path of the .nbs song file, relative to the script directory
+-- @return true if the song was started, false if not (due to missing NoteBlockAPI)
 --
 function playSong(player, song) end
