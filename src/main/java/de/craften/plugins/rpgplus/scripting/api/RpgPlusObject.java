@@ -162,7 +162,7 @@ public class RpgPlusObject extends LuaTable {
                 
                 if (varargs.narg() >= 1) {
                     
-                    for (int i = 1; i < varargs.narg(); i++){
+                    for (int i = 1; i <= varargs.narg(); i++){
                         plugin.getServer().broadcastMessage(varargs.checkjstring(i));
                     }
                     
