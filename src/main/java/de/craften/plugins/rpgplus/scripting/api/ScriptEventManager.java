@@ -1,5 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,93 +9,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityPortalExitEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.EntityUnleashEvent;
-import org.bukkit.event.entity.ExpBottleEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.HorseJumpEvent;
-import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
-import org.bukkit.event.inventory.BrewEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.FurnaceBurnEvent;
-import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerBedLeaveEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerChatTabCompleteEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEditBookEvent;
-import org.bukkit.event.player.PlayerEggThrowEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerLevelChangeEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
-import org.bukkit.event.player.PlayerUnleashEntityEvent;
-import org.bukkit.event.player.PlayerVelocityEvent;
-import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
-import org.bukkit.event.vehicle.VehicleCollisionEvent;
-import org.bukkit.event.vehicle.VehicleCreateEvent;
-import org.bukkit.event.vehicle.VehicleDamageEvent;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.event.vehicle.VehicleEnterEvent;
-import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.event.vehicle.VehicleUpdateEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.*;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -102,9 +24,6 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * Manager for event callbacks that scripts may register using <code>rpgplus.on()</code> and unregister using
@@ -117,12 +36,12 @@ public class ScriptEventManager implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         callHandlers("playerJoin", event);
     }
-    
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         callHandlers("playerQuit", event);
     }
-    
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         callHandlers("playerMove", event);
@@ -132,7 +51,7 @@ public class ScriptEventManager implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         callHandlers("playerDeath", event);
     }
-    
+
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         callHandlers("playerRespawn", event);
@@ -222,7 +141,7 @@ public class ScriptEventManager implements Listener {
     public void onPlayerGamemodeChange(PlayerGameModeChangeEvent event) {
         callHandlers("playerGamemodeChange", event);
     }
-    
+
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         callHandlers("playerInteractAtEntity", event);
@@ -237,7 +156,7 @@ public class ScriptEventManager implements Listener {
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
         callHandlers("playerItemConsume", event);
     }
-    
+
     @EventHandler
     public void onPlayerItemHeld(PlayerItemHeldEvent event) {
         callHandlers("playerItemHeld", event);
@@ -302,32 +221,32 @@ public class ScriptEventManager implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         callHandlers("blockBreak", event);
     }
-    
+
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         callHandlers("blockPlace", event);
     }
-    
+
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
         callHandlers("blockBurn", event);
     }
-    
+
     @EventHandler
     public void onPlayerEnchant(EnchantItemEvent event) {
         callHandlers("enchant", event);
     }
-    
+
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         callHandlers("creatureSpawn", event);
     }
-    
+
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         callHandlers("entityDamageByEntity", event);
     }
-    
+
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         callHandlers("entityDamage", event);
@@ -337,22 +256,22 @@ public class ScriptEventManager implements Listener {
     public void onEntityDamageByBlock(EntityDamageByBlockEvent event) {
         callHandlers("entityDamageByBlock", event);
     }
-    
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         callHandlers("entityDeath", event);
     }
-    
+
     @EventHandler
     public void onFoodLevelChanges(FoodLevelChangeEvent event) {
         callHandlers("foodLevelChanges", event);
     }
-    
+
     @EventHandler
     public void onItemSpawn(ItemSpawnEvent event) {
         callHandlers("itemSpawn", event);
     }
-    
+
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent event) {
         callHandlers("itemDespawn", event);
@@ -367,7 +286,7 @@ public class ScriptEventManager implements Listener {
     public void onProjectileHit(ProjectileHitEvent event) {
         callHandlers("projectileHit", event);
     }
-    
+
     @EventHandler
     public void onEntityTeleport(EntityTeleportEvent event) {
         callHandlers("entityTeleport", event);
@@ -442,12 +361,12 @@ public class ScriptEventManager implements Listener {
     public void onInvOpen(InventoryOpenEvent event) {
         callHandlers("inventoryOpen", event);
     }
-    
+
     @EventHandler
     public void onInvClick(InventoryClickEvent event) {
         callHandlers("inventoryClick", event);
     }
-    
+
     @EventHandler
     public void onInvClose(InventoryCloseEvent event) {
         callHandlers("inventoryClose", event);
@@ -521,11 +440,6 @@ public class ScriptEventManager implements Listener {
     @EventHandler
     public void onVehicleBlockCollision(VehicleBlockCollisionEvent event) {
         callHandlers("vehicleBlockCollision", event);
-    }
-
-    @EventHandler
-    public void onVehicleCollision(VehicleCollisionEvent event) {
-        callHandlers("vehicleCollision", event);
     }
 
     @EventHandler
