@@ -4,8 +4,10 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.RpgPlusObject;
 import de.craften.plugins.rpgplus.scripting.api.Scheduler;
 import de.craften.plugins.rpgplus.scripting.api.ScriptTimedEventManager;
+import de.craften.plugins.rpgplus.scripting.api.Sound;
 import de.craften.plugins.rpgplus.scripting.api.Trading;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
+
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -21,7 +23,8 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaValue schedulerModule;
     private LuaValue tradingModule;
     private LuaValue timerModule;
-
+    private LuaValue soundModule;
+    
     @Override
     protected void onActivated() {
         globals = JsePlatform.standardGlobals();
@@ -31,6 +34,7 @@ public class ScriptingManager extends PluginComponentBase {
         schedulerModule = new Scheduler(RpgPlus.getPlugin(RpgPlus.class));
         tradingModule = new Trading(RpgPlus.getPlugin(RpgPlus.class));
         timerModule = new ScriptTimedEventManager(RpgPlus.getPlugin(RpgPlus.class));
+        soundModule = new Sound(RpgPlus.getPlugin(RpgPlus.class));
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -56,5 +60,9 @@ public class ScriptingManager extends PluginComponentBase {
 
     public LuaValue getTimerModule() {
         return timerModule;
+    }
+    
+    public LuaValue getSoundModule() {
+    	return soundModule;
     }
 }
