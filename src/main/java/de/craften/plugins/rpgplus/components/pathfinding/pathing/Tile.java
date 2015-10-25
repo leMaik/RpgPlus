@@ -1,7 +1,3 @@
-/*
- * By @Adamki11s
- */
-
 package de.craften.plugins.rpgplus.components.pathfinding.pathing;
 
 import org.bukkit.Location;
@@ -11,15 +7,10 @@ import org.bukkit.Location;
  * @see <a href="https://bukkit.org/threads/lib-a-pathfinding-algorithm.129786/">Post in Bukkit forums</a>
  */
 public class Tile {
-
-    // as offset from starting point
-    private final short x, y, z;
-
-    private double g = -1, h = -1;
-
-    private Tile parent = null;
-
+    private final short x, y, z; // as offset from starting point
     private final String uid;
+    private Tile parent;
+    private double g = -1, h = -1;
 
     public Tile(short x, short y, short z, Tile parent) {
         this.x = x;
@@ -28,7 +19,6 @@ public class Tile {
         this.parent = parent;
 
         uid = x + "," + y + "," + z;
-
     }
 
     public boolean isInRange(int range) {
@@ -51,32 +41,16 @@ public class Tile {
         return x;
     }
 
-    public int getX(Location i) {
-        return (i.getBlockX() + x);
-    }
-
     public short getY() {
         return y;
-    }
-
-    public int getY(Location i) {
-        return (i.getBlockY() + y);
     }
 
     public short getZ() {
         return z;
     }
 
-    public int getZ(Location i) {
-        return (i.getBlockZ() + z);
-    }
-
     public String getUID() {
         return this.uid;
-    }
-
-    public boolean equals(Tile t) {
-        return (t.getX() == x && t.getY() == y && t.getZ() == z);
     }
 
     public void calculateBoth(int sx, int sy, int sz, int ex, int ey, int ez, boolean update) {
@@ -86,24 +60,21 @@ public class Tile {
 
     public void calculateH(int sx, int sy, int sz, int ex, int ey, int ez, boolean update) {
         // only update if h hasn't been calculated or if forced
-        if ((!update && h == -1) || update) {
+        if (h == -1 || update) {
             int hx = sx + x, hy = sy + y, hz = sz + z;
-            this.h = this.getEuclideanDistance(hx, hy, hz, ex, ey, ez);
+            this.h = getEuclideanDistance(hx, hy, hz, ex, ey, ez);
         }
     }
 
     // G = the movement cost to move from the starting point A to a given square
     // on the grid, following the path generated to get there.
     public void calculateG(int sx, int sy, int sz, boolean update) {
-
-        if ((!update && g == -1) || update) {
-
-            // only update if g hasn't been calculated or if forced
-            Tile currentParent = this.getParent(), currentTile = this;
+        // only update if g hasn't been calculated or if forced
+        if (g == -1 || update) {
+            Tile currentParent, currentTile = this;
             int gCost = 0;
             // follow path back to start
             while ((currentParent = currentTile.getParent()) != null) {
-
                 int dx = currentTile.getX() - currentParent.getX(), dy = currentTile.getY() - currentParent.getY(), dz = currentTile.getZ() - currentParent.getZ();
 
                 dx = abs(dx);
@@ -136,15 +107,29 @@ public class Tile {
 
     public double getF() {
         // f = h + g
-        return (h + g);
+        return h + g;
     }
 
-    private double getEuclideanDistance(int sx, int sy, int sz, int ex, int ey, int ez) {
+    @Override
+    public int hashCode() {
+        return x + y * 3 + z * 5;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Tile) {
+            Tile t = (Tile) obj;
+            return (t.getX() == x && t.getY() == y && t.getZ() == z);
+        }
+        return false;
+    }
+
+    private static double getEuclideanDistance(int sx, int sy, int sz, int ex, int ey, int ez) {
         double dx = sx - ex, dy = sy - ey, dz = sz - ez;
         return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
     }
 
-    private int abs(int i) {
+    private static int abs(int i) {
         return (i < 0 ? -i : i);
     }
 

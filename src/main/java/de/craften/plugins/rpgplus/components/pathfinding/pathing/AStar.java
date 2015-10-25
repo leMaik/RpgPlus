@@ -1,7 +1,3 @@
-/*
- * By @Adamki11s
- */
-
 package de.craften.plugins.rpgplus.components.pathfinding.pathing;
 
 import org.bukkit.Location;
@@ -209,7 +205,7 @@ public class AStar {
 
         for (Tile t : possible) {
             // get the reference of the object in the array
-            Tile openRef = null;
+            Tile openRef;
             if ((openRef = this.isOnOpenList(t)) == null) {
                 // not on open list, so add
                 this.addToOpenList(t, false);
@@ -225,7 +221,6 @@ public class AStar {
 
             }
         }
-
     }
 
     private Tile isOnOpenList(Tile t) {
@@ -335,7 +330,6 @@ public class AStar {
 
     @SuppressWarnings("serial")
     public static class InvalidPathException extends Exception {
-
         private final boolean s, e;
 
         public InvalidPathException(boolean s, boolean e) {
