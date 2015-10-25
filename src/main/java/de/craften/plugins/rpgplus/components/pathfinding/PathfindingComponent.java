@@ -44,7 +44,11 @@ public class PathfindingComponent extends PluginComponentBase {
      */
     public void navigate(Entity entity, Location destination, int speed, Runnable callback) throws AStar.InvalidPathException {
         AStar astar = new AStar(entity.getLocation().subtract(0, 1, 0), destination.subtract(0, 1, 0), 200);
-        navigators.put(entity.getUniqueId(), new Navigator(entity, entity.getLocation(), astar, speed, callback));
+        ArrayList<Tile> path = astar.iterate();
+        if (path == null) {
+            throw new AStar.InvalidPathException(false, false);
+        }
+        navigators.put(entity.getUniqueId(), new Navigator(entity, entity.getLocation(), path, speed, callback));
     }
 
     private class Navigator {
@@ -56,10 +60,10 @@ public class PathfindingComponent extends PluginComponentBase {
         private int subi = 0;
         private final int speed;
 
-        public Navigator(Entity entity, Location startingLocation, AStar path, int speed, Runnable callback) {
+        public Navigator(Entity entity, Location startingLocation, ArrayList<Tile> path, int speed, Runnable callback) {
             this.entity = entity;
             this.startingLocation = startingLocation;
-            this.path = path.iterate();
+            this.path = path;
             this.speed = speed;
             this.callback = callback;
         }

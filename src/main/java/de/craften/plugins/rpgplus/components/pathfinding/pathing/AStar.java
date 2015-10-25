@@ -323,7 +323,7 @@ public class AStar {
     }
 
     @SuppressWarnings("serial")
-    public class InvalidPathException extends Exception {
+    public static class InvalidPathException extends Exception {
 
         private final boolean s, e;
 
