@@ -27,11 +27,7 @@ public class Tile {
         this.z = z;
         this.parent = parent;
 
-        StringBuilder b = new StringBuilder();
-        b.append(x);
-        b.append(y);
-        b.append(z);
-        uid = b.toString();
+        uid = x + "," + y + "," + z;
 
     }
 

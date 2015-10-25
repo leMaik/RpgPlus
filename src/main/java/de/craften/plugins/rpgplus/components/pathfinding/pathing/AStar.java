@@ -8,31 +8,31 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.material.Gate;
+import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
 import java.util.*;
 
 /**
+ * An A* implementation, based on code by Adamkills.
+ *
  * @author Adamki11s
  * @see <a href="https://bukkit.org/threads/lib-a-pathfinding-algorithm.129786/">Post in Bukkit forums</a>
  * @see <a href="https://github.com/Adamki11s/QuestX/blob/2c3d5f0166ab53d561e01b4318289d4baa4c2f67/src/com/adamki11s/pathing/AStar.java">Improved version on GitHub</a>
  */
 public class AStar {
-
     private final int sx, sy, sz, ex, ey, ez;
     private final World w;
+    private final int maxIterations;
+    private final String endUID;
 
     private PathingResult result;
 
-    private HashMap<String, Tile> open = new HashMap<String, Tile>();
-    private HashMap<String, Tile> closed = new HashMap<String, Tile>();
+    private HashMap<String, Tile> open = new HashMap<>();
+    private HashMap<String, Tile> closed = new HashMap<>();
 
     private void addToOpenList(Tile t, boolean modify) {
-        if (open.containsKey(t.getUID())) {
-            if (modify) {
-                open.put(t.getUID(), t);
-            }
-        } else {
+        if (modify || !open.containsKey(t.getUID())) {
             open.put(t.getUID(), t);
         }
     }
@@ -42,9 +42,6 @@ public class AStar {
             closed.put(t.getUID(), t);
         }
     }
-
-    private final int maxIterations;
-    private final String endUID;
 
     public AStar(Location start, Location end, int maxIterations) throws InvalidPathException {
 
@@ -70,9 +67,7 @@ public class AStar {
         this.open.put(t.getUID(), t);
         this.processAdjacentTiles(t);
 
-        StringBuilder b = new StringBuilder();
-        b.append(ex - sx).append(ey - sy).append(ez - sz);
-        this.endUID = b.toString();
+        this.endUID = (ex - sx) + "," + (ey - sy) + "," + (ez - sz);
     }
 
     public Location getEndLocation() {
@@ -234,43 +229,49 @@ public class AStar {
     }
 
     private Tile isOnOpenList(Tile t) {
-        return (open.containsKey(t.getUID()) ? open.get(t.getUID()) : null);
-        /*
-         * for (Tile o : open) { if (o.equals(t)) { return o; } } return null;
-		 */
+        return open.get(t.getUID());
     }
 
     private boolean isTileWalkable(Tile t) {
-        Location l = new Location(w, (sx + t.getX()), (sy + t.getY()), (sz + t.getZ()));
-        Block b = l.getBlock();
-        int i = b.getTypeId();
+        return isLocationWalkable(new Location(w, (sx + t.getX()), (sy + t.getY()), (sz + t.getZ())));
+    }
 
-        // lava, fire, wheat and ladders cannot be walked on, and of course air
-        // 85, 107 and 113 stops npcs climbing fences and fence gates
-        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i != 107 && i != 113 && !canBlockBeWalkedThrough(b)) {
+    private boolean isLocationWalkable(Location l) {
+        Block b = l.getBlock();
+
+        if (canBlockBeWalkedOn(b)) {
             // make sure the blocks above can be walked through
 
-            if (b.getRelative(0, 1, 0).getTypeId() == 107) {
+            MaterialData data = b.getRelative(0, 1, 0).getState().getData();
+            if (data instanceof Gate) {
                 //fench gate check, if closed continue
-                Gate g = new Gate(b.getRelative(0, 1, 0).getData());
-                return (g.isOpen() ? (b.getRelative(0, 2, 0).getTypeId() == 0) : false);
+                return ((Gate) data).isOpen() && canBlockBeWalkedThrough(b.getRelative(0, 2, 0));
             }
-            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0)) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0)));
 
+            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0)) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0)));
         } else {
             return false;
         }
     }
 
-    private boolean isLocationWalkable(Location l) {
-        Block b = l.getBlock();
-        int i = b.getTypeId();
-
-        if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(b)) {
-            // make sure the blocks above can be walked through
-            return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0)) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0)));
-        } else {
-            return false;
+    private boolean canBlockBeWalkedOn(Block block) {
+        switch (block.getType()) {
+            case LAVA:
+            case STATIONARY_LAVA:
+            case FIRE:
+            case CROPS:
+            case LADDER:
+            case AIR:
+            case FENCE:
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case DARK_OAK_FENCE:
+            case JUNGLE_FENCE:
+            case SPRUCE_FENCE:
+            case NETHER_FENCE:
+                return false;
+            default:
+                return !canBlockBeWalkedThrough(block);
         }
     }
 
