@@ -2,7 +2,7 @@
 -- @module rpgplus
 
 --- Writes a message into the log.
--- @param level optional level of the message, must be `info`, `warn` or `error`; defaults to `info`
+-- @param[opt="info"] level level of the message, must be `info`, `warn` or `error`
 -- @param message message to log
 --
 function log(level, message) end

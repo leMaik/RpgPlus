@@ -28,7 +28,7 @@ function delay(delay, fn) end
 function delayed(delay, fn) end
 
 --- Starts to periodically call the given function after the given delay with the given period.
--- @param delay optional delay in ticks; defaults to 0
+-- @param[opt=0] delay delay before first execution in ticks
 -- @param period period in ticks
 -- @param fn function to call periodically
 -- @return a task ID that can be used by @{cancel} to cancel the calls

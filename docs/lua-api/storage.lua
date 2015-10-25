@@ -3,7 +3,7 @@
 
 --- Get the value of a specific key or the default value, if the key doesn't exist.
 -- @param key key
--- @param defaultValue fallback value
+-- @param[opt=nil] defaultValue fallback value
 -- @return value of the given key or the fallback value if the key doesn't exist
 --
 function get(key, defaultValue) end
