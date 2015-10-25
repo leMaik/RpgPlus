@@ -312,6 +312,11 @@ public class AStar {
                 return true;
             case IRON_DOOR_BLOCK:
             case WOODEN_DOOR:
+            case ACACIA_DOOR:
+            case BIRCH_DOOR:
+            case DARK_OAK_DOOR:
+            case JUNGLE_DOOR:
+            case SPRUCE_DOOR:
                 if (block.getState().getData().getData() == 8) {
                     return canBlockBeWalkedThrough(block.getRelative(0, -1, 0));
                 }
