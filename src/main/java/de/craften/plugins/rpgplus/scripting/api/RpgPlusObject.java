@@ -3,11 +3,13 @@ package de.craften.plugins.rpgplus.scripting.api;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.common.entity.RPGVillager;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
@@ -15,9 +17,11 @@ import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
 import java.util.List;
 
@@ -69,6 +73,35 @@ public class RpgPlusObject extends LuaTable {
                 villager.spawn();
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(villager);
                 return LuaValue.NIL;
+            }
+        });
+
+        set("navigateTo", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, final LuaValue destination, final LuaValue callback) {
+                Entity realEntity = (Entity) CoerceLuaToJava.coerce(entity, Entity.class);
+                Runnable callbackRunnable = null;
+                if (!callback.isnil()) {
+                    callbackRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.invoke(destination);
+                        }
+                    };
+                }
+                try {
+                    RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(realEntity,
+                            new Location(realEntity.getWorld(),
+                                    destination.get("x").checkdouble(),
+                                    destination.get("y").checkdouble(),
+                                    destination.get("z").checkdouble()
+                            ),
+                            destination.get("speed").optint(10),
+                            callbackRunnable);
+                    return LuaValue.TRUE;
+                } catch (AStar.InvalidPathException e) {
+                    return LuaValue.FALSE;
+                }
             }
         });
 

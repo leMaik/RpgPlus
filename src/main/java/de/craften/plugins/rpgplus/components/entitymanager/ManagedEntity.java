@@ -35,4 +35,11 @@ public interface ManagedEntity<T extends Entity> {
      * @return true if this entity may take damage, false if not
      */
     boolean isTakingDamage();
+
+    /**
+     * Teleport this entity to the given location.
+     *
+     * @param location target location
+     */
+    void moveTo(Location location);
 }

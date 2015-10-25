@@ -110,7 +110,7 @@ public class RPGVillager extends BasicEntity implements ManagedEntity<Villager> 
 
     @Override
     public MovementType getMovementType() {
-        return MovementType.LOCAL;
+        return MovementType.FROZEN;
     }
 
     @Override
@@ -121,5 +121,12 @@ public class RPGVillager extends BasicEntity implements ManagedEntity<Villager> 
     @Override
     public boolean isTakingDamage() {
         return isTakingDamage;
+    }
+
+    @Override
+    public void moveTo(Location location) {
+        Location dest = location.clone();
+        dest.setDirection(dest.toVector().subtract(this.location.toVector()));
+        this.location = dest;
     }
 }
