@@ -21,6 +21,7 @@ public class AStar {
     private final World w;
     private final int maxIterations;
     private final String endUID;
+    private final PathingBehaviours behaviours;
 
     private PathingResult result;
 
@@ -39,8 +40,7 @@ public class AStar {
         }
     }
 
-    public AStar(Location start, Location end, int maxIterations) throws InvalidPathException {
-
+    public AStar(Location start, Location end, int maxIterations, PathingBehaviours behaviours) throws InvalidPathException {
         boolean s = true, e = true;
 
         if (!(s = this.isLocationWalkable(start)) || !(e = this.isLocationWalkable(end))) {
@@ -56,6 +56,7 @@ public class AStar {
         this.ez = end.getBlockZ();
 
         this.maxIterations = maxIterations;
+        this.behaviours = behaviours;
 
         short sh = 0;
         Tile t = new Tile(sh, sh, sh, null);
@@ -318,44 +319,44 @@ public class AStar {
                 if (block.getState().getData().getData() == 8) {
                     return canBlockBeWalkedThrough(block.getRelative(0, -1, 0));
                 }
-                return ((Openable) block.getState().getData()).isOpen();
+                return behaviours.canOpenDoors() || ((Openable) block.getState().getData()).isOpen();
             case FENCE_GATE:
             case ACACIA_FENCE_GATE:
             case BIRCH_FENCE_GATE:
             case DARK_OAK_FENCE_GATE:
             case JUNGLE_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
-                return ((Gate) block.getState().getData()).isOpen();
+                return behaviours.canOpenFenceGates() || ((Gate) block.getState().getData()).isOpen();
         }
         return false;
     }
 
     @SuppressWarnings("serial")
     public static class InvalidPathException extends Exception {
-        private final boolean s, e;
+        private final boolean isStartSolid, isEndSolid;
 
-        public InvalidPathException(boolean s, boolean e) {
-            this.s = s;
-            this.e = e;
+        public InvalidPathException(boolean isStartSolid, boolean isEndSolid) {
+            this.isStartSolid = isStartSolid;
+            this.isEndSolid = isEndSolid;
         }
 
         public String getErrorReason() {
             StringBuilder sb = new StringBuilder();
-            if (!s) {
+            if (!isStartSolid) {
                 sb.append("Start Location was air. ");
             }
-            if (!e) {
+            if (!isEndSolid) {
                 sb.append("End Location was air.");
             }
             return sb.toString();
         }
 
         public boolean isStartNotSolid() {
-            return (!s);
+            return (!isStartSolid);
         }
 
         public boolean isEndNotSolid() {
-            return (!e);
+            return (!isEndSolid);
         }
     }
 }

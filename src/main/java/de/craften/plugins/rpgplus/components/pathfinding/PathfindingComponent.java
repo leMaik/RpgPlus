@@ -3,6 +3,8 @@ package de.craften.plugins.rpgplus.components.pathfinding;
 import com.google.common.collect.Lists;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.Tile;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
@@ -40,15 +42,16 @@ public class PathfindingComponent extends PluginComponentBase {
      * @param destination destination
      * @param speed       speed in ticks per block (lower is faster)
      * @param callback    callback that is invoked when the destination is reached
-     * @throws AStar.InvalidPathException if the navigation is impossible
+     * @return pathing result
+     * @throws AStar.InvalidPathException if the start or end location is in the air
      */
-    public void navigate(Entity entity, Location destination, int speed, Runnable callback) throws AStar.InvalidPathException {
-        AStar astar = new AStar(entity.getLocation().subtract(0, 1, 0), destination.subtract(0, 1, 0), 200);
+    public PathingResult navigate(Entity entity, Location destination, int speed, Runnable callback) throws AStar.InvalidPathException {
+        AStar astar = new AStar(entity.getLocation().subtract(0, 1, 0), destination.subtract(0, 1, 0), 200, PathingBehaviours.DEFAULT);
         ArrayList<Tile> path = astar.iterate();
-        if (path == null) {
-            throw new AStar.InvalidPathException(false, false);
+        if (path != null) {
+            navigators.put(entity.getUniqueId(), new Navigator(entity, entity.getLocation(), path, speed, callback));
         }
-        navigators.put(entity.getUniqueId(), new Navigator(entity, entity.getLocation(), path, speed, callback));
+        return astar.getPathingResult();
     }
 
     private class Navigator {

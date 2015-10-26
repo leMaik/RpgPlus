@@ -4,6 +4,7 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.common.entity.RPGVillager;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
@@ -90,7 +91,7 @@ public class RpgPlusObject extends LuaTable {
                     };
                 }
                 try {
-                    RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(realEntity,
+                    PathingResult result = RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(realEntity,
                             new Location(realEntity.getWorld(),
                                     destination.get("x").checkdouble(),
                                     destination.get("y").checkdouble(),
@@ -98,7 +99,7 @@ public class RpgPlusObject extends LuaTable {
                             ),
                             destination.get("speed").optint(10),
                             callbackRunnable);
-                    return LuaValue.TRUE;
+                    return result == PathingResult.SUCCESS ? LuaValue.TRUE : LuaValue.FALSE;
                 } catch (AStar.InvalidPathException e) {
                     return LuaValue.FALSE;
                 }
