@@ -3,11 +3,12 @@ package de.craften.plugins.rpgplus.components.pathfinding.pathing;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.material.Gate;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * An A* implementation, based on code by Adamkills.
@@ -239,13 +240,6 @@ public class AStar {
 
         if (canBlockBeWalkedOn(b)) {
             // make sure the blocks above can be walked through
-
-            MaterialData data = b.getRelative(0, 1, 0).getState().getData();
-            if (data instanceof Gate) {
-                //fench gate check, if closed continue
-                return ((Gate) data).isOpen() && canBlockBeWalkedThrough(b.getRelative(0, 2, 0));
-            }
-
             return (canBlockBeWalkedThrough(b.getRelative(0, 1, 0)) && canBlockBeWalkedThrough(b.getRelative(0, 2, 0)));
         } else {
             return false;
@@ -326,7 +320,7 @@ public class AStar {
             case DARK_OAK_FENCE_GATE:
             case JUNGLE_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
-                return behaviours.canOpenFenceGates() || ((Gate) block.getState().getData()).isOpen();
+                return behaviours.canOpenFenceGates() || ((Openable) block.getState().getData()).isOpen();
         }
         return false;
     }

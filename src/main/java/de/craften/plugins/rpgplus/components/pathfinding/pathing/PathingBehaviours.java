@@ -8,6 +8,9 @@ public class PathingBehaviours {
     private boolean canOpenDoors;
     private boolean canOpenFenceGates;
 
+    private PathingBehaviours() {
+    }
+
     private PathingBehaviours(boolean canOpenDoors, boolean canOpenFenceGates) {
         this.canOpenDoors = canOpenDoors;
         this.canOpenFenceGates = canOpenFenceGates;
@@ -26,7 +29,7 @@ public class PathingBehaviours {
     }
 
     public static class Builder {
-        private PathingBehaviours behaviours;
+        private PathingBehaviours behaviours = new PathingBehaviours();
 
         private Builder() {
         }
