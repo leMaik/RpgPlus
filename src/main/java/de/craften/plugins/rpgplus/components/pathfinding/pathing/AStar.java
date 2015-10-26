@@ -96,11 +96,13 @@ public class AStar {
             this.processAdjacentTiles(current);
         }
 
+        assert current != null;
+
         if (this.result != PathingResult.SUCCESS) {
             return null;
         } else {
             // path found
-            LinkedList<Tile> routeTrace = new LinkedList<Tile>();
+            ArrayList<Tile> routeTrace = new ArrayList<>();
             Tile parent;
 
             routeTrace.add(current);
@@ -112,13 +114,13 @@ public class AStar {
 
             Collections.reverse(routeTrace);
 
-            return new ArrayList<Tile>(routeTrace);
+            return routeTrace;
         }
     }
 
     private boolean canContinue() {
-        // check if open list is empty, if it is no path has been found
-        if (open.size() == 0) {
+        // if open list is empty, no path has been found
+        if (open.isEmpty()) {
             this.result = PathingResult.NO_PATH;
             return false;
         } else {
@@ -152,7 +154,7 @@ public class AStar {
         }
 
         // drop from open list and add to closed
-
+        assert drop != null;
         this.open.remove(drop.getUID());
         this.addToClosedList(drop);
 
@@ -167,7 +169,7 @@ public class AStar {
     private void processAdjacentTiles(Tile current) {
 
         // set of possible walk to locations adjacent to current tile
-        HashSet<Tile> possible = new HashSet<Tile>(26);
+        HashSet<Tile> possible = new HashSet<>(26);
 
         for (byte x = -1; x <= 1; x++) {
             for (byte y = -1; y <= 1; y++) {
