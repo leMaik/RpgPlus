@@ -2,17 +2,18 @@ package de.craften.plugins.rpgplus.components.pathfinding;
 
 import com.google.common.collect.Lists;
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.*;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.Tile;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.material.Openable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A component that provides pathfinding for entities.
@@ -110,9 +111,8 @@ public class PathfindingComponent extends PluginComponentBase {
                 case DARK_OAK_FENCE_GATE:
                 case JUNGLE_FENCE_GATE:
                 case SPRUCE_FENCE_GATE:
-                    if (behaviours.canOpenFenceGates()) { //TODO fix opening gates
-                        ((Openable) block.getState().getData()).setOpen(true);
-                        block.getState().update();
+                    if (behaviours.canOpenFenceGates()) {
+                        openOpenable(block);
                     }
                     break;
                 case WOODEN_DOOR:
@@ -122,7 +122,7 @@ public class PathfindingComponent extends PluginComponentBase {
                 case JUNGLE_DOOR:
                 case SPRUCE_DOOR:
                     if (behaviours.canOpenDoors()) {
-                        DoorUtil.openDoor(block);
+                        openOpenable(block);
                     }
                     break;
             }
@@ -136,9 +136,8 @@ public class PathfindingComponent extends PluginComponentBase {
                 case DARK_OAK_FENCE_GATE:
                 case JUNGLE_FENCE_GATE:
                 case SPRUCE_FENCE_GATE:
-                    if (behaviours.canOpenFenceGates()) { //TODO fix closing gates
-                        ((Openable) block.getState().getData()).setOpen(false); //TODO only close if it was closed before
-                        block.getState().update();
+                    if (behaviours.canOpenFenceGates()) {
+                        closeOpenable(block, false);
                     }
                     break;
                 case WOODEN_DOOR:
@@ -148,9 +147,28 @@ public class PathfindingComponent extends PluginComponentBase {
                 case JUNGLE_DOOR:
                 case SPRUCE_DOOR:
                     if (behaviours.canOpenDoors()) {
-                        DoorUtil.closeDoor(block); //TODO only close if it was closed before
+                        closeOpenable(block, false);
                     }
                     break;
+            }
+        }
+
+        private Set<Block> opened = new HashSet<>(2);
+
+        private void openOpenable(Block block) {
+            BlockState state = block.getState();
+            if (!((Openable) state.getData()).isOpen()) {
+                ((Openable) state.getData()).setOpen(true);
+                state.update();
+                opened.add(block);
+            }
+        }
+
+        private void closeOpenable(Block block, boolean force) {
+            if (opened.remove(block) || force) {
+                BlockState state = block.getState();
+                ((Openable) state.getData()).setOpen(false);
+                state.update();
             }
         }
     }
