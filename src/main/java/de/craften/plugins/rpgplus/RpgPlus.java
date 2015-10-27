@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus;
 
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
+import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.storage.Storage;
@@ -23,6 +24,7 @@ public class RpgPlus extends JavaPlugin {
     private CustomCommands commandManager;
     private TimerComponent timerManager;
     private StorageComponent storage;
+    private DialogComponent dialogs;
 
     @Override
     public void onEnable() {
@@ -31,12 +33,14 @@ public class RpgPlus extends JavaPlugin {
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         storage = new StorageComponent(new File(getDataFolder(), "storage"));
+        dialogs = new DialogComponent();
 
         scriptingManager.activateFor(this);
         entityManager.activateFor(this);
         commandManager.activateFor(this);
         timerManager.activateFor(this);
         storage.activateFor(this);
+        dialogs.activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
@@ -96,5 +100,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public Storage getStorage() {
         return storage.getStorage();
+    }
+
+    /**
+     * Gets the dialog component.
+     *
+     * @return the dialog component
+     */
+    public DialogComponent getDialogs() {
+        return dialogs;
     }
 }
