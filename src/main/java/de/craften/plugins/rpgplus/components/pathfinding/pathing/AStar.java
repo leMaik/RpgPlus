@@ -261,6 +261,11 @@ public class AStar {
             case JUNGLE_FENCE:
             case SPRUCE_FENCE:
             case NETHER_FENCE:
+            case ACACIA_FENCE_GATE:
+            case BIRCH_FENCE_GATE:
+            case DARK_OAK_FENCE_GATE:
+            case JUNGLE_FENCE_GATE:
+            case SPRUCE_FENCE_GATE:
                 return false;
             default:
                 return !canBlockBeWalkedThrough(block);
