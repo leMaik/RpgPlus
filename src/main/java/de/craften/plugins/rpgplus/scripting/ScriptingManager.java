@@ -20,10 +20,10 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaValue schedulerModule;
     private LuaValue tradingModule;
     private LuaValue timerModule;
-    private LuaValue storageModule;
-
     private LuaValue soundModule;
-    
+    private LuaValue storageModule;
+    private LuaValue dialogModule;
+
     @Override
     protected void onActivated() {
         globals = JsePlatform.standardGlobals();
@@ -35,6 +35,7 @@ public class ScriptingManager extends PluginComponentBase {
         timerModule = new ScriptTimedEventManager(RpgPlus.getPlugin(RpgPlus.class));
         soundModule = new Sound(RpgPlus.getPlugin(RpgPlus.class));
         storageModule = new Storage();
+        dialogModule = new Dialogs(RpgPlus.getPlugin(RpgPlus.class));
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -61,12 +62,16 @@ public class ScriptingManager extends PluginComponentBase {
     public LuaValue getTimerModule() {
         return timerModule;
     }
-    
+
     public LuaValue getSoundModule() {
-    	return soundModule;
+        return soundModule;
     }
 
     public LuaValue getStorageModule() {
         return storageModule;
+    }
+
+    public LuaValue getDialogModule() {
+        return dialogModule;
     }
 }
