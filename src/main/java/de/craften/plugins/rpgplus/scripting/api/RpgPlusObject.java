@@ -19,7 +19,6 @@ import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
@@ -103,7 +102,7 @@ public class RpgPlusObject extends LuaTable {
                             }
                         };
                     } else {
-                        options = varargs.arg(3).checktable();
+                        options = varargs.arg(3).opttable(new LuaTable());
                     }
                 }
                 try {
