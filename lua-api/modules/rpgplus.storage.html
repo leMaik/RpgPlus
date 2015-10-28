@@ -40,8 +40,8 @@
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../modules/rpgplus.html">rpgplus</a></li>
   <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
-  <li><strong>rpgplus.sound</strong></li>
-  <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
+  <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
+  <li><strong>rpgplus.storage</strong></li>
   <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
   <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
 </ul>
@@ -50,8 +50,8 @@
 
 <div id="content">
 
-<h1>Module <code>rpgplus.sound</code></h1>
-<p>Provides sound and music functions.</p>
+<h1>Module <code>rpgplus.storage</code></h1>
+<p>Provides a simple key-value storage.</p>
 <p>
 
 </p>
@@ -60,16 +60,16 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#playSound">playSound (player, sound)</a></td>
-	<td class="summary">Play a sound to a specific player.</td>
+	<td class="name" nowrap><a href="#get">get (key[, defaultValue=nil])</a></td>
+	<td class="summary">Get the value of a specific key or the default value, if the key doesn't exist.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#playNote">playNote (player, instrument, note)</a></td>
-	<td class="summary">Play a note to a specific player.</td>
+	<td class="name" nowrap><a href="#set">set (key, value)</a></td>
+	<td class="summary">Set the value of the given key.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#playSong">playSong (player, song)</a></td>
-	<td class="summary">Play a song to a specific player.</td>
+	<td class="name" nowrap><a href="#of">of (player)</a></td>
+	<td class="summary">Get the storage of the given player.</td>
 	</tr>
 </table>
 
@@ -81,76 +81,77 @@
 
     <dl class="function">
     <dt>
-    <a name = "playSound"></a>
-    <strong>playSound (player, sound)</strong>
+    <a name = "get"></a>
+    <strong>get (key[, defaultValue=nil])</strong>
     </dt>
     <dd>
-    Play a sound to a specific player.
+    Get the value of a specific key or the default value, if the key doesn't exist.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">player</span>
-         player to play the sound to
+        <li><span class="parameter">key</span>
+         key
         </li>
-        <li><span class="parameter">sound</span>
-         sound to play
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "playNote"></a>
-    <strong>playNote (player, instrument, note)</strong>
-    </dt>
-    <dd>
-    Play a note to a specific player.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         player to play the note to
-        </li>
-        <li><span class="parameter">instrument</span>
-         instrument which will playing
-        </li>
-        <li><span class="parameter">note</span>
-         note to play
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "playSong"></a>
-    <strong>playSong (player, song)</strong>
-    </dt>
-    <dd>
-    Play a song to a specific player.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         player to play the song to
-        </li>
-        <li><span class="parameter">song</span>
-         path of the .nbs song file, relative to the script directory
+        <li><span class="parameter">defaultValue</span>
+         fallback value
+         (<em>default</em> nil)
         </li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-        true if the song was started, false if not (due to missing NoteBlockAPI plugin)
+        value of the given key or the fallback value if the key doesn't exist
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "set"></a>
+    <strong>set (key, value)</strong>
+    </dt>
+    <dd>
+    Set the value of the given key.  If the value is a table, subkeys will be set based on the keys of the table,
+ recursively.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">key</span>
+         key
+        </li>
+        <li><span class="parameter">value</span>
+         value
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "of"></a>
+    <strong>of (player)</strong>
+    </dt>
+    <dd>
+    Get the storage of the given player.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         a player name
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        storage of the given player, it works like this storage but is player-specific
     </ol>
 
 
