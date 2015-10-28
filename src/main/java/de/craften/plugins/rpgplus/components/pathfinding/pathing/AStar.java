@@ -198,7 +198,7 @@ public class AStar {
                     }
 
                     // only process the tile if it can be walked on
-                    if (this.isTileWalkable(t)) {
+                    if (this.isTileWalkable(t) && (y != 1 || canTileBeJumpedOn(t))) {
                         t.calculateBoth(sx, sy, sz, ex, ey, ez, true);
                         possible.add(t);
                     }
@@ -225,6 +225,10 @@ public class AStar {
 
             }
         }
+    }
+
+    private boolean canTileBeJumpedOn(Tile t) {
+        return canBlockBeJumpedOn(w.getBlockAt(sx + t.getX(), sy + t.getY(), sz + t.getZ()));
     }
 
     private Tile isOnOpenList(Tile t) {
@@ -254,6 +258,14 @@ public class AStar {
             case CROPS:
             case LADDER:
             case AIR:
+                return false;
+            default:
+                return !canBlockBeWalkedThrough(block);
+        }
+    }
+
+    private boolean canBlockBeJumpedOn(Block block) {
+        switch (block.getType()) {
             case FENCE:
             case ACACIA_FENCE:
             case BIRCH_FENCE:
@@ -266,9 +278,10 @@ public class AStar {
             case DARK_OAK_FENCE_GATE:
             case JUNGLE_FENCE_GATE:
             case SPRUCE_FENCE_GATE:
+            case COBBLE_WALL:
                 return false;
             default:
-                return !canBlockBeWalkedThrough(block);
+                return canBlockBeWalkedOn(block);
         }
     }
 
