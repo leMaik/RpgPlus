@@ -4,6 +4,7 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.common.entity.RPGVillager;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
+import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -77,28 +78,48 @@ public class RpgPlusObject extends LuaTable {
             }
         });
 
-        set("navigateTo", new ThreeArgFunction() {
+        set("navigateTo", new VarArgFunction() {
             @Override
-            public LuaValue call(LuaValue entity, final LuaValue destination, final LuaValue callback) {
-                Entity realEntity = (Entity) CoerceLuaToJava.coerce(entity, Entity.class);
-                Runnable callbackRunnable = null;
-                if (!callback.isnil()) {
-                    callbackRunnable = new Runnable() {
+            public Varargs invoke(final Varargs varargs) {
+                Entity entity = (Entity) CoerceLuaToJava.coerce(varargs.arg(1), Entity.class);
+                final LuaTable destination = varargs.arg(2).checktable();
+                final LuaTable options;
+                Runnable callback = null;
+                if (varargs.narg() == 4) {
+                    options = varargs.arg(3).checktable();
+                    callback = new Runnable() {
                         @Override
                         public void run() {
-                            callback.invoke(destination);
+                            varargs.arg(4).invoke(destination);
                         }
                     };
+                } else {
+                    if (varargs.isfunction(3)) {
+                        options = new LuaTable();
+                        callback = new Runnable() {
+                            @Override
+                            public void run() {
+                                varargs.arg(3).invoke(destination);
+                            }
+                        };
+                    } else {
+                        options = varargs.arg(3).checktable();
+                    }
                 }
                 try {
-                    PathingResult result = RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(realEntity,
-                            new Location(realEntity.getWorld(),
+                    PathingResult result = RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(
+                            entity,
+                            new Location(entity.getWorld(),
                                     destination.get("x").checkdouble(),
                                     destination.get("y").checkdouble(),
                                     destination.get("z").checkdouble()
                             ),
-                            destination.get("speed").optint(10),
-                            callbackRunnable);
+                            options.get("speed").optint(10),
+                            PathingBehaviours.builder()
+                                    .openDoors(options.get("openDoors").optboolean(false))
+                                    .openFenceGates(options.get("openFenceGates").optboolean(false))
+                                    .build(),
+                            callback);
                     return result == PathingResult.SUCCESS ? LuaValue.TRUE : LuaValue.FALSE;
                 } catch (AStar.InvalidPathException e) {
                     return LuaValue.FALSE;

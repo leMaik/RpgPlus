@@ -41,12 +41,12 @@ public class PathfindingComponent extends PluginComponentBase {
      * @param entity      entity to navigate
      * @param destination destination
      * @param speed       speed in ticks per block (lower is faster)
+     * @param behaviours  pathing behaviours
      * @param callback    callback that is invoked when the destination is reached
      * @return pathing result
      * @throws AStar.InvalidPathException if the start or end location is in the air
      */
-    public PathingResult navigate(Entity entity, Location destination, int speed, Runnable callback) throws AStar.InvalidPathException {
-        PathingBehaviours behaviours = PathingBehaviours.builder().openDoors(true).openFenceGates(true).build(); //TODO
+    public PathingResult navigate(Entity entity, Location destination, int speed, PathingBehaviours behaviours, Runnable callback) throws AStar.InvalidPathException {
         AStar astar = new AStar(entity.getLocation().subtract(0, 1, 0), destination.subtract(0, 1, 0), 200, behaviours);
         ArrayList<Tile> path = astar.iterate();
         if (path != null) {
