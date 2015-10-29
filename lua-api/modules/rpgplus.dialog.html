@@ -38,10 +38,10 @@
 
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
-  <li><a href="../modules/rpgplus.dialog.html">rpgplus.dialog</a></li>
+  <li><strong>rpgplus.dialog</strong></li>
   <li><a href="../modules/rpgplus.html">rpgplus</a></li>
   <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
-  <li><strong>rpgplus.sound</strong></li>
+  <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
   <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
   <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
   <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
@@ -51,8 +51,8 @@
 
 <div id="content">
 
-<h1>Module <code>rpgplus.sound</code></h1>
-<p>Provides sound and music functions.</p>
+<h1>Module <code>rpgplus.dialog</code></h1>
+<p>Provides dialog functions.</p>
 <p>
 
 </p>
@@ -61,16 +61,12 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#playSound">playSound (player, sound)</a></td>
-	<td class="summary">Play a sound to a specific player.</td>
+	<td class="name" nowrap><a href="#tell">tell (entity, player, message[, ...])</a></td>
+	<td class="summary">Tell a message to a player.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#playNote">playNote (player, instrument, note)</a></td>
-	<td class="summary">Play a note to a specific player.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#playSong">playSong (player, song)</a></td>
-	<td class="summary">Play a song to a specific player.</td>
+	<td class="name" nowrap><a href="#ask">ask (entity, player, question, callback)</a></td>
+	<td class="summary">Ask a player something.</td>
 	</tr>
 </table>
 
@@ -82,20 +78,27 @@
 
     <dl class="function">
     <dt>
-    <a name = "playSound"></a>
-    <strong>playSound (player, sound)</strong>
+    <a name = "tell"></a>
+    <strong>tell (entity, player, message[, ...])</strong>
     </dt>
     <dd>
-    Play a sound to a specific player.
+    Tell a message to a player.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">player</span>
-         player to play the sound to
+        <li><span class="parameter">entity</span>
+         entity that tells the message
         </li>
-        <li><span class="parameter">sound</span>
-         sound to play
+        <li><span class="parameter">player</span>
+         player to tell the message to
+        </li>
+        <li><span class="parameter">message</span>
+         message to tell, either a string or a list of alternative string to randomly choose from
+        </li>
+        <li><span class="parameter">...</span>
+         more messages to tell, each being either a string or a list of alternative string to randomly choose from
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -105,54 +108,30 @@
 
 </dd>
     <dt>
-    <a name = "playNote"></a>
-    <strong>playNote (player, instrument, note)</strong>
+    <a name = "ask"></a>
+    <strong>ask (entity, player, question, callback)</strong>
     </dt>
     <dd>
-    Play a note to a specific player.
+    Ask a player something.  The player needs to send the answer using the chat.
 
 
     <h3>Parameters:</h3>
     <ul>
+        <li><span class="parameter">entity</span>
+         entity that asks
+        </li>
         <li><span class="parameter">player</span>
-         player to play the note to
+         player to ask
         </li>
-        <li><span class="parameter">instrument</span>
-         instrument which will playing
+        <li><span class="parameter">question</span>
+         question, either a string or a list of alternative string to randomly choose from
         </li>
-        <li><span class="parameter">note</span>
-         note to play
+        <li><span class="parameter">callback</span>
+         callback that gets invoked with the response and a function to respond easily, <code>respond(message)</code>.
+ If the callback returns <code>false</code>, the question will be posed again
         </li>
     </ul>
 
-
-
-
-
-</dd>
-    <dt>
-    <a name = "playSong"></a>
-    <strong>playSong (player, song)</strong>
-    </dt>
-    <dd>
-    Play a song to a specific player.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">player</span>
-         player to play the song to
-        </li>
-        <li><span class="parameter">song</span>
-         path of the .nbs song file, relative to the script directory
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        true if the song was started, false if not (due to missing NoteBlockAPI plugin)
-    </ol>
 
 
 
