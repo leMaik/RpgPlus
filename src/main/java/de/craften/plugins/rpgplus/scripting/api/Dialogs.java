@@ -10,14 +10,16 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
+
+import java.util.Random;
 
 /**
  * Provides an API for dialogs.
  */
 public class Dialogs extends LuaTable {
+    private final Random random = new Random();
 
     public Dialogs(final RpgPlus plugin) {
         set("ask", new VarArgFunction() {
@@ -42,12 +44,19 @@ public class Dialogs extends LuaTable {
             }
         });
 
-        set("tell", new ThreeArgFunction() {
+        set("tell", new VarArgFunction() {
             @Override
-            public LuaValue call(LuaValue luaEntity, LuaValue luaPlayer, LuaValue message) {
-                Entity entity = (Entity) CoerceLuaToJava.coerce(luaEntity, Entity.class);
-                Player player = ScriptUtil.getPlayer(luaPlayer);
-                plugin.getDialogs().tell(entity, player, message.checkjstring());
+            public Varargs invoke(Varargs varargs) {
+                final Entity entity = (Entity) CoerceLuaToJava.coerce(varargs.arg(1), Entity.class);
+                Player player = ScriptUtil.getPlayer(varargs.arg(2));
+                for (int i = 3; i <= varargs.narg(); i++) {
+                    LuaValue message = varargs.arg(i);
+                    if (message.istable()) {
+                        message = message.checktable().get(random.nextInt(message.length()) + 1);
+                    }
+                    plugin.getDialogs().tell(entity, player, message.checkjstring());
+                }
+
                 return LuaValue.NIL;
             }
         });
