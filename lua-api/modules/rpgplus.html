@@ -87,6 +87,14 @@
 	<td class="name" nowrap><a href="#broadcastMessage">broadcastMessage (...)</a></td>
 	<td class="summary">Broadcasts a message to all players.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#on">on (event, handler)</a></td>
+	<td class="summary">Add an event handler.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#off">off (event[, handler])</a></td>
+	<td class="summary">Remove an event handler.</td>
+	</tr>
 </table>
 
 <br/>
@@ -172,7 +180,7 @@
     <h3>Returns:</h3>
     <ol>
 
-        true if the navigation was possible, false if not path was found
+        true if the navigation was possible, false if no path was found
     </ol>
 
 
@@ -272,6 +280,210 @@
 
 
 </dd>
+    <dt>
+    <a name = "on"></a>
+    <strong>on (event, handler)</strong>
+    </dt>
+    <dd>
+    Add an event handler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+
+<p> event to add a handler to, possible events are:</p>
+
+<ul>
+    <li><code>&quot;player.join&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerJoinEvent.html">PlayerJoinEvent</a></li>
+    <li><code>&quot;player.respawn&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerRespawnEvent.html">PlayerRespawnEvent</a></li>
+    <li><code>&quot;player.quit&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerQuitEvent.html">PlayerQuitEvent</a></li>
+    <li><code>&quot;player.item.drop&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerDropItemEvent.html">PlayerDropItemEvent</a></li>
+    <li><code>&quot;player.death&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/PlayerDeathEvent.html">PlayerDeathEvent</a></li>
+    <li><code>&quot;player.item.break&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerItemBreakEvent.html">PlayerItemBreakEvent</a></li>
+    <li><code>&quot;player.interact&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerInteractEvent.html">PlayerInteractEvent</a></li>
+    <li><code>&quot;player.kick&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerKickEvent.html">PlayerKickEvent</a></li>
+    <li><code>&quot;player.bucket.fill&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerBucketFillEvent.html">PlayerBucketFillEvent</a></li>
+    <li><code>&quot;player.bucket.empty&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerBucketEmptyEvent.html">PlayerBucketEmptyEvent</a></li>
+    <li><code>&quot;player.chat&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/AsyncPlayerChatEvent.html">AsyncPlayerChatEvent</a></li>
+    <li><code>&quot;player.bed.enter&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerBedEnterEvent.html">PlayerBedEnterEvent</a></li>
+    <li><code>&quot;player.bed.leave&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerBedLeaveEvent.html">PlayerBedLeaveEvent</a></li>
+    <li><code>&quot;player.shearEntity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerShearEntityEvent.html">PlayerShearEntityEvent</a></li>
+    <li><code>&quot;player.teleport&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerTeleportEvent.html">PlayerTeleportEvent</a></li>
+    <li><code>&quot;player.toggle.flight&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerToggleFlightEvent.html">PlayerToggleFlightEvent</a></li>
+    <li><code>&quot;player.toggle.sneak&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerToggleSneakEvent.html">PlayerToggleSneakEvent</a></li>
+    <li><code>&quot;player.toggle.sprint&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerToggleSprintEvent.html">PlayerToggleSprintEvent</a></li>
+    <li><code>&quot;player.unleashEntity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerUnleashEntityEvent.html">PlayerUnleashEntityEvent</a></li>
+    <li><code>&quot;player.velocity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerVelocityEvent.html">PlayerVelocityEvent</a></li>
+    <li><code>&quot;block.break&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockBreakEvent.html">BlockBreakEvent</a></li>
+    <li><code>&quot;block.place&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockPlaceEvent.html">BlockPlaceEvent</a></li>
+    <li><code>&quot;block.burn&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockBurnEvent.html">BlockBurnEvent</a></li>
+    <li><code>&quot;block.damage&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockDamageEvent.html">BlockDamageEvent</a></li>
+    <li><code>&quot;block.exp&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockExpEvent.html">BlockExpEvent</a></li>
+    <li><code>&quot;block.fade&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockFadeEvent.html">BlockFadeEvent</a></li>
+    <li><code>&quot;block.form&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockFormEvent.html">BlockFormEvent</a></li>
+    <li><code>&quot;block.grow&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockGrowEvent.html">BlockGrowEvent</a></li>
+    <li><code>&quot;block.multiplace&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockMultiPlaceEvent.html">BlockMultiPlaceEvent</a></li>
+    <li><code>&quot;block.physics&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockPhysicsEvent.html">BlockPhysicsEvent</a></li>
+    <li><code>&quot;block.piston&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockPistonEvent.html">BlockPistonEvent</a></li>
+    <li><code>&quot;block.piston.extend&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockPistonExtendEvent.html">BlockPistonExtendEvent</a></li>
+    <li><code>&quot;block.piston.retract&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockPistonRetractEvent.html">BlockPistonRetractEvent</a></li>
+    <li><code>&quot;block.redstone&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockRedstoneEvent.html">BlockRedstoneEvent</a></li>
+    <li><code>&quot;block.spread&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockSpreadEvent.html">BlockSpreadEvent</a></li>
+    <li><code>&quot;block.form.entity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/EntityBlockFormEvent.html">EntityBlockFormEvent</a></li>
+    <li><code>&quot;block.leavesdecay&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/LeavesDecayEvent.html">LeavesDecayEvent</a></li>
+    <li><code>&quot;block.noteplay&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/NotePlayEvent.html">NotePlayEvent</a></li>
+    <li><code>&quot;block.signchange&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/SignChangeEvent.html">SignChangeEvent</a></li>
+    <li><code>&quot;block.damage&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockIgniteEvent.html">BlockIgniteEvent</a></li>
+    <li><code>&quot;block.dispense&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/block/BlockDispenseEvent.html">BlockDispenseEvent</a></li>
+    <li><code>&quot;player.enchant&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/enchantment/EnchantItemEvent.html">EnchantItemEvent</a></li>
+    <li><code>&quot;player.enchant.prepare&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/enchantment/PrepareItemEnchantEvent.html">PrepareItemEnchantEvent</a></li>
+    <li><code>&quot;player.command.preprocess&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerCommandPreprocessEvent.html">PlayerCommandPreprocessEvent</a></li>
+    <li><code>&quot;player.prelogin&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/AsyncPlayerPreLoginEvent.html">AsyncPlayerPreLoginEvent</a></li>
+    <li><code>&quot;player.achievement.awarded&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerAchievementAwardedEvent.html">PlayerAchievementAwardedEvent</a></li>
+    <li><code>&quot;player.animation&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerAnimationEvent.html">PlayerAnimationEvent</a></li>
+    <li><code>&quot;entity.creeperpower&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/CreeperPowerEvent.html">CreeperPowerEvent</a></li>
+    <li><code>&quot;entity.breakdoor&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityBreakDoorEvent.html">EntityBreakDoorEvent</a></li>
+    <li><code>&quot;entity.changeblock&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityChangeBlockEvent.html">EntityChangeBlockEvent</a></li>
+    <li><code>&quot;entity.combust.byblock&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityCombustByBlockEvent.html">EntityCombustByBlockEvent</a></li>
+    <li><code>&quot;entity.combust.byentity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityCombustByEntityEvent.html">EntityCombustByEntityEvent</a></li>
+    <li><code>&quot;entity.spawn&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/CreatureSpawnEvent.html">CreatureSpawnEvent</a></li>
+    <li><code>&quot;entity.combust&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityCombustEvent.html">EntityCombustEvent</a></li>
+    <li><code>&quot;entity.damage.byEntity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityDamageByEntityEvent.html">EntityDamageByEntityEvent</a></li>
+    <li><code>&quot;entity.damage&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityDamageEvent.html">EntityDamageEvent</a></li>
+    <li><code>&quot;entity.damage.byBlock&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityDamageByBlockEvent.html">EntityDamageByBlockEvent</a></li>
+    <li><code>&quot;entity.death&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityDeathEvent.html">EntityDeathEvent</a></li>
+    <li><code>&quot;entity.foodLevelChange&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/FoodLevelChangeEvent.html">FoodLevelChangeEvent</a></li>
+    <li><code>&quot;item.spawn&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/ItemSpawnEvent.html">ItemSpawnEvent</a></li>
+    <li><code>&quot;item.despawn&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/ItemDespawnEvent.html">ItemDespawnEvent</a></li>
+    <li><code>&quot;projectile.launch&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/ProjectileLaunchEvent.html">ProjectileLaunchEvent</a></li>
+    <li><code>&quot;projectile.hit&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/ProjectileHitEvent.html">ProjectileHitEvent</a></li>
+    <li><code>&quot;entity.teleport&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityTeleportEvent.html">EntityTeleportEvent</a></li>
+    <li><code>&quot;entity.target&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityTargetEvent.html">EntityTargetEvent</a></li>
+    <li><code>&quot;entity.target.livingentity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityTargetLivingEntityEvent.html">EntityTargetLivingEntityEvent</a></li>
+    <li><code>&quot;entity.tame&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityTameEvent.html">EntityTameEvent</a></li>
+    <li><code>&quot;entity.interact&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityInteractEvent.html">EntityInteractEvent</a></li>
+    <li><code>&quot;entity.portal.enter&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityPortalEnterEvent.html">EntityPortalEnterEvent</a></li>
+    <li><code>&quot;entity.portal&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityPortalEvent.html">EntityPortalEvent</a></li>
+    <li><code>&quot;entity.explosion.prime&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/ExplosionPrimeEvent.html">ExplosionPrimeEvent</a></li>
+    <li><code>&quot;entity.portal.exit&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityPortalExitEvent.html">EntityPortalExitEvent</a></li>
+    <li><code>&quot;entity.portal.create&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityCreatePortalEvent.html">EntityCreatePortalEvent</a></li>
+    <li><code>&quot;entity.health.regain&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityRegainHealthEvent.html">EntityRegainHealthEvent</a></li>
+    <li><code>&quot;entity.explode&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityExplodeEvent.html">EntityExplodeEvent</a></li>
+    <li><code>&quot;player.leashEntity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/PlayerLeashEntityEvent.html">PlayerLeashEntityEvent</a></li>
+    <li><code>&quot;entity.unleash&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityUnleashEvent.html">EntityUnleashEvent</a></li>
+    <li><code>&quot;player.move&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerMoveEvent.html">PlayerMoveEvent</a></li>
+    <li><code>&quot;player.changedWorld&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerChangedWorldEvent.html">PlayerChangedWorldEvent</a></li>
+    <li><code>&quot;player.chatTabComplete&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerChatTabCompleteEvent.html">PlayerChatTabCompleteEvent</a></li>
+    <li><code>&quot;player.editBook&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerEditBookEvent.html">PlayerEditBookEvent</a></li>
+    <li><code>&quot;player.eggThrow&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerEggThrowEvent.html">PlayerEggThrowEvent</a></li>
+    <li><code>&quot;player.expChange&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerExpChangeEvent.html">PlayerExpChangeEvent</a></li>
+    <li><code>&quot;player.fish&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerFishEvent.html">PlayerFishEvent</a></li>
+    <li><code>&quot;player.gamemode.change&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerGameModeChangeEvent.html">PlayerGameModeChangeEvent</a></li>
+    <li><code>&quot;player.interact.atEntity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerInteractAtEntityEvent.html">PlayerInteractAtEntityEvent</a></li>
+    <li><code>&quot;player.interact.entity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerInteractEntityEvent.html">PlayerInteractEntityEvent</a></li>
+    <li><code>&quot;player.item.consume&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerItemConsumeEvent.html">PlayerItemConsumeEvent</a></li>
+    <li><code>&quot;player.item.held&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerItemHeldEvent.html">PlayerItemHeldEvent</a></li>
+    <li><code>&quot;player.levelChange&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerLevelChangeEvent.html">PlayerLevelChangeEvent</a></li>
+    <li><code>&quot;player.login&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerLoginEvent.html">PlayerLoginEvent</a></li>
+    <li><code>&quot;player.item.pickup&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerPickupItemEvent.html">PlayerPickupItemEvent</a></li>
+    <li><code>&quot;player.portal&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/player/PlayerPortalEvent.html">PlayerPortalEvent</a></li>
+    <li><code>&quot;entity.shootbow&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityShootBowEvent.html">EntityShootBowEvent</a></li>
+    <li><code>&quot;entity.expBottle&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/ExpBottleEvent.html">ExpBottleEvent</a></li>
+    <li><code>&quot;entity.potionSplash&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/PotionSplashEvent.html">PotionSplashEvent</a></li>
+    <li><code>&quot;entity.horseJump&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/HorseJumpEvent.html">HorseJumpEvent</a></li>
+    <li><code>&quot;entity.sheep.regrowwool&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/SheepRegrowWoolEvent.html">SheepRegrowWoolEvent</a></li>
+    <li><code>&quot;entity.sheep.dyewool&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/SheepDyeWoolEvent.html">SheepDyeWoolEvent</a></li>
+    <li><code>&quot;entity.slime.split&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/SlimeSplitEvent.html">SlimeSplitEvent</a></li>
+    <li><code>&quot;inventory.open&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryOpenEvent.html">InventoryOpenEvent</a></li>
+    <li><code>&quot;inventory.click&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryClickEvent.html">InventoryClickEvent</a></li>
+    <li><code>&quot;inventory.close&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryCloseEvent.html">InventoryCloseEvent</a></li>
+    <li><code>&quot;inventory.interact&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryInteractEvent.html">InventoryInteractEvent</a></li>
+    <li><code>&quot;inventory.item.move&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryMoveItemEvent.html">InventoryMoveItemEvent</a></li>
+    <li><code>&quot;inventory.item.pickup&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryPickupItemEvent.html">InventoryPickupItemEvent</a></li>
+    <li><code>&quot;inventory.drag&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryDragEvent.html">InventoryDragEvent</a></li>
+    <li><code>&quot;inventory.creative&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/InventoryCreativeEvent.html">InventoryCreativeEvent</a></li>
+    <li><code>&quot;furnace.burn&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/FurnaceBurnEvent.html">FurnaceBurnEvent</a></li>
+    <li><code>&quot;furnace.extract&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/FurnaceExtractEvent.html">FurnaceExtractEvent</a></li>
+    <li><code>&quot;furnace.smelt&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/FurnaceSmeltEvent.html">FurnaceSmeltEvent</a></li>
+    <li><code>&quot;brew&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/BrewEvent.html">BrewEvent</a></li>
+    <li><code>&quot;inventory.craft&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/CraftItemEvent.html">CraftItemEvent</a></li>
+    <li><code>&quot;inventory.craft.prepare&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/inventory/PrepareItemCraftEvent.html">PrepareItemCraftEvent</a></li>
+    <li><code>&quot;hanging.place&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/hanging/HangingPlaceEvent.html">HangingPlaceEvent</a></li>
+    <li><code>&quot;hanging.break&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/hanging/HangingBreakEvent.html">HangingBreakEvent</a></li>
+    <li><code>&quot;hanging.break.byEntity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/hanging/HangingBreakByEntityEvent.html">HangingBreakByEntityEvent</a></li>
+    <li><code>&quot;vehicle.collision.block&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleBlockCollisionEvent.html">VehicleBlockCollisionEvent</a></li>
+    <li><code>&quot;vehicle.create&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleCreateEvent.html">VehicleCreateEvent</a></li>
+    <li><code>&quot;vehicle.damage&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleDamageEvent.html">VehicleDamageEvent</a></li>
+    <li><code>&quot;vehicle.destroy&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleDestroyEvent.html">VehicleDestroyEvent</a></li>
+    <li><code>&quot;vehicle.enter&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleEnterEvent.html">VehicleEnterEvent</a></li>
+    <li><code>&quot;vehicle.collision.entity&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleEntityCollisionEvent.html">VehicleEntityCollisionEvent</a></li>
+    <li><code>&quot;vehicle.exit&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleExitEvent.html">VehicleExitEvent</a></li>
+    <li><code>&quot;vehicle.move&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleMoveEvent.html">VehicleMoveEvent</a></li>
+    <li><code>&quot;vehicle.update&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/vehicle/VehicleUpdateEvent.html">VehicleUpdateEvent</a></li>
+    <li><code>&quot;weather.lightningStrike&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/weather/LightningStrikeEvent.html">LightningStrikeEvent</a></li>
+    <li><code>&quot;weather.thunderChange&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/weather/ThunderChangeEvent.html">ThunderChangeEvent</a></li>
+    <li><code>&quot;weather.change&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/weather/WeatherChangeEvent.html">WeatherChangeEvent</a></li>
+    <li><code>&quot;world.chunk.load&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/ChunkLoadEvent.html">ChunkLoadEvent</a></li>
+    <li><code>&quot;world.chunk.populate&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/ChunkPopulateEvent.html">ChunkPopulateEvent</a></li>
+    <li><code>&quot;world.chunk.unload&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/ChunkUnloadEvent.html">ChunkUnloadEvent</a></li>
+    <li><code>&quot;world.createportal&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/PortalCreateEvent.html">PortalCreateEvent</a></li>
+    <li><code>&quot;world.spawnchange&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/SpawnChangeEvent.html">SpawnChangeEvent</a></li>
+    <li><code>&quot;world.init&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/WorldInitEvent.html">WorldInitEvent</a></li>
+    <li><code>&quot;world.load&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/WorldLoadEvent.html">WorldLoadEvent</a></li>
+    <li><code>&quot;world.save&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/WorldSaveEvent.html">WorldSaveEvent</a></li>
+    <li><code>&quot;world.unload&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/world/WorldUnloadEvent.html">WorldUnloadEvent</a></li>
+    <li><code>&quot;server.map.init&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/MapInitializeEvent.html">MapInitializeEvent</a></li>
+    <li><code>&quot;server.plugin.enable&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/PluginEnableEvent.html">PluginEnableEvent</a></li>
+    <li><code>&quot;sever.plugin.disable&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/PluginDisableEvent.html">PluginDisableEvent</a></li>
+    <li><code>&quot;server.command.remote&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/RemoteServerCommandEvent.html">RemoteServerCommandEvent</a></li>
+    <li><code>&quot;server.command&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/ServerCommandEvent.html">ServerCommandEvent</a></li>
+    <li><code>&quot;server.listping&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/ServerListPingEvent.html">ServerListPingEvent</a></li>
+    <li><code>&quot;server.service.register&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/ServiceRegisterEvent.html">ServiceRegisterEvent</a></li>
+    <li><code>&quot;server.service.unregister&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/server/ServiceUnregisterEvent.html">ServiceUnregisterEvent</a></li>
+</ul>
+
+
+        </li>
+        <li><span class="parameter">handler</span>
+         a handler function that is invoked whenever the event happens, gets the event as first parameter
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "off"></a>
+    <strong>off (event[, handler])</strong>
+    </dt>
+    <dd>
+    Remove an event handler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+         event to remove an event handler from
+        </li>
+        <li><span class="parameter">handler</span>
+         the handler function to remove as previously added with <a href="../modules/rpgplus.html#on">on</a>; if not specified, all handlers of this event will be removed
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true if any event handler was removed, false if not
+    </ol>
+
+
+
+
+</dd>
 </dl>
 
 
@@ -279,7 +491,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
-<i style="float:right;">Last updated 2015-10-28 23:58:56 </i>
+<i style="float:right;">Last updated 2015-10-29 11:56:42 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
