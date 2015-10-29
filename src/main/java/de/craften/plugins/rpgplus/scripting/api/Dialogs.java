@@ -28,13 +28,13 @@ public class Dialogs extends LuaTable {
                 final Entity entity = (Entity) CoerceLuaToJava.coerce(varargs.arg(1), Entity.class);
                 Player player = ScriptUtil.getPlayer(varargs.arg(2));
                 final LuaFunction callback = varargs.checkfunction(4);
-                plugin.getDialogs().ask(entity, player, varargs.checkjstring(3), new AnswerHandler() {
+                plugin.getDialogs().ask(entity, player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
                     @Override
                     public void handleAnswer(final Player player, String answer) {
                         callback.invoke(LuaValue.valueOf(answer), new OneArgFunction() {
                             @Override
                             public LuaValue call(LuaValue message) {
-                                plugin.getDialogs().tell(entity, player, message.checkjstring());
+                                plugin.getDialogs().tell(entity, player, messageAlternatives(message));
                                 return LuaValue.NIL;
                             }
                         });
@@ -50,15 +50,19 @@ public class Dialogs extends LuaTable {
                 final Entity entity = (Entity) CoerceLuaToJava.coerce(varargs.arg(1), Entity.class);
                 Player player = ScriptUtil.getPlayer(varargs.arg(2));
                 for (int i = 3; i <= varargs.narg(); i++) {
-                    LuaValue message = varargs.arg(i);
-                    if (message.istable()) {
-                        message = message.checktable().get(random.nextInt(message.length()) + 1);
-                    }
-                    plugin.getDialogs().tell(entity, player, message.checkjstring());
+                    plugin.getDialogs().tell(entity, player, messageAlternatives(varargs.arg(i)));
                 }
 
                 return LuaValue.NIL;
             }
         });
+    }
+
+    private String messageAlternatives(LuaValue messages) {
+        if (messages.istable()) {
+            return messages.checktable().get(random.nextInt(messages.length()) + 1).checkjstring();
+        } else {
+            return messages.checkjstring();
+        }
     }
 }
