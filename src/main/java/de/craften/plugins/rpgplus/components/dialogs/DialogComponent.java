@@ -57,7 +57,7 @@ public class DialogComponent extends PluginComponentBase implements Listener {
         if (handler != null) {
             TextBuilder
                     .create("> ").gray().italic()
-                    .append(ChatColor.stripColor(event.getMessage())).darkGray().italic()
+                    .append(ChatColor.stripColor(event.getMessage())).gray().italic()
                     .sendTo(event.getPlayer());
 
             handler.handleAnswer(event.getPlayer(), event.getMessage());
