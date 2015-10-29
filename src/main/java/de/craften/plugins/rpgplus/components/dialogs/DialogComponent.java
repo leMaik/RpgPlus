@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.UUID;
 /**
  * Component for dialogs with NPCs and mobs.
  */
-public class DialogComponent extends PluginComponentBase {
+public class DialogComponent extends PluginComponentBase implements Listener {
     private Map<UUID, AnswerHandler> waitForChatAnswer;
 
     @Override
@@ -55,7 +56,7 @@ public class DialogComponent extends PluginComponentBase {
         AnswerHandler handler = waitForChatAnswer.remove(event.getPlayer().getUniqueId());
         if (handler != null) {
             TextBuilder
-                    .create("> ").darkGray().italic()
+                    .create("> ").gray().italic()
                     .append(ChatColor.stripColor(event.getMessage())).darkGray().italic()
                     .sendTo(event.getPlayer());
 
