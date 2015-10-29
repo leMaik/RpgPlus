@@ -494,7 +494,7 @@ public class ScriptEventManager implements Listener {
 
     //TODO Handle more/all events
 
-    private void callHandlers(String eventName, Event event) {
+    protected void callHandlers(String eventName, Event event) {
         for (LuaFunction callback : eventHandlers.get(eventName)) {
             callback.invoke(CoerceJavaToLua.coerce(event));
         }
@@ -520,4 +520,27 @@ public class ScriptEventManager implements Listener {
             }
         });
     }
+
+    /*public static void main(String[] args) throws Exception {
+        //to use this program, bukkit needs to be in the classpath
+        //it generates a list of all events as required by luadoc
+
+        final AtomicReference<String> eventName = new AtomicReference<>();
+
+        ScriptEventManager printEventManager = new ScriptEventManager() {
+            @Override
+            protected void callHandlers(String name, Event event) {
+                eventName.set(name);
+            }
+        };
+        for (Method method : printEventManager.getClass().getMethods()) {
+            if (method.isAnnotationPresent(EventHandler.class)) {
+                method.invoke(printEventManager, new Object[]{null});
+                System.out.printf("-- * `\"%s\"` - [%s](https://hub.spigotmc.org/javadocs/bukkit/index.html?%s.html)\n",
+                        eventName.get(),
+                        method.getParameterTypes()[0].getSimpleName(),
+                        method.getParameterTypes()[0].getName().replace(".", "/"));
+            }
+        }
+    }*/
 }
