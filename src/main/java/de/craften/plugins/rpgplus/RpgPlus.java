@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus;
 
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
+import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.pathfinding.PathfindingComponent;
@@ -25,6 +26,7 @@ public class RpgPlus extends JavaPlugin {
     private TimerComponent timerManager;
     private StorageComponent storage;
     private PathfindingComponent pathfinding;
+    private DialogComponent dialogs;
 
     @Override
     public void onEnable() {
@@ -34,6 +36,7 @@ public class RpgPlus extends JavaPlugin {
         timerManager = new TimerComponent();
         storage = new StorageComponent(new File(getDataFolder(), "storage"));
         pathfinding = new PathfindingComponent();
+        dialogs = new DialogComponent();
 
         scriptingManager.activateFor(this);
         entityManager.activateFor(this);
@@ -41,6 +44,7 @@ public class RpgPlus extends JavaPlugin {
         timerManager.activateFor(this);
         storage.activateFor(this);
         pathfinding.activateFor(this);
+        dialogs.activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
@@ -109,5 +113,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public PathfindingComponent getPathfinding() {
         return pathfinding;
+    }
+
+    /**
+     * Gets the dialog component.
+     *
+     * @return the dialog component
+     */
+    public DialogComponent getDialogs() {
+        return dialogs;
     }
 }
