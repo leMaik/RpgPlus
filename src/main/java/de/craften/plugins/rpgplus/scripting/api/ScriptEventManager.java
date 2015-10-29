@@ -1,17 +1,24 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.enchantment.*;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.hanging.*;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.*;
 import org.bukkit.event.vehicle.*;
-import org.bukkit.event.weather.*;
+import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.event.weather.ThunderChangeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.*;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
@@ -19,8 +26,8 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Manager for event callbacks that scripts may register using <code>rpgplus.on()</code> and unregister using
@@ -36,7 +43,7 @@ public class ScriptEventManager implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        callHandlers("player.join", event);
+        callHandlers("player.quit", event);
     }
 
     @EventHandler
@@ -223,129 +230,128 @@ public class ScriptEventManager implements Listener {
     public void onBlockBurn(BlockBurnEvent event) {
         callHandlers("block.burn", event);
     }
-    
+
     @EventHandler
-    public void onBlockDamage(BlockDamageEvent event){
+    public void onBlockDamage(BlockDamageEvent event) {
         callHandlers("block.damage", event);
     }
 
     @EventHandler
-    public void onBlockExp(BlockExpEvent event){
+    public void onBlockExp(BlockExpEvent event) {
         callHandlers("block.exp", event);
     }
 
     @EventHandler
-    public void onBlockFade(BlockFadeEvent event){
+    public void onBlockFade(BlockFadeEvent event) {
         callHandlers("block.fade", event);
     }
 
     @EventHandler
-    public void onBlockForm(BlockFormEvent event){
+    public void onBlockForm(BlockFormEvent event) {
         callHandlers("block.form", event);
     }
 
     @EventHandler
-    public void onBlockGrow(BlockGrowEvent event){
+    public void onBlockGrow(BlockGrowEvent event) {
         callHandlers("block.grow", event);
     }
 
     @EventHandler
-    public void onBlockMultiplace(BlockMultiPlaceEvent event){
+    public void onBlockMultiplace(BlockMultiPlaceEvent event) {
         callHandlers("block.multiplace", event);
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event){
+    public void onBlockPhysics(BlockPhysicsEvent event) {
         callHandlers("block.physics", event);
     }
 
     @EventHandler
-    public void onBlockPiston(BlockPistonEvent event){
+    public void onBlockPiston(BlockPistonEvent event) {
         callHandlers("block.piston", event);
     }
 
     @EventHandler
-    public void onBlockPistonExtend(BlockPistonExtendEvent event){
+    public void onBlockPistonExtend(BlockPistonExtendEvent event) {
         callHandlers("block.piston.extend", event);
     }
 
     @EventHandler
-    public void onBlockPistonRetract(BlockPistonRetractEvent event){
+    public void onBlockPistonRetract(BlockPistonRetractEvent event) {
         callHandlers("block.piston.retract", event);
     }
 
     @EventHandler
-    public void onBlockRedstone(BlockRedstoneEvent event){
+    public void onBlockRedstone(BlockRedstoneEvent event) {
         callHandlers("block.redstone", event);
     }
 
     @EventHandler
-    public void onBlockSpread(BlockSpreadEvent event){
+    public void onBlockSpread(BlockSpreadEvent event) {
         callHandlers("block.spread", event);
     }
 
     @EventHandler
-    public void onBlockEntityForm(EntityBlockFormEvent event){
+    public void onBlockEntityForm(EntityBlockFormEvent event) {
         callHandlers("block.form.entity", event);
     }
 
     @EventHandler
-    public void onLeavesDecay(LeavesDecayEvent event){
+    public void onLeavesDecay(LeavesDecayEvent event) {
         callHandlers("block.leavesdecay", event);
     }
 
     @EventHandler
-    public void onNotePlay(NotePlayEvent event){
+    public void onNotePlay(NotePlayEvent event) {
         callHandlers("block.noteplay", event);
     }
 
     @EventHandler
-    public void onSignChange(SignChangeEvent event){
+    public void onSignChange(SignChangeEvent event) {
         callHandlers("block.signchange", event);
     }
-    
+
     @EventHandler
-    public void onBlockIgnite(BlockIgniteEvent event){
+    public void onBlockIgnite(BlockIgniteEvent event) {
         callHandlers("block.damage", event);
     }
-    
+
     @EventHandler
-    public void onBlockDispense(BlockDispenseEvent event){
+    public void onBlockDispense(BlockDispenseEvent event) {
         callHandlers("block.dispense", event);
     }
-    
+
     @EventHandler
     public void onPlayerEnchant(EnchantItemEvent event) {
         callHandlers("player.enchant", event);
     }
 
     @EventHandler
-    public void onPlayerPrepareEnchant(PrepareItemEnchantEvent event){
+    public void onPlayerPrepareEnchant(PrepareItemEnchantEvent event) {
         callHandlers("player.enchant.prepare", event);
     }
 
     @EventHandler
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event){
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         callHandlers("player.command.preprocess", event);
     }
 
     @EventHandler
-    public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event){
+    public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
         callHandlers("player.prelogin", event);
     }
 
     @EventHandler
-    public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event){
+    public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         callHandlers("player.achievement.awarded", event);
     }
 
     @EventHandler
-    public void onPlayerAnimation(PlayerAnimationEvent event){
+    public void onPlayerAnimation(PlayerAnimationEvent event) {
         callHandlers("player.animation", event);
     }
 
-    
-    
+
     @EventHandler
     public void onCreeperPower(CreeperPowerEvent event) {
         callHandlers("entity.creeperpower", event);
@@ -365,7 +371,7 @@ public class ScriptEventManager implements Listener {
     public void onEntityCombustByBlock(EntityCombustByBlockEvent event) {
         callHandlers("entity.combust.byblock", event);
     }
-    
+
     @EventHandler
     public void onEntityCombustByEntity(EntityCombustByEntityEvent event) {
         callHandlers("entity.combust.byentity", event);
@@ -380,7 +386,7 @@ public class ScriptEventManager implements Listener {
     public void onEntityCombust(EntityCombustEvent event) {
         callHandlers("entity.combust", event);
     }
-    
+
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         callHandlers("entity.damage.byEntity", event);
@@ -595,12 +601,12 @@ public class ScriptEventManager implements Listener {
     public void onCraftItem(CraftItemEvent event) {
         callHandlers("inventory.craft", event);
     }
-    
+
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event) {
         callHandlers("inventory.craft.prepare", event);
     }
-    
+
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent event) {
         callHandlers("hanging.place", event);
@@ -695,73 +701,71 @@ public class ScriptEventManager implements Listener {
     public void onPortalCreate(PortalCreateEvent event) {
         callHandlers("world.createportal", event);
     }
-    
+
     @EventHandler
     public void onSpawnChange(SpawnChangeEvent event) {
         callHandlers("world.spawnchange", event);
     }
-    
+
     @EventHandler
     public void onWorldInit(WorldInitEvent event) {
         callHandlers("world.init", event);
     }
-    
+
     @EventHandler
     public void onWorldLoad(WorldLoadEvent event) {
         callHandlers("world.load", event);
     }
-    
+
     @EventHandler
     public void onWorldSave(WorldSaveEvent event) {
         callHandlers("world.save", event);
     }
-    
+
     @EventHandler
     public void onWorldUnload(WorldUnloadEvent event) {
         callHandlers("world.unload", event);
     }
-    
+
     @EventHandler
     public void onMapInit(MapInitializeEvent event) {
         callHandlers("server.map.init", event);
     }
-    
+
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event) {
         callHandlers("server.plugin.enable", event);
     }
-    
+
     @EventHandler
     public void onPluginDisable(PluginDisableEvent event) {
         callHandlers("sever.plugin.disable", event);
     }
-    
+
     @EventHandler
     public void onRemoteServerCommand(RemoteServerCommandEvent event) {
         callHandlers("server.command.remote", event);
     }
-    
+
     @EventHandler
     public void onServerCommand(ServerCommandEvent event) {
         callHandlers("server.command", event);
     }
-    
+
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         callHandlers("server.listping", event);
     }
-    
+
     @EventHandler
     public void onServiceRegister(ServiceRegisterEvent event) {
         callHandlers("server.service.register", event);
     }
-    
+
     @EventHandler
     public void onServiceUnregister(ServiceUnregisterEvent event) {
         callHandlers("server.service.unregister", event);
     }
-    
-    //TODO Handle more/all events
 
     protected void callHandlers(String eventName, Event event) {
         for (LuaFunction callback : eventHandlers.get(eventName)) {
@@ -790,7 +794,7 @@ public class ScriptEventManager implements Listener {
         });
     }
 
-    /*public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         //to use this program, bukkit needs to be in the classpath
         //it generates a list of all events as required by luadoc
 
@@ -811,5 +815,5 @@ public class ScriptEventManager implements Listener {
                         method.getParameterTypes()[0].getName().replace(".", "/"));
             }
         }
-    }*/
+    }
 }
