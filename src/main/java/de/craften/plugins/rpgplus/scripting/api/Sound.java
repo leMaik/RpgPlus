@@ -1,11 +1,11 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
+import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.songplayer.SongPlayerWrapper;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ThreeArgFunction;
@@ -15,7 +15,7 @@ import java.io.File;
 
 public class Sound extends LuaTable {
 
-    public Sound(final Plugin plugin) {
+    public Sound(final RpgPlus plugin) {
         set("playSound", new TwoArgFunction() {
 
             @Override
@@ -43,7 +43,7 @@ public class Sound extends LuaTable {
             @Override
             public LuaValue call(LuaValue player, LuaValue song) {
                 if (isSongPlayerAvailable()) {
-                    SongPlayerWrapper.startPlaySong(new File(plugin.getDataFolder(), song.checkjstring()), ScriptUtil.getPlayer(player));
+                    SongPlayerWrapper.startPlaySong(new File(plugin.getScriptingManager().getScriptDirectory(), song.checkjstring()), ScriptUtil.getPlayer(player));
                     return LuaValue.TRUE;
                 } else {
                     plugin.getLogger().warning("You need to install the NoteBlockAPI plugin to play songs.");

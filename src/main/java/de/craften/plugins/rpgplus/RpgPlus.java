@@ -47,9 +47,9 @@ public class RpgPlus extends JavaPlugin {
         dialogs.activateFor(this);
 
         try {
-            scriptingManager.loadScript(new File(getDataFolder(), "demo.lua"));
+            scriptingManager.loadScript(new File(getDataFolder(), "main.lua"));
         } catch (ScriptErrorException e) {
-            getLogger().log(Level.WARNING, "Could not run demo script", e);
+            getLogger().log(Level.WARNING, "Could not run main script", e);
         }
     }
 
