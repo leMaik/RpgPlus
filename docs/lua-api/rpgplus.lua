@@ -10,8 +10,16 @@ function log(level, message) end
 --- Registers and creates a managed villager.
 -- @param options a table with options for the villager
 -- @param interact a function that is invoked when a player right-clicks the villager
+-- @treturn Entity the spawned villager
 --
-function registerVillager(options, interact) end
+function spawnVillager(options, interact) end
+
+--- Registers and creates a managed villager.
+-- @param type the type of the entity to spawn
+-- @param options a table with options for the entity
+-- @treturn Entity the spawned entity
+--
+function spawn(type, options) end
 
 --- Registers a command.
 -- @param command the command, either a string or a list of the command and all nested commands

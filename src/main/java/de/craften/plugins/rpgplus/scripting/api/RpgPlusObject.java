@@ -7,6 +7,7 @@ import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,7 +52,7 @@ public class RpgPlusObject extends LuaTable {
             }
         });
 
-        set("registerVillager", new TwoArgFunction() {
+        set("spawnVillager", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue options, final LuaValue interactCallback) {
                 ManagedEntity villager = new BasicManagedEntity<Villager>(Villager.class,
@@ -71,7 +72,7 @@ public class RpgPlusObject extends LuaTable {
                 villager.setMovementType(MovementType.LOCAL);
                 villager.spawn();
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(villager);
-                return LuaValue.NIL;
+                return EntityWrapper.wrap(villager);
             }
         });
 
