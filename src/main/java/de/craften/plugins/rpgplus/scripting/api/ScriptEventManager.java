@@ -267,11 +267,6 @@ public class ScriptEventManager implements Listener {
     }
 
     @EventHandler
-    public void onBlockPiston(BlockPistonEvent event) {
-        callHandlers("block.piston", event);
-    }
-
-    @EventHandler
     public void onBlockPistonExtend(BlockPistonExtendEvent event) {
         callHandlers("block.piston.extend", event);
     }
