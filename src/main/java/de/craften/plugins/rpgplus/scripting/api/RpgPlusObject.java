@@ -9,7 +9,9 @@ import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -235,5 +237,8 @@ public class RpgPlusObject extends LuaTable {
         ScriptEventManager events = new ScriptEventManager();
         plugin.registerEvents(events);
         events.installOn(this);
+        
+        EntitySpawner entitySpawner = new EntitySpawner();
+        entitySpawner.installOn(this);
     }
 }
