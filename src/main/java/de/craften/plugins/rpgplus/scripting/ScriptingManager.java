@@ -26,7 +26,6 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaValue timerModule;
     private LuaValue soundModule;
     private LuaValue storageModule;
-    private LuaValue dialogModule;
 
     @Override
     protected void onActivated() {
@@ -54,7 +53,6 @@ public class ScriptingManager extends PluginComponentBase {
         timerModule = new ScriptTimedEventManager(RpgPlus.getPlugin(RpgPlus.class));
         soundModule = new Sound(RpgPlus.getPlugin(RpgPlus.class));
         storageModule = new Storage();
-        dialogModule = new Dialogs(RpgPlus.getPlugin(RpgPlus.class));
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -92,9 +90,5 @@ public class ScriptingManager extends PluginComponentBase {
 
     public LuaValue getStorageModule() {
         return storageModule;
-    }
-
-    public LuaValue getDialogModule() {
-        return dialogModule;
     }
 }

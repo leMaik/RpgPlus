@@ -3,7 +3,6 @@ package de.craften.plugins.rpgplus.components.dialogs;
 import de.craften.plugins.mcguilib.text.TextBuilder;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,29 +24,29 @@ public class DialogComponent extends PluginComponentBase implements Listener {
     }
 
     /**
-     * Tell a message to a player, using the given entity.
+     * Tell a message to a player.
      *
-     * @param entity  entity that tells the message
+     * @param name    name of the character that tells the message
      * @param player  player to tell the message to
      * @param message message
      */
-    public void tell(Entity entity, Player player, String message) {
+    public void tell(String name, Player player, String message) {
         TextBuilder
-                .create("[").gold().append(entity.getName()).gold().append("] ").gold()
+                .create("[").gold().append(name).gold().append("] ").gold()
                 .append(message)
                 .sendTo(player);
     }
 
     /**
-     * Ask a player something, using the given entity.
+     * Ask a player something.
      *
-     * @param entity   entity that poses the question.
+     * @param name     name of the character that asks
      * @param player   player to ask
      * @param question question to ask
      * @param callback callback to call when the player answered the question
      */
-    public void ask(Entity entity, Player player, String question, AnswerHandler callback) {
-        tell(entity, player, question);
+    public void ask(String name, Player player, String question, AnswerHandler callback) {
+        tell(name, player, question);
         waitForChatAnswer.put(player.getUniqueId(), callback);
     }
 
