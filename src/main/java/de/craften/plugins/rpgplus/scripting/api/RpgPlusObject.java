@@ -5,17 +5,12 @@ import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.BasicManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -26,7 +21,6 @@ import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
-import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
 import java.util.List;
 
@@ -78,55 +72,6 @@ public class RpgPlusObject extends LuaTable {
                 villager.spawn();
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(villager);
                 return LuaValue.NIL;
-            }
-        });
-
-        set("navigateTo", new VarArgFunction() {
-            @Override
-            public Varargs invoke(final Varargs varargs) {
-                Entity entity = (Entity) CoerceLuaToJava.coerce(varargs.arg(1), Entity.class);
-                final LuaTable destination = varargs.arg(2).checktable();
-                final LuaTable options;
-                Runnable callback = null;
-                if (varargs.narg() == 4) {
-                    options = varargs.arg(3).checktable();
-                    callback = new Runnable() {
-                        @Override
-                        public void run() {
-                            varargs.arg(4).invoke(destination);
-                        }
-                    };
-                } else {
-                    if (varargs.isfunction(3)) {
-                        options = new LuaTable();
-                        callback = new Runnable() {
-                            @Override
-                            public void run() {
-                                varargs.arg(3).invoke(destination);
-                            }
-                        };
-                    } else {
-                        options = varargs.arg(3).opttable(new LuaTable());
-                    }
-                }
-                try {
-                    PathingResult result = RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(
-                            entity,
-                            new Location(entity.getWorld(),
-                                    destination.get("x").checkdouble(),
-                                    destination.get("y").checkdouble(),
-                                    destination.get("z").checkdouble()
-                            ),
-                            options.get("speed").optint(10),
-                            PathingBehaviours.builder()
-                                    .openDoors(options.get("openDoors").optboolean(false))
-                                    .openFenceGates(options.get("openFenceGates").optboolean(false))
-                                    .build(),
-                            callback);
-                    return result == PathingResult.SUCCESS ? LuaValue.TRUE : LuaValue.FALSE;
-                } catch (AStar.InvalidPathException e) {
-                    return LuaValue.FALSE;
-                }
             }
         });
 
@@ -237,7 +182,7 @@ public class RpgPlusObject extends LuaTable {
         ScriptEventManager events = new ScriptEventManager();
         plugin.registerEvents(events);
         events.installOn(this);
-        
+
         EntitySpawner entitySpawner = new EntitySpawner();
         entitySpawner.installOn(this);
     }
