@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 /**
  * An entity that can be managed by the {@link EntityManager}.
@@ -23,6 +24,13 @@ public interface ManagedEntity<T extends Entity> {
     MovementType getMovementType();
 
     /**
+     * Set the movement type of this entity.
+     *
+     * @param movementType movement type of this entity
+     */
+    void setMovementType(MovementType movementType);
+
+    /**
      * Get the underlying entity.
      *
      * @return underlying entity
@@ -37,9 +45,47 @@ public interface ManagedEntity<T extends Entity> {
     boolean isTakingDamage();
 
     /**
-     * Teleport this entity to the given location.
+     * Set if this entity takes any damage.
+     *
+     * @param isTakingDamage true if this entity should take damage, false if not
+     */
+    void setIsTakingDamage(boolean isTakingDamage);
+
+    /**
+     * Move this entity to the given location.
      *
      * @param location target location
      */
     void moveTo(Location location);
+
+    /**
+     * Get the display name of this entity.
+     *
+     * @return display name of this entity
+     */
+    String getName();
+
+    /**
+     * Set the display name of this entity.
+     *
+     * @param name display name
+     */
+    void setName(String name);
+
+    /**
+     * Spawn this entity.
+     */
+    void spawn();
+
+    /**
+     * Despawn this entity.
+     */
+    void despawn();
+
+    /**
+     * Callback for player interact events with this entity.
+     *
+     * @param event event
+     */
+    void onPlayerInteract(PlayerInteractEntityEvent event);
 }

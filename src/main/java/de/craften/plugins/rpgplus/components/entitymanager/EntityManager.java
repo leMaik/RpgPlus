@@ -2,7 +2,6 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import de.craften.plugins.rpgplus.common.entity.BasicEntity;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -113,10 +112,7 @@ public class EntityManager extends PluginComponentBase implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        ManagedEntity entity = getEntity(event.getRightClicked().getUniqueId());
-        if (entity instanceof BasicEntity) {
-            ((BasicEntity) entity).onPlayerInteract(event);
-        }
+        getEntity(event.getRightClicked().getUniqueId()).onPlayerInteract(event);
     }
 
     private void handleNearbyPlayers(ManagedEntity entity, PlayerMoveEvent event) {

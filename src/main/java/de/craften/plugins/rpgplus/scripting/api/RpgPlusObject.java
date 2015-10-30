@@ -1,8 +1,10 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.common.entity.RPGVillager;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
+import de.craften.plugins.rpgplus.components.entitymanager.BasicManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
@@ -13,9 +15,8 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.util.Vector;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -25,9 +26,6 @@ import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.List;
 
 public class RpgPlusObject extends LuaTable {
@@ -60,21 +58,21 @@ public class RpgPlusObject extends LuaTable {
         set("registerVillager", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue options, final LuaValue interactCallback) {
-                RPGVillager villager = new RPGVillager(
-                        options.get("name").checkjstring(),
-                        true,
+                ManagedEntity villager = new BasicManagedEntity<Villager>(Villager.class,
                         new Location(
                                 Bukkit.getWorld(options.get("world").checkjstring()),
                                 options.get("x").checkdouble(),
                                 options.get("y").checkdouble(),
-                                options.get("z").checkdouble()),
-                        new Vector(0, 0, 0), 1, true, new String[0]) {
+                                options.get("z").checkdouble())) {
 
                     @Override
                     public void onPlayerInteract(PlayerInteractEntityEvent event) {
                         interactCallback.checkfunction().invoke(CoerceJavaToLua.coerce(event));
                     }
                 };
+                villager.setName(options.get("name").checkjstring());
+                villager.setIsTakingDamage(false);
+                villager.setMovementType(MovementType.LOCAL);
                 villager.spawn();
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(villager);
                 return LuaValue.NIL;
