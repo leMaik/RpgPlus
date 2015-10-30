@@ -76,11 +76,13 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
 
     public void setMovementType(MovementType movementType) {
         this.movementType = movementType;
-        switch (movementType) {
-            case LOCAL:
-            case FROZEN:
-                entity.setVelocity(new Vector(0, 0, 0));
-                break;
+        if (entity != null) {
+            switch (movementType) {
+                case LOCAL:
+                case FROZEN:
+                    entity.setVelocity(new Vector(0, 0, 0));
+                    break;
+            }
         }
     }
 
