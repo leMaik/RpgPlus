@@ -8,6 +8,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
 
+import de.craften.plugins.rpgplus.util.EntityUtil;
+
 /**
  * A basic managed entity without any special logic.
  */
@@ -41,14 +43,14 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
         dest.setDirection(dest.toVector().subtract(localLocation.toVector()));
         localLocation = dest;
         if(nametag != null){
-            Location nameTagLocation = localLocation.clone().add(0, 1.85, 0);
+            Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity) + 0.05, 0);
             
             if(secondNameTag != null){
                 secondNameTag.teleport(nameTagLocation);
-                nameTagLocation = nameTagLocation.add(0, 0.15, 0);
+                nameTagLocation.add(0, EntityUtil.NAME_TAG_HEIGHT + 0.05, 0);
             }
             
-            nametag.teleport(location.clone().add(0, 1.85, 0));
+            nametag.teleport(nameTagLocation);
         }
         
     }
@@ -62,8 +64,8 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     public void setName(String name) {
         this.name = name;
         if (entity != null) {
-            if(entity instanceof LivingEntity && !name.equals("") && nameVisible){
-                Location nameTagLocation = localLocation.clone().add(0, 2, 0);
+            if(entity instanceof LivingEntity && !name.isEmpty() && nameVisible){
+                Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
                 
                 if(nametag == null){
                     nametag = (ArmorStand) entity.getWorld().spawnEntity(nameTagLocation, EntityType.ARMOR_STAND);
@@ -85,7 +87,7 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     }
     
     @Override
-    public boolean getNameVisible() {
+    public boolean isNameVisible() {
         return nameVisible;
     }
     
@@ -102,8 +104,8 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     @Override
     public void setSecondName(String secondName) {
         this.secondName = secondName;
-        if(entity != null && entity instanceof LivingEntity && !secondName.equals("") && nameVisible){
-            Location nameTagLocation = localLocation.clone().add(0, 1.75, 0);
+        if(entity != null && entity instanceof LivingEntity && !secondName.isEmpty() && nameVisible){
+            Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity), 0);
             
             if(secondNameTag == null){
                 secondNameTag = (ArmorStand) entity.getWorld().spawnEntity(nameTagLocation, EntityType.ARMOR_STAND);

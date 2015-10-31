@@ -73,11 +73,11 @@ public interface ManagedEntity<T extends Entity> {
     void setName(String name);
     
     /**
-     * Get the visible of the display name of this entity.
+     * Get the visibility of the display name of this entity.
      *
      * @return visible of the display name of this entity
      */
-    boolean getNameVisible();
+    boolean isNameVisible();
 
     /**
      * Set the visible of the display name of this entity.
