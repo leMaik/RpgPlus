@@ -2,7 +2,7 @@ package de.craften.plugins.rpgplus.scripting;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.*;
-import de.craften.plugins.rpgplus.scripting.api.entities.EntityEventManager;
+import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.luaj.vm2.Globals;
@@ -48,14 +48,16 @@ public class ScriptingManager extends PluginComponentBase {
         };
         LuaC.install(globals);
 
-        scriptDirectory = RpgPlus.getPlugin(RpgPlus.class).getDataFolder();
+        RpgPlus plugin = RpgPlus.getPlugin(RpgPlus.class);
+        scriptDirectory = plugin.getDataFolder();
         rpgPlusObject = new RpgPlusObject(this);
-        schedulerModule = new Scheduler(RpgPlus.getPlugin(RpgPlus.class));
-        tradingModule = new Trading(RpgPlus.getPlugin(RpgPlus.class));
-        timerModule = new ScriptTimedEventManager(RpgPlus.getPlugin(RpgPlus.class));
-        soundModule = new Sound(RpgPlus.getPlugin(RpgPlus.class));
+        schedulerModule = new Scheduler(plugin);
+        tradingModule = new Trading(plugin);
+        timerModule = new ScriptTimedEventManager(plugin);
+        soundModule = new Sound(plugin);
         storageModule = new Storage();
-        entityEventManager = new EntityEventManager(RpgPlus.getPlugin(RpgPlus.class));
+        entityEventManager = new EntityEventManager();
+        plugin.getServer().getPluginManager().registerEvents(entityEventManager, plugin);
     }
 
     public void loadScript(File script) throws ScriptErrorException {

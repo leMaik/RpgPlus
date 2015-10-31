@@ -205,6 +205,6 @@ function on(event, handler) end
 --- Remove an event handler.
 -- @param event event to remove an event handler from
 -- @param[opt] handler the handler function to remove as previously added with @{on}; if not specified, all handlers of this event will be removed
--- @return true if any event handler was removed, false if not
+-- @return `true` if any event handler was removed, `false` if not
 --
 function off(event, handler) end

@@ -1,10 +1,10 @@
 --- An entity.
 -- @classmod Entity
 
---- health of the entity
+--- Health of the entity. This field is writable.
 health = _
 
---- maximum health of the entity
+--- Maximum health of the entity. This field is writable.
 maxHealth = _
 
 --- Navigates to the given location, using A*.
@@ -29,3 +29,19 @@ function tell(player, message, ...) end
 -- If the callback returns `false`, the question will be posed again
 --
 function ask(player, question, callback) end
+
+--- Add a callback for the given event.
+-- @param event event to add a handler to, possible events are:
+--
+-- * `"interact"` - [EntityInteractEvent](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityInteractEvent.html)
+--
+-- @param handler a handler function that is invoked whenever the event happens, gets the event as first parameter
+--
+function on(event, handler) end
+
+--- Remove an event handler.
+-- @param[opt] event event to remove an event handler from; if not specified, all event handlers of this entity will be removed
+-- @param[optchain] handler the handler function to remove as previously added with @{on}; if not specified, all handlers of this event will be removed
+-- @return `true` if any event handler was removed, `false` if not
+--
+function off(event, handler) end

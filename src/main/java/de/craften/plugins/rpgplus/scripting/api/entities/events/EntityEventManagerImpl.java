@@ -1,10 +1,8 @@
-package de.craften.plugins.rpgplus.scripting.api.entities;
+package de.craften.plugins.rpgplus.scripting.api.entities.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityEvent;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
@@ -15,9 +13,10 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * An event manager for entity events.
+ * The internal implementation of the {@link EntityEventManager}. Used to separate the huge number of listener
+ * functions from this code.
  */
-public class EntityEventManager implements Listener {
+abstract class EntityEventManagerImpl {
     private final Map<UUID, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
 
     protected void callHandlers(String eventName, EntityEvent event) {
@@ -56,9 +55,5 @@ public class EntityEventManager implements Listener {
                 return LuaValue.FALSE;
             }
         }
-    }
-
-    public EntityEventManager(RpgPlus plugin) {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 }

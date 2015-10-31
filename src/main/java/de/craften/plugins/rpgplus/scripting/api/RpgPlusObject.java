@@ -8,6 +8,7 @@ import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
+import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
