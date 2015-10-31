@@ -1,6 +1,12 @@
 --- An entity.
 -- @classmod Entity
 
+--- health of the entity
+health = _
+
+--- maximum health of the entity
+maxHealth = _
+
 --- Navigates to the given location, using A*.
 -- @param destination destination, a table with `x`, `y` and `z` fields
 -- @param[opt] options a table with options for pathing, options are `openDoors` (boolean), `openFenceGates` (boolean) and `speed` (int, in meters per second)

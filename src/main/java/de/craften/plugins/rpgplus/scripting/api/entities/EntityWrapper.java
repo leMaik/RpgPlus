@@ -8,6 +8,7 @@ import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviou
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Location;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
@@ -15,7 +16,6 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -124,12 +124,42 @@ public class EntityWrapper extends LuaTable {
         });
     }
 
+    @Override
+    public LuaValue rawget(LuaValue key) {
+        if (key.isstring()) {
+            switch (key.checkjstring()) {
+                case "health":
+                    if (entity instanceof Damageable) {
+                        return LuaValue.valueOf(((Damageable) entity).getHealth());
+                    }
+            }
+        }
+        return super.rawget(key);
+    }
+
+    @Override
+    public void rawset(LuaValue key, LuaValue value) {
+        if (key.isstring()) {
+            switch (key.checkjstring()) {
+                case "health":
+                    if (entity instanceof Damageable) {
+                        ((Damageable) entity).setHealth(value.checkdouble());
+                    }
+            }
+        }
+        super.rawset(key, value);
+    }
+
     private String messageAlternatives(LuaValue messages) {
         if (messages.istable()) {
             return messages.checktable().get(random.nextInt(messages.length()) + 1).checkjstring();
         } else {
             return messages.checkjstring();
         }
+    }
+
+    public ManagedEntity getEntity() {
+        return entity;
     }
 
     public static LuaValue wrap(ManagedEntity entity) {
