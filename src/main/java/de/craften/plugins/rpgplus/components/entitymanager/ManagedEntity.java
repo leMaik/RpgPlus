@@ -9,8 +9,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
  */
 public interface ManagedEntity<T extends Entity> {
     /**
-     * Get the location where the entity should be if it doesn't move. This may be updated for a
-     * {@link MovingManagedEntity} if it should stand after walking a bit.
+     * Get the location where the entity should be if it doesn't move on its own.
      *
      * @return location where the entity should be if it doesn't move
      */
@@ -71,7 +70,7 @@ public interface ManagedEntity<T extends Entity> {
      * @param name display name
      */
     void setName(String name);
-    
+
     /**
      * Get the visibility of the display name of this entity.
      *
@@ -85,11 +84,21 @@ public interface ManagedEntity<T extends Entity> {
      * @param nameVisible visible of the display name
      */
     void setNameVisible(boolean nameVisible);
-    
+
+    /**
+     * Get the second name of this entity. This name is displayed under the name of it is set visible.
+     *
+     * @return second name
+     */
     String getSecondName();
-    
+
+    /**
+     * Set the second name of this entity. This name is displayed under the name of it is set visible.
+     *
+     * @param secondName second name
+     */
     void setSecondName(String secondName);
-    
+
     /**
      * Spawn this entity.
      */
