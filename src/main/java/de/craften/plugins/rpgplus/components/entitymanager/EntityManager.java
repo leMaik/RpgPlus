@@ -36,20 +36,29 @@ public class EntityManager extends PluginComponentBase implements Listener {
                 for (ManagedEntity entity : new ArrayList<ManagedEntity>(entities.values())) {
                     switch (entity.getMovementType()) {
                         case FROZEN:
-                            entity.getEntity().teleport(entity.getLocalLocation());
-                            entity.getEntity().setVelocity(new Vector(0, 0, 0));
+                            if (!entity.getLocalLocation().equals(entity.getEntity().getLocation())) {
+                                entity.getEntity().teleport(entity.getLocalLocation());
+                                entity.getEntity().setVelocity(new Vector(0, 0, 0));
+                                entity.onLocationChanged();
+                            }
                             break;
                         case LOCAL:
                             Location currentLocation = entity.getEntity().getLocation();
                             Location local = entity.getLocalLocation();
-                            currentLocation.setX(local.getX());
-                            currentLocation.setY(local.getY());
-                            currentLocation.setZ(local.getZ());
-                            entity.getEntity().teleport(currentLocation);
-                            entity.getEntity().setVelocity(new Vector(0, 0, 0));
+                            if (local.distanceSquared(currentLocation) > 0) {
+                                currentLocation.setX(local.getX());
+                                currentLocation.setY(local.getY());
+                                currentLocation.setZ(local.getZ());
+                                entity.getEntity().teleport(currentLocation);
+                                entity.getEntity().setVelocity(new Vector(0, 0, 0));
+                                entity.onLocationChanged();
+                            }
                             break;
                         case MOVING:
-                            entity.getEntity().teleport(entity.getLocalLocation());
+                            if (!entity.getLocalLocation().equals(entity.getEntity().getLocation())) {
+                                entity.getEntity().teleport(entity.getLocalLocation());
+                                entity.onLocationChanged();
+                            }
                             break;
                     }
                 }
@@ -68,8 +77,8 @@ public class EntityManager extends PluginComponentBase implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         ManagedEntity entity = getEntity(event.getEntity());
-        
-        if(entity != null){
+
+        if (entity != null) {
             unregisterEntity(entity);
 
             if (entity instanceof CustomDrops) {
@@ -107,8 +116,8 @@ public class EntityManager extends PluginComponentBase implements Listener {
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         ManagedEntity entity = getEntity(event.getRightClicked());
-        
-        if(entity != null){
+
+        if (entity != null) {
             entity.onPlayerInteract(event);
         }
     }

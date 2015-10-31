@@ -115,4 +115,9 @@ public interface ManagedEntity<T extends Entity> {
      * @param event event
      */
     void onPlayerInteract(PlayerInteractEntityEvent event);
+
+    /**
+     * Callback that is invoked whenever the location of this entity has changed.
+     */
+    void onLocationChanged();
 }

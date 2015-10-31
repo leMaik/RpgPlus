@@ -151,6 +151,10 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     }
 
     @Override
+    public void onLocationChanged() {
+    }
+
+    @Override
     public MovementType getMovementType() {
         return movementType;
     }
