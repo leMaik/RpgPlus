@@ -60,9 +60,9 @@ public class EntityUtil {
         case GHAST:
             return 4;
         case GIANT:
-            break;
-        case GUARDIAN:
             return 10.8;
+        case GUARDIAN:
+            break;
         case HORSE:
             return 1.6;
         case IRON_GOLEM:
