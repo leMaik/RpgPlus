@@ -1,8 +1,13 @@
 package de.craften.plugins.rpgplus.scripting.util;
 
+import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
@@ -51,6 +56,50 @@ public class ScriptUtil {
             } else {
                 return Bukkit.getOfflinePlayer(playerString);
             }
+        }
+    }
+
+    /**
+     * Get the entity that is represented by the given lua value.
+     *
+     * @param entity lua value that represents an entity
+     * @return entity
+     */
+    public static Entity getEntity(LuaValue entity) {
+        if (entity.isuserdata(Entity.class)) {
+            return (Entity) CoerceLuaToJava.coerce(entity, Entity.class);
+        } else if (entity.isuserdata(ManagedEntity.class)) {
+            return ((ManagedEntity) CoerceLuaToJava.coerce(entity, ManagedEntity.class)).getEntity();
+        } else if (entity instanceof EntityWrapper) {
+            return ((EntityWrapper) entity).getEntity().getEntity();
+        }
+        throw new LuaError(entity + " is not an entity");
+    }
+
+    /**
+     * Get the managed entity that is represented by the given lua value.
+     *
+     * @param entity lua value that represents a managed entity
+     * @param strict if true, a {@link LuaError} will be thrown if the entity is not a managed entity, if false, null will be returned
+     * @return the managed entity or null
+     * @throws LuaError if strict is true and the entity is not a managed entity
+     */
+    public static ManagedEntity getManagedEntity(LuaValue entity, boolean strict) {
+        if (entity.isuserdata(Entity.class)) {
+            ManagedEntity managedEntity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity((Entity) CoerceLuaToJava.coerce(entity, Entity.class));
+            if (managedEntity != null) {
+                return managedEntity;
+            }
+        } else if (entity.isuserdata(ManagedEntity.class)) {
+            return (ManagedEntity) CoerceLuaToJava.coerce(entity, ManagedEntity.class);
+        } else if (entity instanceof EntityWrapper) {
+            return ((EntityWrapper) entity).getEntity();
+        }
+
+        if (strict) {
+            throw new LuaError(entity + " is not a managed entity");
+        } else {
+            return null;
         }
     }
 }

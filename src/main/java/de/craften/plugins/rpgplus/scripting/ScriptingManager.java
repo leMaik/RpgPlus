@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.*;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.luaj.vm2.Globals;
@@ -26,6 +27,7 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaValue timerModule;
     private LuaValue soundModule;
     private LuaValue storageModule;
+    private EntityEventManager entityEventManager;
 
     @Override
     protected void onActivated() {
@@ -53,6 +55,7 @@ public class ScriptingManager extends PluginComponentBase {
         timerModule = new ScriptTimedEventManager(RpgPlus.getPlugin(RpgPlus.class));
         soundModule = new Sound(RpgPlus.getPlugin(RpgPlus.class));
         storageModule = new Storage();
+        entityEventManager = new EntityEventManager(RpgPlus.getPlugin(RpgPlus.class));
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -90,5 +93,9 @@ public class ScriptingManager extends PluginComponentBase {
 
     public LuaValue getStorageModule() {
         return storageModule;
+    }
+
+    public EntityEventManager getEntityEventManager() {
+        return entityEventManager;
     }
 }

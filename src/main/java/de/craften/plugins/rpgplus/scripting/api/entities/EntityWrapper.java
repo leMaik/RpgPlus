@@ -15,6 +15,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
 import java.util.Random;
@@ -29,7 +30,6 @@ public class EntityWrapper extends LuaTable {
     private final ManagedEntity entity;
 
     public EntityWrapper(final ManagedEntity entity) {
-        final RpgPlus plugin = RpgPlus.getPlugin(RpgPlus.class);
         this.entity = entity;
 
         set("navigateTo", new VarArgFunction() {
@@ -89,13 +89,13 @@ public class EntityWrapper extends LuaTable {
                 ask.set(new Runnable() {
                     @Override
                     public void run() {
-                        plugin.getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
+                        RpgPlus.getPlugin(RpgPlus.class).getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
                             @Override
                             public void handleAnswer(final Player player, String answer) {
                                 Varargs handled = callback.invoke(LuaValue.valueOf(answer), new OneArgFunction() {
                                     @Override
                                     public LuaValue call(LuaValue message) {
-                                        plugin.getDialogs().tell(entity.getName(), player, messageAlternatives(message));
+                                        RpgPlus.getPlugin(RpgPlus.class).getDialogs().tell(entity.getName(), player, messageAlternatives(message));
                                         return LuaValue.NIL;
                                     }
                                 });
@@ -116,10 +116,24 @@ public class EntityWrapper extends LuaTable {
             public Varargs invoke(Varargs varargs) {
                 Player player = ScriptUtil.getPlayer(varargs.arg(2));
                 for (int i = 3; i <= varargs.narg(); i++) {
-                    plugin.getDialogs().tell(entity.getName(), player, messageAlternatives(varargs.arg(i)));
+                    RpgPlus.getPlugin(RpgPlus.class).getDialogs().tell(entity.getName(), player, messageAlternatives(varargs.arg(i)));
                 }
 
                 return LuaValue.NIL;
+            }
+        });
+
+        set("on", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
+                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getEntityEventManager().on(entity, eventName, callback);
+            }
+        });
+
+        set("off", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
+                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getEntityEventManager().off(entity, eventName, callback);
             }
         });
     }
@@ -129,9 +143,15 @@ public class EntityWrapper extends LuaTable {
         if (key.isstring()) {
             switch (key.checkjstring()) {
                 case "health":
-                    if (entity instanceof Damageable) {
-                        return LuaValue.valueOf(((Damageable) entity).getHealth());
+                    if (entity.getEntity() instanceof Damageable) {
+                        return LuaValue.valueOf(((Damageable) entity.getEntity()).getHealth());
                     }
+                    break;
+                case "maximumHealth":
+                    if (entity.getEntity() instanceof Damageable) {
+                        return LuaValue.valueOf(((Damageable) entity.getEntity()).getMaxHealth());
+                    }
+                    break;
             }
         }
         return super.rawget(key);
@@ -142,9 +162,15 @@ public class EntityWrapper extends LuaTable {
         if (key.isstring()) {
             switch (key.checkjstring()) {
                 case "health":
-                    if (entity instanceof Damageable) {
-                        ((Damageable) entity).setHealth(value.checkdouble());
+                    if (entity.getEntity() instanceof Damageable) {
+                        ((Damageable) entity.getEntity()).setHealth(value.checkdouble());
                     }
+                    break;
+                case "maximumHealth":
+                    if (entity.getEntity() instanceof Damageable) {
+                        ((Damageable) entity.getEntity()).setMaxHealth(value.checkdouble());
+                    }
+                    break;
             }
         }
         super.rawset(key, value);
