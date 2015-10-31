@@ -152,6 +152,16 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
 
     @Override
     public void onLocationChanged() {
+        if (nametag != null) {
+            Location nameTagLocation = entity.getLocation().clone().add(0, EntityUtil.getEntityHeight(entity) + 0.05, 0);
+
+            if (secondNameTag != null) {
+                secondNameTag.teleport(nameTagLocation);
+                nameTagLocation.add(0, EntityUtil.NAME_TAG_HEIGHT + 0.05, 0);
+            }
+
+            nametag.teleport(nameTagLocation);
+        }
     }
 
     @Override

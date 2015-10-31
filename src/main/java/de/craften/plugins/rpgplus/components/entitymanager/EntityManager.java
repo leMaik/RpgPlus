@@ -60,6 +60,9 @@ public class EntityManager extends PluginComponentBase implements Listener {
                                 entity.onLocationChanged();
                             }
                             break;
+                        case NORMAL:
+                            entity.onLocationChanged();
+                            break;
                     }
                 }
             }
