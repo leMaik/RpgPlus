@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
+import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.BasicManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
@@ -19,7 +20,7 @@ public class EntitySpawner {
 
             @Override
             public LuaValue call(LuaValue entityType, LuaValue optionsArg) {
-                EntityType type = EntityType.valueOf(entityType.checkjstring());
+                EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
                 LuaTable options = optionsArg.checktable();
 
                 ManagedEntity entity = new BasicManagedEntity<>(type.getEntityClass(), new Location(
@@ -29,10 +30,10 @@ public class EntitySpawner {
                         options.get("z").checkdouble()));
 
                 entity.setName(options.get("name").optjstring(""));
-                entity.setIsTakingDamage(options.get("invulnerable").optboolean(false));
-                entity.setMovementType(MovementType.valueOf(options.get("movementType").optjstring("LOCAL")));
+                entity.setIsTakingDamage(!options.get("invulnerable").optboolean(false));
+                entity.setMovementType(MovementType.valueOf(options.get("movementType").optjstring("local").toUpperCase()));
                 entity.spawn();
-
+                RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(entity);
                 return EntityWrapper.wrap(entity);
             }
         });

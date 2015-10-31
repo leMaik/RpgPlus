@@ -35,28 +35,28 @@ public class EntityWrapper extends LuaTable {
         set("navigateTo", new VarArgFunction() {
             @Override
             public Varargs invoke(final Varargs varargs) {
-                final LuaTable destination = varargs.arg(1).checktable();
+                final LuaTable destination = varargs.arg(2).checktable();
                 final LuaTable options;
                 Runnable callback = null;
-                if (varargs.narg() == 3) {
-                    options = varargs.arg(2).checktable();
+                if (varargs.narg() == 4) {
+                    options = varargs.arg(3).checktable();
                     callback = new Runnable() {
                         @Override
                         public void run() {
-                            varargs.arg(3).invoke(destination);
+                            varargs.arg(4).invoke(destination);
                         }
                     };
                 } else {
-                    if (varargs.isfunction(2)) {
+                    if (varargs.isfunction(3)) {
                         options = new LuaTable();
                         callback = new Runnable() {
                             @Override
                             public void run() {
-                                varargs.arg(2).invoke(destination);
+                                varargs.arg(3).invoke(destination);
                             }
                         };
                     } else {
-                        options = varargs.arg(2).opttable(new LuaTable());
+                        options = varargs.arg(3).opttable(new LuaTable());
                     }
                 }
                 try {
@@ -82,14 +82,14 @@ public class EntityWrapper extends LuaTable {
         set("ask", new VarArgFunction() {
             @Override
             public Varargs invoke(final Varargs varargs) {
-                final Player player = ScriptUtil.getPlayer(varargs.arg(1));
-                final LuaFunction callback = varargs.checkfunction(3);
+                final Player player = ScriptUtil.getPlayer(varargs.arg(2));
+                final LuaFunction callback = varargs.checkfunction(4);
                 final AtomicBoolean returnValue = new AtomicBoolean(false);
                 final AtomicReference<Runnable> ask = new AtomicReference<Runnable>();
                 ask.set(new Runnable() {
                     @Override
                     public void run() {
-                        plugin.getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(2)), new AnswerHandler() {
+                        plugin.getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
                             @Override
                             public void handleAnswer(final Player player, String answer) {
                                 Varargs handled = callback.invoke(LuaValue.valueOf(answer), new OneArgFunction() {
@@ -114,8 +114,8 @@ public class EntityWrapper extends LuaTable {
         set("tell", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs varargs) {
-                Player player = ScriptUtil.getPlayer(varargs.arg(1));
-                for (int i = 2; i <= varargs.narg(); i++) {
+                Player player = ScriptUtil.getPlayer(varargs.arg(2));
+                for (int i = 3; i <= varargs.narg(); i++) {
                     plugin.getDialogs().tell(entity.getName(), player, messageAlternatives(varargs.arg(i)));
                 }
 
@@ -133,6 +133,6 @@ public class EntityWrapper extends LuaTable {
     }
 
     public static LuaValue wrap(ManagedEntity entity) {
-        return CoerceJavaToLua.coerce(new EntityWrapper(entity));
+        return new EntityWrapper(entity);
     }
 }
