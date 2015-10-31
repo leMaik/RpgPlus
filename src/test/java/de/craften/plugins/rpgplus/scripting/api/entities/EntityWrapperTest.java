@@ -36,10 +36,10 @@ public class EntityWrapperTest extends LuaCodeTest {
 
         //test if getting maximum health works
         setLuaVariable("entity", EntityWrapper.wrap(managedEntity));
-        assertEquals(42, executeLua("return entity.maximumHealth").checkdouble(), 0);
+        assertEquals(42, executeLua("return entity.maxHealth").checkdouble(), 0);
 
         //test if setting maximum health works
-        executeLua("entity.maximumHealth = 21");
+        executeLua("entity.maxHealth = 21");
         verify(mockEntity).setMaxHealth(21);
     }
 }

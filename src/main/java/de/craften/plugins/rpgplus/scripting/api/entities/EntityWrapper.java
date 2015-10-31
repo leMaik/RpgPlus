@@ -147,7 +147,7 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((Damageable) entity.getEntity()).getHealth());
                     }
                     break;
-                case "maximumHealth":
+                case "maxHealth":
                     if (entity.getEntity() instanceof Damageable) {
                         return LuaValue.valueOf(((Damageable) entity.getEntity()).getMaxHealth());
                     }
@@ -166,7 +166,7 @@ public class EntityWrapper extends LuaTable {
                         ((Damageable) entity.getEntity()).setHealth(value.checkdouble());
                     }
                     break;
-                case "maximumHealth":
+                case "maxHealth":
                     if (entity.getEntity() instanceof Damageable) {
                         ((Damageable) entity.getEntity()).setMaxHealth(value.checkdouble());
                     }
