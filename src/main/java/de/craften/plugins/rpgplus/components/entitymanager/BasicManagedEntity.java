@@ -134,7 +134,7 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
 
     @Override
     public void despawn() {
-        if (entity != null) {
+        if (entity != null && !entity.isDead()) {
             entity.remove();
         }
 

@@ -83,7 +83,8 @@ public class EntityManager extends PluginComponentBase implements Listener {
 
         if (entity != null) {
             unregisterEntity(entity);
-
+            entity.despawn();
+            
             if (entity instanceof CustomDrops) {
                 Player killer = event.getEntity().getKiller();
                 if (killer != null) {
