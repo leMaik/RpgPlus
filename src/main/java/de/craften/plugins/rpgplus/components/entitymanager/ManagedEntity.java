@@ -71,7 +71,25 @@ public interface ManagedEntity<T extends Entity> {
      * @param name display name
      */
     void setName(String name);
+    
+    /**
+     * Get the visible of the display name of this entity.
+     *
+     * @return visible of the display name of this entity
+     */
+    boolean getNameVisible();
 
+    /**
+     * Set the visible of the display name of this entity.
+     *
+     * @param nameVisible visible of the display name
+     */
+    void setNameVisible(boolean nameVisible);
+    
+    String getSecondName();
+    
+    void setSecondName(String secondName);
+    
     /**
      * Spawn this entity.
      */

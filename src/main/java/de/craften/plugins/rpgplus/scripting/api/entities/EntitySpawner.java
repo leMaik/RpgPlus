@@ -30,8 +30,10 @@ public class EntitySpawner {
                         options.get("z").checkdouble()));
 
                 entity.setName(options.get("name").optjstring(""));
+                entity.setSecondName(options.get("secondName").optjstring(""));
                 entity.setIsTakingDamage(!options.get("invulnerable").optboolean(false));
                 entity.setMovementType(MovementType.valueOf(options.get("movementType").optjstring("local").toUpperCase()));
+                entity.setNameVisible(options.get("nameVisible").optboolean(true));
                 entity.spawn();
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(entity);
                 return EntityWrapper.wrap(entity);
