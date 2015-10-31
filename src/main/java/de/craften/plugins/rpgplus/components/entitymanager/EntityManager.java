@@ -68,17 +68,20 @@ public class EntityManager extends PluginComponentBase implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         ManagedEntity entity = getEntity(event.getEntity());
-        unregisterEntity(entity);
+        
+        if(entity != null){
+            unregisterEntity(entity);
 
-        if (entity instanceof CustomDrops) {
-            Player killer = event.getEntity().getKiller();
-            if (killer != null) {
-                event.setDroppedExp(((CustomDrops) entity).getExp((Player) killer));
+            if (entity instanceof CustomDrops) {
+                Player killer = event.getEntity().getKiller();
+                if (killer != null) {
+                    event.setDroppedExp(((CustomDrops) entity).getExp((Player) killer));
 
-                Location location = event.getEntity().getLocation();
-                World world = location.getWorld();
-                for (ItemStack items : ((CustomDrops) entity).getDrops((Player) killer)) {
-                    world.dropItemNaturally(location, items);
+                    Location location = event.getEntity().getLocation();
+                    World world = location.getWorld();
+                    for (ItemStack items : ((CustomDrops) entity).getDrops((Player) killer)) {
+                        world.dropItemNaturally(location, items);
+                    }
                 }
             }
         }
@@ -103,7 +106,11 @@ public class EntityManager extends PluginComponentBase implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        getEntity(event.getRightClicked().getUniqueId()).onPlayerInteract(event);
+        ManagedEntity entity = getEntity(event.getRightClicked());
+        
+        if(entity != null){
+            entity.onPlayerInteract(event);
+        }
     }
 
     private void handleNearbyPlayers(ManagedEntity entity, PlayerMoveEvent event) {
