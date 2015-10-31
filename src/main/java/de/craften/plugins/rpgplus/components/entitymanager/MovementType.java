@@ -20,7 +20,7 @@ public enum MovementType {
     FROZEN,
 
     /**
-     * Move to the destination waypoint. Only works with {@link MovingManagedEntity}.
+     * Move around (controlled by custom code, not by normal game logic).
      */
-    TRAVEL_WAYPOINTS
+    MOVING
 }

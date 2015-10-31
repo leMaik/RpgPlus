@@ -48,22 +48,13 @@ public class EntityManager extends PluginComponentBase implements Listener {
                             entity.getEntity().teleport(currentLocation);
                             entity.getEntity().setVelocity(new Vector(0, 0, 0));
                             break;
-                        case TRAVEL_WAYPOINTS:
-                            if (entity instanceof MovingManagedEntity) {
-                                moveEntity((MovingManagedEntity) entity);
-                            } else {
-                                getLogger().warning("Entity " + entity.getEntity().getUniqueId() +
-                                        " should travel waypoints but is not a MovingManagedEntity.");
-                            }
+                        case MOVING:
+                            entity.getEntity().teleport(entity.getLocalLocation());
                             break;
                     }
                 }
             }
         }, 0, 1);
-    }
-
-    private void moveEntity(MovingManagedEntity entity) {
-        //TODO implement moving
     }
 
     @EventHandler
