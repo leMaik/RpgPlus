@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>RpgPlus</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Fields">Fields</a></li>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>Entity</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/rpgplus.html">rpgplus</a></li>
+  <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
+  <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
+  <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
+  <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
+  <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Entity</code></h1>
+<p>An entity.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Entity.health">Entity.health</a></td>
+	<td class="summary">Health of the entity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.maxHealth">Entity.maxHealth</a></td>
+	<td class="summary">Maximum health of the entity.</td>
+	</tr>
+</table>
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Entity:navigateTo">Entity:navigateTo (destination[, options][, callback])</a></td>
+	<td class="summary">Navigates to the given location, using A*.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:tell">Entity:tell (player, message[, ...])</a></td>
+	<td class="summary">Tell a message to a player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:ask">Entity:ask (player, question, callback)</a></td>
+	<td class="summary">Ask a player something.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:on">Entity:on (event, handler)</a></td>
+	<td class="summary">Add a callback for the given event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity:off">Entity:off ([event[, handler]])</a></td>
+	<td class="summary">Remove an event handler.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Entity.health"></a>
+    <strong>Entity.health</strong>
+    </dt>
+    <dd>
+    Health of the entity.  This field is writable.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.maxHealth"></a>
+    <strong>Entity.maxHealth</strong>
+    </dt>
+    <dd>
+    Maximum health of the entity.  This field is writable.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Entity:navigateTo"></a>
+    <strong>Entity:navigateTo (destination[, options][, callback])</strong>
+    </dt>
+    <dd>
+    Navigates to the given location, using A*.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">destination</span>
+         destination, a table with <code>x</code>, <code>y</code> and <code>z</code> fields
+        </li>
+        <li><span class="parameter">options</span>
+         a table with options for pathing, options are <code>openDoors</code> (boolean), <code>openFenceGates</code> (boolean) and <code>speed</code> (int, in meters per second)
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">callback</span>
+         callback that is invoked when the entity has reached the destination
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> if the navigation was possible, <code>false</code> if no path was found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:tell"></a>
+    <strong>Entity:tell (player, message[, ...])</strong>
+    </dt>
+    <dd>
+    Tell a message to a player.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         player to tell the message to
+        </li>
+        <li><span class="parameter">message</span>
+         message to tell, either a string or a list of alternative string to randomly choose from
+        </li>
+        <li><span class="parameter">...</span>
+         more messages to tell, each being either a string or a list of alternative string to randomly choose from
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:ask"></a>
+    <strong>Entity:ask (player, question, callback)</strong>
+    </dt>
+    <dd>
+    Ask a player something.  The player needs to send the answer using the chat.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         player to ask
+        </li>
+        <li><span class="parameter">question</span>
+         question, either a string or a list of alternative string to randomly choose from
+        </li>
+        <li><span class="parameter">callback</span>
+         callback that gets invoked with the response and a function to respond easily, <code>respond(message)</code>.
+ If the callback returns <code>false</code>, the question will be posed again
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:on"></a>
+    <strong>Entity:on (event, handler)</strong>
+    </dt>
+    <dd>
+    Add a callback for the given event.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+
+<p> event to add a handler to, possible events are:</p>
+
+<ul>
+    <li><code>&quot;interact&quot;</code> - <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/event/entity/EntityInteractEvent.html">EntityInteractEvent</a></li>
+</ul>
+
+
+        </li>
+        <li><span class="parameter">handler</span>
+         a handler function that is invoked whenever the event happens, gets the event as first parameter
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity:off"></a>
+    <strong>Entity:off ([event[, handler]])</strong>
+    </dt>
+    <dd>
+    Remove an event handler.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+         event to remove an event handler from; if not specified, all event handlers of this entity will be removed
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">handler</span>
+         the handler function to remove as previously added with <a href="../classes/Entity.html#Entity:on">on</a>; if not specified, all handlers of this event will be removed
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> if any event handler was removed, <code>false</code> if not
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
+<i style="float:right;">Last updated 2015-11-01 01:38:50 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
