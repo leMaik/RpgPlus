@@ -3,15 +3,11 @@ package de.craften.plugins.rpgplus.scripting.api.events;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
-
-import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The internal implementation of the {@link ScriptEventManager}. Used to separate the huge number of listener
@@ -47,6 +43,7 @@ public class ScriptEventManagerImpl {
         });
     }
 
+    /*
     public static void main(String[] args) throws Exception {
         //to use this program, bukkit needs to be in the classpath
         //it generates a list of all events as required by luadoc
@@ -69,4 +66,5 @@ public class ScriptEventManagerImpl {
             }
         }
     }
+    */
 }

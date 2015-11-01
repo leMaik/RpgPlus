@@ -62,4 +62,34 @@ abstract class EntityEventManagerImpl {
             }
         }
     }
+
+    /*
+    public static void main(String[] args) throws Exception {
+        //to use this program, bukkit and mockito need to be in the classpath
+        //it generates a list of all events as required by luadoc
+
+        final AtomicReference<String> eventName = new AtomicReference<>();
+
+        EntityEventManager printEventManager = new EntityEventManager() {
+            @Override
+            protected void callHandlers(String name, Event event, Entity entity) {
+                eventName.set(name);
+            }
+
+            @Override
+            protected void callHandlers(String name, EntityEvent event) {
+                eventName.set(name);
+            }
+        };
+        for (Method method : printEventManager.getClass().getMethods()) {
+            if (method.isAnnotationPresent(EventHandler.class)) {
+                method.invoke(printEventManager, mock(method.getParameterTypes()[0]));
+                System.out.printf("-- * `\"%s\"` - [%s](https://hub.spigotmc.org/javadocs/bukkit/index.html?%s.html)\n",
+                        eventName.get(),
+                        method.getParameterTypes()[0].getSimpleName(),
+                        method.getParameterTypes()[0].getName().replace(".", "/"));
+            }
+        }
+    }
+    */
 }
