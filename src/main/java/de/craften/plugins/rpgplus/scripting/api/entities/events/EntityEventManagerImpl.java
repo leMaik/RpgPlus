@@ -3,6 +3,8 @@ package de.craften.plugins.rpgplus.scripting.api.entities.events;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityEvent;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
@@ -20,7 +22,11 @@ abstract class EntityEventManagerImpl {
     private final Map<UUID, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
 
     protected void callHandlers(String eventName, EntityEvent event) {
-        Multimap<String, LuaFunction> handlers = eventHandlers.get(event.getEntity().getUniqueId());
+        callHandlers(eventName, event, event.getEntity());
+    }
+
+    protected void callHandlers(String eventName, Event event, Entity entity) {
+        Multimap<String, LuaFunction> handlers = eventHandlers.get(entity.getUniqueId());
         if (handlers != null) {
             for (LuaFunction callback : handlers.get(eventName)) {
                 callback.invoke(CoerceJavaToLua.coerce(event));

@@ -4,6 +4,7 @@ import de.craften.plugins.rpgplus.util.EntityUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
@@ -61,25 +62,32 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     @Override
     public void setName(String name) {
         this.name = name;
-        if (entity != null) {
-            if (entity instanceof LivingEntity && !name.isEmpty() && isNameVisible) {
-                Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
+        if (name != null && !name.isEmpty()) {
+            if (entity != null) {
+                if (entity instanceof LivingEntity && isNameVisible) {
+                    Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
 
-                if (nametag == null) {
-                    nametag = entity.getWorld().spawn(nameTagLocation, ArmorStand.class);
+                    if (nametag == null) {
+                        nametag = (ArmorStand) entity.getWorld().spawnEntity(nameTagLocation, EntityType.ARMOR_STAND);
+                    }
+
+                    nametag.teleport(nameTagLocation);
+                    nametag.setCustomName(name);
+                    nametag.setCustomNameVisible(true);
+                    nametag.setVisible(false);
+                    nametag.setMarker(true);
+                    nametag.setCanPickupItems(false);
+                    nametag.setGravity(false);
+
+                } else {
+                    entity.setCustomName(name);
+                    entity.setCustomNameVisible(isNameVisible);
                 }
-
-                nametag.teleport(nameTagLocation);
-                nametag.setCustomName(name);
-                nametag.setCustomNameVisible(true);
-                nametag.setVisible(false);
-                nametag.setMarker(true);
-                nametag.setCanPickupItems(false);
-                nametag.setGravity(false);
-
             } else {
-                entity.setCustomName(name);
-                entity.setCustomNameVisible(isNameVisible);
+                if (nametag != null) {
+                    nametag.remove();
+                    nametag = null;
+                }
             }
         }
     }
@@ -102,21 +110,27 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     @Override
     public void setSecondName(String secondName) {
         this.secondName = secondName;
-        if (entity != null && entity instanceof LivingEntity && !secondName.isEmpty() && isNameVisible) {
-            Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity), 0);
+        if (secondName != null && !secondName.isEmpty()) {
+            if (entity != null && entity instanceof LivingEntity && isNameVisible) {
+                Location nameTagLocation = localLocation.clone().add(0, EntityUtil.getEntityHeight(entity), 0);
 
-            if (secondNameTag == null) {
-                secondNameTag = entity.getWorld().spawn(nameTagLocation, ArmorStand.class);
+                if (secondNameTag == null) {
+                    secondNameTag = (ArmorStand) entity.getWorld().spawnEntity(nameTagLocation, EntityType.ARMOR_STAND);
+                }
+
+                secondNameTag.teleport(nameTagLocation);
+                secondNameTag.setCustomName(secondName);
+                secondNameTag.setCustomNameVisible(true);
+                secondNameTag.setVisible(false);
+                secondNameTag.setMarker(true);
+                secondNameTag.setCanPickupItems(false);
+                secondNameTag.setGravity(false);
             }
-
-            secondNameTag.teleport(nameTagLocation);
-            secondNameTag.setCustomName(secondName);
-            secondNameTag.setCustomNameVisible(true);
-            secondNameTag.setVisible(false);
-            secondNameTag.setMarker(true);
-            secondNameTag.setCanPickupItems(false);
-            secondNameTag.setGravity(false);
-
+        } else {
+            if (secondNameTag != null) {
+                secondNameTag.remove();
+                secondNameTag = null;
+            }
         }
     }
 
