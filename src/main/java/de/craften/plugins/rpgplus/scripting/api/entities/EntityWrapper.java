@@ -152,6 +152,14 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((Damageable) entity.getEntity()).getMaxHealth());
                     }
                     break;
+                case "name":
+                    return LuaValue.valueOf(entity.getName());
+                case "secondName":
+                    return LuaValue.valueOf(entity.getSecondName());
+                case "invulnerable":
+                    return LuaValue.valueOf(!entity.isTakingDamage());
+                case "nameVisible":
+                    return LuaValue.valueOf(entity.isNameVisible());
             }
         }
         return super.rawget(key);
@@ -170,6 +178,18 @@ public class EntityWrapper extends LuaTable {
                     if (entity.getEntity() instanceof Damageable) {
                         ((Damageable) entity.getEntity()).setMaxHealth(value.checkdouble());
                     }
+                    break;
+                case "name":
+                    entity.setName(value.checkjstring());
+                    break;
+                case "secondName":
+                    entity.setSecondName(value.checkjstring());
+                    break;
+                case "invulnerable":
+                    entity.setIsTakingDamage(!value.checkboolean());
+                    break;
+                case "nameVisible":
+                    entity.setNameVisible(value.checkboolean());
                     break;
             }
         }

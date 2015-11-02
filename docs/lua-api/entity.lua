@@ -7,6 +7,18 @@ health = _
 --- Maximum health of the entity. This field is writable.
 maxHealth = _
 
+--- Name of the entity. This field is writable.
+name = _
+
+--- Second name of the entity. This field is writable.
+secondName = _
+
+--- Specifies whether the name of the entity is displayed above it. This field is writable.
+nameVisible = _
+
+--- Specifies whether the entity is invulnerable. This field is writable.
+invulnerable = _
+
 --- Navigates to the given location, using A*.
 -- @param destination destination, a table with `x`, `y` and `z` fields
 -- @param[opt] options a table with options for pathing, options are `openDoors` (boolean), `openFenceGates` (boolean) and `speed` (int, in meters per second)

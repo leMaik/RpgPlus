@@ -6,6 +6,8 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * A test that tests lua code.
  */
