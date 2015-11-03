@@ -7,7 +7,9 @@ import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaFunction;
@@ -16,6 +18,7 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ThreeArgFunction;
+import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
 import java.util.Random;
@@ -79,6 +82,21 @@ public class EntityWrapper extends LuaTable {
                 }
             }
         });
+
+        set("teleportTo", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entityArg, LuaValue destinationArg) {
+                LuaTable destination = destinationArg.checktable();
+                entity.moveTo(new Location(
+                        Bukkit.getWorld(destination.get("world").optjstring(entity.getLocalLocation().getWorld().getName())),
+                        destination.get("x").checkdouble(),
+                        destination.get("y").checkdouble(),
+                        destination.get("z").checkdouble()
+                ));
+                return LuaValue.NIL;
+            }
+        });
+
         set("ask", new VarArgFunction() {
             @Override
             public Varargs invoke(final Varargs varargs) {

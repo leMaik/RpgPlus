@@ -27,6 +27,10 @@ invulnerable = _
 --
 function navigateTo(destination, options, callback) end
 
+--- Teleports the entity to the given location.
+-- @param destination destination, a table with `x`, `y` and `z` fields and an optional `world` field (defaults to current world)
+function teleportTo(destination) end
+
 --- Tell a message to a player.
 -- @param player player to tell the message to
 -- @param message message to tell, either a string or a list of alternative string to randomly choose from
