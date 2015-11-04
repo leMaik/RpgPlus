@@ -55,9 +55,7 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (ManagedEntity entity : entityManager.getEntities()) {
-            entity.despawn();
-        }
+        entityManager.clear();
     }
 
     public void addComponents(PluginComponent... components) {

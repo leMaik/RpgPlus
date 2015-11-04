@@ -217,4 +217,15 @@ public class EntityManager extends PluginComponentBase implements Listener {
         managedEntities.put(managedEntity.getUniqueId(), managedEntity);
         return managedEntity;
     }
+
+    /**
+     * Despawn and remove all managed entities.
+     */
+    public void clear() {
+        for (ManagedEntity entity : new ArrayList<>(entities.values())) {
+            entity.despawn();
+        }
+        entities.clear();
+        managedEntities.clear();
+    }
 }
