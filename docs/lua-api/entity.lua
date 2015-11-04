@@ -46,6 +46,15 @@ function tell(player, message, ...) end
 --
 function ask(player, question, callback) end
 
+--- Despawn this entity.
+function despawn() end
+
+--- Despawn this entity with the kill animation.
+function kill() end
+
+--- Respawn this entity. If this entity is already spawned, it will be despawned first.
+function respawn() end
+
 --- Add a callback for the given event.
 -- @param event event to add a handler to, possible events are:
 --
