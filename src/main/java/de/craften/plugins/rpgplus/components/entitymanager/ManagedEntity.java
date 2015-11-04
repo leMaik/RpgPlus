@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
+import java.util.UUID;
+
 /**
  * An entity that can be managed by the {@link EntityManager}.
  */
@@ -110,6 +112,11 @@ public interface ManagedEntity<T extends Entity> {
     void despawn();
 
     /**
+     * Kill this entity. If this entity is not {@link org.bukkit.entity.Damageable}, it will simply be despawned.
+     */
+    void kill();
+
+    /**
      * Callback for player interact events with this entity.
      *
      * @param event event
@@ -120,4 +127,12 @@ public interface ManagedEntity<T extends Entity> {
      * Callback that is invoked whenever the location of this entity has changed.
      */
     void onLocationChanged();
+
+    /**
+     * Get the unique ID of this managed entity. This is not the unique ID of the actual entity and will persist if the
+     * actual entity is respawned.
+     *
+     * @return unique ID of this managed entity
+     */
+    UUID getUniqueId();
 }

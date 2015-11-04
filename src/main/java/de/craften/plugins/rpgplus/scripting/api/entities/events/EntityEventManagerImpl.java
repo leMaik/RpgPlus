@@ -2,6 +2,8 @@ package de.craften.plugins.rpgplus.scripting.api.entities.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -12,21 +14,25 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * The internal implementation of the {@link EntityEventManager}. Used to separate the huge number of listener
  * functions from this code.
  */
 abstract class EntityEventManagerImpl {
-    private final Map<UUID, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
+    private final Map<ManagedEntity, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
+
+    private Multimap<String, LuaFunction> getHandlers(Entity entity) {
+        ManagedEntity managedEntity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
+        return managedEntity != null ? eventHandlers.get(managedEntity) : null;
+    }
 
     protected void callHandlers(String eventName, EntityEvent event) {
         callHandlers(eventName, event, event.getEntity());
     }
 
     protected void callHandlers(String eventName, Event event, Entity entity) {
-        Multimap<String, LuaFunction> handlers = eventHandlers.get(entity.getUniqueId());
+        Multimap<String, LuaFunction> handlers = getHandlers(entity);
         if (handlers != null) {
             for (LuaFunction callback : handlers.get(eventName)) {
                 callback.invoke(CoerceJavaToLua.coerce(event));
@@ -35,22 +41,22 @@ abstract class EntityEventManagerImpl {
     }
 
     public LuaValue on(LuaValue entity, LuaValue eventName, LuaValue callback) {
-        UUID entityUuid = ScriptUtil.getEntity(entity).getUniqueId();
-        Multimap<String, LuaFunction> handlers = eventHandlers.get(entityUuid);
+        ManagedEntity managedEntity = ScriptUtil.getManagedEntity(entity, true);
+        Multimap<String, LuaFunction> handlers = eventHandlers.get(managedEntity);
         if (handlers == null) {
             handlers = ArrayListMultimap.create();
-            eventHandlers.put(entityUuid, handlers);
+            eventHandlers.put(managedEntity, handlers);
         }
         handlers.put(eventName.checkjstring(), callback.checkfunction());
         return LuaValue.NIL;
     }
 
     public LuaValue off(LuaValue entity, LuaValue eventName, LuaValue callback) {
-        UUID entityUuid = ScriptUtil.getEntity(entity).getUniqueId();
+        ManagedEntity managedEntity = ScriptUtil.getManagedEntity(entity, true);
         if (eventName.isnil()) {
-            return LuaValue.valueOf(!eventHandlers.remove(entityUuid).isEmpty());
+            return LuaValue.valueOf(!eventHandlers.remove(managedEntity).isEmpty());
         } else {
-            Multimap<String, LuaFunction> handlers = eventHandlers.get(entityUuid);
+            Multimap<String, LuaFunction> handlers = eventHandlers.get(managedEntity);
             if (handlers != null) {
                 if (callback.isnil()) {
                     return LuaValue.valueOf(!handlers.removeAll(eventName.checkjstring()).isEmpty());

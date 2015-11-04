@@ -20,6 +20,7 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
+import org.luaj.vm2.lib.ZeroArgFunction;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -152,6 +153,30 @@ public class EntityWrapper extends LuaTable {
             @Override
             public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
                 return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getEntityEventManager().off(entity, eventName, callback);
+            }
+        });
+
+        set("despawn", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                entity.despawn();
+                return LuaValue.NIL;
+            }
+        });
+
+        set("respawn", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                entity.spawn();
+                return LuaValue.NIL;
+            }
+        });
+
+        set("kill", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                entity.kill();
+                return LuaValue.NIL;
             }
         });
     }

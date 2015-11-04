@@ -2,18 +2,19 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import de.craften.plugins.rpgplus.util.EntityUtil;
 import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.util.Vector;
+
+import java.util.UUID;
 
 /**
  * A basic managed entity without any special logic.
  */
-public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
+class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
+    private final UUID id = UUID.randomUUID();
     private final Class<T> entityType;
+    private final EntityManager manager;
     private T entity;
     private Location localLocation;
     private MovementType movementType;
@@ -24,11 +25,12 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     private String secondName;
     private ArmorStand secondNameTag;
 
-    public BasicManagedEntity(Class<T> entity, Location location) {
+    BasicManagedEntity(Class<T> entity, Location location, EntityManager manager) {
         this.entityType = entity;
         localLocation = location;
         setMovementType(MovementType.NORMAL);
         setIsTakingDamage(true);
+        this.manager = manager;
     }
 
     @Override
@@ -140,6 +142,8 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
             despawn();
         }
         entity = localLocation.getWorld().spawn(localLocation, entityType);
+        manager.registerEntity(this);
+
         setMovementType(movementType);
         setNameVisible(isNameVisible);
         setName(name);
@@ -150,13 +154,36 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     public void despawn() {
         if (entity != null && !entity.isDead()) {
             entity.remove();
+            manager.unregisterEntity(entity);
+            entity = null;
         }
 
         if (nametag != null) {
             nametag.remove();
+            nametag = null;
         }
         if (secondNameTag != null) {
             secondNameTag.remove();
+            secondNameTag = null;
+        }
+    }
+
+    @Override
+    public void kill() {
+        if (entity instanceof Damageable) {
+            ((Damageable) entity).setHealth(0);
+            manager.unregisterEntity(entity);
+
+            if (nametag != null) {
+                nametag.remove();
+                nametag = null;
+            }
+            if (secondNameTag != null) {
+                secondNameTag.remove();
+                secondNameTag = null;
+            }
+        } else {
+            despawn();
         }
     }
 
@@ -176,6 +203,11 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
 
             nametag.teleport(nameTagLocation);
         }
+    }
+
+    @Override
+    public UUID getUniqueId() {
+        return id;
     }
 
     @Override
@@ -207,5 +239,15 @@ public class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
 
     public void setIsTakingDamage(boolean isTakingDamage) {
         this.isTakingDamage = isTakingDamage;
+    }
+
+    @Override
+    public int hashCode() {
+        return getUniqueId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ManagedEntity && ((ManagedEntity) obj).getUniqueId().equals(getUniqueId());
     }
 }

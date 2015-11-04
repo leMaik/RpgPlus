@@ -1,7 +1,6 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.entitymanager.BasicManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
 import org.bukkit.Bukkit;
@@ -23,11 +22,13 @@ public class EntitySpawner {
                 EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
                 LuaTable options = optionsArg.checktable();
 
-                ManagedEntity entity = new BasicManagedEntity<>(type.getEntityClass(), new Location(
-                        Bukkit.getWorld(options.get("world").checkjstring()),
-                        options.get("x").checkdouble(),
-                        options.get("y").checkdouble(),
-                        options.get("z").checkdouble()));
+                ManagedEntity entity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().spawn(
+                        type.getEntityClass(),
+                        new Location(
+                                Bukkit.getWorld(options.get("world").checkjstring()),
+                                options.get("x").checkdouble(),
+                                options.get("y").checkdouble(),
+                                options.get("z").checkdouble()));
 
                 entity.setName(options.get("name").optjstring(""));
                 entity.setSecondName(options.get("secondName").optjstring(""));
@@ -35,7 +36,6 @@ public class EntitySpawner {
                 entity.setMovementType(MovementType.valueOf(options.get("movementType").optjstring("local").toUpperCase()));
                 entity.setNameVisible(options.get("nameVisible").optboolean(true));
                 entity.spawn();
-                RpgPlus.getPlugin(RpgPlus.class).getEntityManager().registerEntity(entity);
                 return EntityWrapper.wrap(entity);
             }
         });

@@ -24,10 +24,12 @@ import java.util.*;
  */
 public class EntityManager extends PluginComponentBase implements Listener {
     private Map<UUID, ManagedEntity> entities;
+    private Map<UUID, ManagedEntity> managedEntities;
     private Multimap<UUID, Player> nearbyPlayers;
 
     protected void onActivated() {
         entities = new HashMap<>();
+        managedEntities = new HashMap<>();
         nearbyPlayers = MultimapBuilder.hashKeys().arrayListValues().build();
 
         runTaskTimer(new Runnable() {
@@ -71,7 +73,7 @@ public class EntityManager extends PluginComponentBase implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        ManagedEntity entity = getEntity(event.getEntity().getUniqueId());
+        ManagedEntity entity = getEntity(event.getEntity());
         if (entity != null && !entity.isTakingDamage()) {
             event.setCancelled(true);
         }
@@ -82,9 +84,9 @@ public class EntityManager extends PluginComponentBase implements Listener {
         ManagedEntity entity = getEntity(event.getEntity());
 
         if (entity != null) {
-            unregisterEntity(entity);
+            unregisterEntity(entity.getEntity());
             entity.despawn();
-            
+
             if (entity instanceof CustomDrops) {
                 Player killer = event.getEntity().getKiller();
                 if (killer != null) {
@@ -154,7 +156,7 @@ public class EntityManager extends PluginComponentBase implements Listener {
      *
      * @param entity entity to register
      */
-    public void registerEntity(ManagedEntity entity) {
+    void registerEntity(ManagedEntity entity) {
         entities.put(entity.getEntity().getUniqueId(), entity);
     }
 
@@ -163,8 +165,11 @@ public class EntityManager extends PluginComponentBase implements Listener {
      *
      * @param entity entity to unregister
      */
-    public void unregisterEntity(ManagedEntity entity) {
-        entities.remove(entity.getEntity().getUniqueId());
+    void unregisterManagedEntity(ManagedEntity entity) {
+        if (entity.getEntity() != null) {
+            entities.remove(entity.getEntity().getUniqueId());
+        }
+        managedEntities.remove(entity.getUniqueId());
         nearbyPlayers.removeAll(entity.getEntity().getUniqueId());
     }
 
@@ -173,18 +178,18 @@ public class EntityManager extends PluginComponentBase implements Listener {
      *
      * @param entity entity to unregister
      */
-    public void unregisterEntity(Entity entity) {
+    void unregisterEntity(Entity entity) {
         entities.remove(entity.getUniqueId());
     }
 
     /**
      * Get a managed entity by its ID.
      *
-     * @param id ID of the entity
-     * @return managed entity with the given ID or null if no such entity is registered
+     * @param id ID of the managed entity
+     * @return managed entity with the given ID or null if no managed entity with this ID is registered
      */
     public ManagedEntity getEntity(UUID id) {
-        return entities.get(id);
+        return managedEntities.get(id);
     }
 
     /**
@@ -205,5 +210,11 @@ public class EntityManager extends PluginComponentBase implements Listener {
     @SuppressWarnings("unchecked")
     public <T extends Entity> ManagedEntity<T> getEntity(T entity) {
         return entities.get(entity.getUniqueId());
+    }
+
+    public <T extends Entity> ManagedEntity<T> spawn(Class<T> entity, Location location) {
+        ManagedEntity<T> managedEntity = new BasicManagedEntity<T>(entity, location, this);
+        managedEntities.put(managedEntity.getUniqueId(), managedEntity);
+        return managedEntity;
     }
 }
