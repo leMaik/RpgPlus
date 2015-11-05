@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>RpgPlus</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>rpgplus.inventory</strong></li>
+  <li><a href="../modules/rpgplus.html">rpgplus</a></li>
+  <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
+  <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
+  <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
+  <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
+  <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/Entity.html">Entity</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>rpgplus.inventory</code></h1>
+<p>Provides inventory functions.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#hasItems">hasItems (player, ...)</a></td>
+	<td class="summary">Checks if the player has the given items.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#giveItems">giveItems (player, ...)</a></td>
+	<td class="summary">Gives items to a player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#takeItems">takeItems (player, ...)</a></td>
+	<td class="summary">Takes items from a player.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#itemstack">itemstack</a></td>
+	<td class="summary">A table that represents an itemstack.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "hasItems"></a>
+    <strong>hasItems (player, ...)</strong>
+    </dt>
+    <dd>
+    Checks if the player has the given items.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         player
+        </li>
+        <li><span class="parameter">...</span>
+         items to check for (each as an <a href="../modules/rpgplus.inventory.html#itemstack">itemstack</a>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <code>true</code> if the player has the items or <code>false</code> if not
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "giveItems"></a>
+    <strong>giveItems (player, ...)</strong>
+    </dt>
+    <dd>
+    Gives items to a player.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         player
+        </li>
+        <li><span class="parameter">...</span>
+         items to give to the player (each as an <a href="../modules/rpgplus.inventory.html#itemstack">itemstack</a>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "takeItems"></a>
+    <strong>takeItems (player, ...)</strong>
+    </dt>
+    <dd>
+    Takes items from a player.  The items are taken even if they are not enough.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">player</span>
+         player
+        </li>
+        <li><span class="parameter">...</span>
+         items to take from the player (each as an <a href="../modules/rpgplus.inventory.html#itemstack">itemstack</a>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        missing amount of each specified item, as multiple return values
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "itemstack"></a>
+    <strong>itemstack</strong>
+    </dt>
+    <dd>
+    A table that represents an itemstack.
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">type</span>
+         type of the item, must be a <a href="https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html">Bukkit Material</a>
+        </li>
+        <li><span class="parameter">data</span>
+         of the item, if <code>nil</code>, the data is ignored when matching and set to 0 when giving the item to a player
+         (<em>default</em> nil)
+        </li>
+        <li><span class="parameter">amount</span>
+         amount of the item
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
+<i style="float:right;">Last updated 2015-11-05 22:58:34 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
