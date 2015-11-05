@@ -4,7 +4,6 @@ import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Material;
 import org.luaj.vm2.*;
-import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
 /**
@@ -12,18 +11,12 @@ import org.luaj.vm2.lib.VarArgFunction;
  */
 public class Inventory extends LuaTable {
     public Inventory() {
-        set("hasItem", new TwoArgFunction() {
+        set("hasItems", new VarArgFunction() {
             @Override
-            public LuaValue call(LuaValue player, LuaValue item) {
-                return checkItem(player, item);
-            }
-        });
-
-        set("hasItems", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue player, LuaValue items) {
-                for (int i = 1; i <= items.checktable().length(); i++) {
-                    if (!checkItem(player, items.get(i)).booleanValue()) {
+            public Varargs invoke(Varargs varargs) {
+                LuaValue player = varargs.arg(1);
+                for (int i = 2; i <= varargs.narg(); i++) {
+                    if (!checkItem(player, varargs.arg(i)).booleanValue()) {
                         return LuaValue.FALSE;
                     }
                 }
@@ -31,28 +24,14 @@ public class Inventory extends LuaTable {
             }
         });
 
-        set("giveItem", new TwoArgFunction() {
+        set("giveItems", new VarArgFunction() {
             @Override
-            public LuaValue call(LuaValue player, LuaValue item) {
-                giveItem(player, item);
-                return LuaValue.NIL;
-            }
-        });
-
-        set("giveItems", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue player, LuaValue items) {
-                for (int i = 1; i <= items.checktable().length(); i++) {
-                    giveItem(player, items.get(i));
+            public Varargs invoke(Varargs varargs) {
+                LuaValue player = varargs.arg(1);
+                for (int i = 2; i <= varargs.narg(); i++) {
+                    giveItem(player, varargs.arg(i));
                 }
                 return LuaValue.NIL;
-            }
-        });
-
-        set("takeItem", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue player, LuaValue item) {
-                return takeItem(player, item);
             }
         });
 
@@ -60,13 +39,12 @@ public class Inventory extends LuaTable {
             @Override
             public Varargs invoke(Varargs args) {
                 LuaValue player = args.arg(1);
-                LuaValue items = args.arg(2);
 
-                LuaValue[] missingAmounts = new LuaValue[items.length()];
-                for (int i = 1; i <= items.checktable().length(); i++) {
-                    missingAmounts[i - 1] = takeItem(player, items.get(i));
+                LuaValue[] missingAmounts = new LuaValue[args.narg() - 1];
+                for (int i = 2; i <= args.narg(); i++) {
+                    missingAmounts[i - 2] = takeItem(player, args.arg(i));
                 }
-                
+
                 return LuaValue.varargsOf(missingAmounts);
             }
         });
