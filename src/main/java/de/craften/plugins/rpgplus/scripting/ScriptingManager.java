@@ -28,6 +28,7 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaValue soundModule;
     private LuaValue storageModule;
     private EntityEventManager entityEventManager;
+    private Inventory inventoryModule;
 
     @Override
     protected void onActivated() {
@@ -58,6 +59,7 @@ public class ScriptingManager extends PluginComponentBase {
         storageModule = new Storage();
         entityEventManager = new EntityEventManager();
         plugin.getServer().getPluginManager().registerEvents(entityEventManager, plugin);
+        inventoryModule = new Inventory();
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -99,5 +101,9 @@ public class ScriptingManager extends PluginComponentBase {
 
     public EntityEventManager getEntityEventManager() {
         return entityEventManager;
+    }
+
+    public Inventory getInventoryModule() {
+        return inventoryModule;
     }
 }
