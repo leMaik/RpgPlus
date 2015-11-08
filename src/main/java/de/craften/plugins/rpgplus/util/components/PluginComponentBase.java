@@ -1,6 +1,5 @@
 package de.craften.plugins.rpgplus.util.components;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -99,6 +98,15 @@ public abstract class PluginComponentBase implements PluginComponent {
     }
 
     /**
+     * Runs the given runnable in the main thread, delayed.
+     *
+     * @param runnable the task to run
+     */
+    public void scheduleSyncDelayedTask(Runnable runnable) {
+        getServer().getScheduler().scheduleSyncDelayedTask(plugin, runnable);
+    }
+
+    /**
      * Returns a task that will repeatedly run until cancelled, starting after the specified number of server ticks.
      *
      * @param task   the task to be run
@@ -108,6 +116,16 @@ public abstract class PluginComponentBase implements PluginComponent {
      */
     public final BukkitTask runTaskTimer(Runnable task, long delay, long period) {
         return getServer().getScheduler().runTaskTimer(plugin, task, delay, period);
+    }
+
+    /**
+     * Returns a task that will be run asynchronously.
+     *
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     */
+    public BukkitTask runTaskAsynchronously(Runnable task) {
+        return getServer().getScheduler().runTaskAsynchronously(plugin, task);
     }
 
     /**
