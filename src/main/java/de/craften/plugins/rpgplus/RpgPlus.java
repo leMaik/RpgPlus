@@ -3,7 +3,7 @@ package de.craften.plugins.rpgplus;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.images.ImagesComponent;
 import de.craften.plugins.rpgplus.components.pathfinding.PathfindingComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageComponent;
@@ -27,6 +27,7 @@ public class RpgPlus extends JavaPlugin {
     private StorageComponent storage;
     private PathfindingComponent pathfinding;
     private DialogComponent dialogs;
+    private ImagesComponent images;
 
     @Override
     public void onEnable() {
@@ -37,6 +38,7 @@ public class RpgPlus extends JavaPlugin {
         storage = new StorageComponent(new File(getDataFolder(), "storage"));
         pathfinding = new PathfindingComponent();
         dialogs = new DialogComponent();
+        images = new ImagesComponent();
 
         scriptingManager.activateFor(this);
         entityManager.activateFor(this);
@@ -45,6 +47,7 @@ public class RpgPlus extends JavaPlugin {
         storage.activateFor(this);
         pathfinding.activateFor(this);
         dialogs.activateFor(this);
+        images.activateFor(this);
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "main.lua"));
@@ -120,5 +123,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public DialogComponent getDialogs() {
         return dialogs;
+    }
+
+    /**
+     * Gets the images component.
+     *
+     * @return the images component
+     */
+    public ImagesComponent getImages() {
+        return images;
     }
 }

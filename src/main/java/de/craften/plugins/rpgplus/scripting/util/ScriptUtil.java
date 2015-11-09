@@ -4,10 +4,12 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaError;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
@@ -82,7 +84,7 @@ public class ScriptUtil {
      * @param entity lua value that represents a managed entity
      * @param strict if true, a {@link LuaError} will be thrown if the entity is not a managed entity, if false, null will be returned
      * @return the managed entity or null
-     * @throws LuaError if strict is true and the entity is not a managed entity
+     * @throws LuaError if there are missing attributes or if strict is true and the entity is not a managed entity
      */
     public static ManagedEntity getManagedEntity(LuaValue entity, boolean strict) {
         if (entity.isuserdata(Entity.class)) {
@@ -101,5 +103,20 @@ public class ScriptUtil {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Get the location (without pitch and yaw) that is represented by the given lua table.
+     *
+     * @param location lua table that represents a location
+     * @return the location
+     * @throws LuaError if there are missing attributes
+     */
+    public static Location getLocation(LuaTable location) {
+        return new Location(
+                Bukkit.getWorld(location.get("world").checkjstring()),
+                location.get("x").checkdouble(),
+                location.get("y").checkdouble(),
+                location.get("z").checkdouble());
     }
 }

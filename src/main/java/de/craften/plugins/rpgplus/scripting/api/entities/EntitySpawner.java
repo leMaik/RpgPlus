@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
+import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -24,11 +25,8 @@ public class EntitySpawner {
 
                 ManagedEntity entity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().spawn(
                         type.getEntityClass(),
-                        new Location(
-                                Bukkit.getWorld(options.get("world").checkjstring()),
-                                options.get("x").checkdouble(),
-                                options.get("y").checkdouble(),
-                                options.get("z").checkdouble()));
+                        ScriptUtil.getLocation(optionsArg.checktable())
+                );
 
                 entity.setName(options.get("name").optjstring(""));
                 entity.setSecondName(options.get("secondName").optjstring(""));
