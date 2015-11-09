@@ -19,15 +19,17 @@ public class MapHandler implements Runnable {
     private final File image;
     private final int width;
     private final int height;
+    private final boolean temporary;
     private Callback callback;
 
-    public MapHandler(World world, File image, int width, int height, ImagesComponent component) {
+    public MapHandler(World world, File image, int width, int height, boolean temporary, ImagesComponent component) {
         this.renderedMaps = new ArrayList<>(width * height);
         this.world = world;
         this.component = component;
         this.image = image;
         this.width = width;
         this.height = height;
+        this.temporary = temporary;
     }
 
     /**
@@ -65,13 +67,13 @@ public class MapHandler implements Runnable {
 
                             renderedMaps.add(map);
 
-                            //TODO add support for temporary maps
-                            try {
-                                new SavedMap(component, mapView.getId(), image, world).saveMap();
-                            } catch (IOException e) {
-                                callback.posterFailed(new Exception("Could not save the poster", e));
+                            if (!temporary) {
+                                try {
+                                    new SavedMap(component, mapView.getId(), image, world).saveMap();
+                                } catch (IOException e) {
+                                    callback.posterFailed(new Exception("Could not save the poster", e));
+                                }
                             }
-                            //player.sendMap(mapView); //TODO send this map to nearby players
                         }
 
                         if (callback != null) {

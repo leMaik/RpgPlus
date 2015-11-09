@@ -2,12 +2,15 @@ package de.craften.plugins.rpgplus.components.images;
 
 import de.craften.plugins.rpgplus.components.images.listener.ChunkListener;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -52,8 +55,18 @@ public class ImagesComponent extends PluginComponentBase {
         }
     }
 
-    public void placePoster(File image, int width, int height, final Block topLeftBlock, final BlockFace facing) {
-        final MapHandler mapHandler = new MapHandler(topLeftBlock.getWorld(), image, width, height, this);
+    /**
+     * Places a poster starting at the given block on the given side.
+     *
+     * @param image        image
+     * @param width        poster width in blocks
+     * @param height       poster height in blocks
+     * @param topLeftBlock the block that the top left side of the poster will be attached to
+     * @param facing       the block face the poster will be attached to
+     * @param temporary    whether the poster is temporary or persistent
+     */
+    public void placePoster(File image, int width, int height, final Block topLeftBlock, final BlockFace facing, boolean temporary) {
+        final MapHandler mapHandler = new MapHandler(topLeftBlock.getWorld(), image, width, height, temporary, this);
         mapHandler.setCallback(new MapHandler.Callback() {
             @Override
             public void posterReady(final Poster poster, final List<ItemStack> maps) {
@@ -68,6 +81,7 @@ public class ImagesComponent extends PluginComponentBase {
                             Util.attachItemFrame(block, map, facing);
                         }
                     }
+                    propagateMaps(maps, topLeftBlock.getLocation());
                 } catch (Exception e) {
                     getLogger().log(Level.SEVERE, "Attaching the poster failed", e);
                 }
@@ -81,8 +95,17 @@ public class ImagesComponent extends PluginComponentBase {
         mapHandler.run();
     }
 
-    public void startPlacePoster(final Player p, File image, int width, int height) {
-        final MapHandler mapHandler = new MapHandler(p.getWorld(), image, width, height, this);
+    /**
+     * Starts the interactive placement of a poster.
+     *
+     * @param p         player that places the poster
+     * @param image     image
+     * @param width     poster width in blocks
+     * @param height    poster height in blocks
+     * @param temporary whether the poster is temporary or persistent
+     */
+    public void startPlacePoster(final Player p, File image, int width, int height, boolean temporary) {
+        final MapHandler mapHandler = new MapHandler(p.getWorld(), image, width, height, temporary, this);
         mapHandler.setCallback(new MapHandler.Callback() {
             @Override
             public void posterReady(final Poster poster, final List<ItemStack> maps) {
@@ -109,6 +132,7 @@ public class ImagesComponent extends PluginComponentBase {
                                     Util.attachItemFrame(block, map, facing);
                                 }
                             }
+                            propagateMaps(maps, topLeftBlock.getLocation());
                         } catch (Exception e) {
                             p.sendMessage(ChatColor.RED + "Attaching the poster failed.");
                             getLogger().log(Level.SEVERE, "Attaching the poster failed", e);
@@ -131,6 +155,22 @@ public class ImagesComponent extends PluginComponentBase {
             }
         });
         mapHandler.run();
+    }
+
+    /**
+     * Sends the map to players near the given location.
+     *
+     * @param maps     maps to send
+     * @param location center of the area of players to send the maps to
+     */
+    private void propagateMaps(List<ItemStack> maps, Location location) {
+        for (Entity entity : location.getWorld().getNearbyEntities(location, 16, 16, 16)) {
+            if (entity instanceof Player) {
+                for (ItemStack map : maps) {
+                    ((Player) entity).sendMap(Bukkit.getServer().getMap(map.getDurability()));
+                }
+            }
+        }
     }
 
     void setMapConfig(String mapName, ConfigurationSection config) {
