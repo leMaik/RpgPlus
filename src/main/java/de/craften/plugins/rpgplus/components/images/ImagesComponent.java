@@ -5,6 +5,7 @@ import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.map.MapView;
 
 import java.io.File;
 import java.util.List;
@@ -69,19 +71,9 @@ public class ImagesComponent extends PluginComponentBase {
         final MapHandler mapHandler = new MapHandler(topLeftBlock.getWorld(), image, width, height, temporary, this);
         mapHandler.setCallback(new MapHandler.Callback() {
             @Override
-            public void posterReady(final Poster poster, final List<ItemStack> maps) {
+            public void posterReady(final PosterImages poster, final List<ItemStack> maps) {
                 try {
-                    for (int x = 0; x < poster.getWidth(); x++) {
-                        for (int y = 0; y < poster.getHeight(); y++) {
-                            Block block = Util.getRelative(topLeftBlock, facing, -y, -x, 0);
-                            ItemStack map = maps.get(y * poster.getWidth() + x);
-                            ItemMeta meta = map.getItemMeta();
-                            meta.setDisplayName("");
-                            map.setItemMeta(meta);
-                            Util.attachItemFrame(block, map, facing);
-                        }
-                    }
-                    propagateMaps(maps, topLeftBlock.getLocation());
+                    placePoster(maps, poster.getWidth(), poster.getHeight(), topLeftBlock, facing);
                 } catch (Exception e) {
                     getLogger().log(Level.SEVERE, "Attaching the poster failed", e);
                 }
@@ -90,6 +82,51 @@ public class ImagesComponent extends PluginComponentBase {
             @Override
             public void posterFailed(Throwable exception) {
                 getLogger().log(Level.SEVERE, "Creating the poster failed", exception);
+            }
+        });
+        mapHandler.run();
+    }
+
+    private void placePoster(List<ItemStack> maps, int width, int height, final Block topLeftBlock, final BlockFace facing) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Block block = Util.getRelative(topLeftBlock, facing, -y, -x, 0);
+                ItemStack map = maps.get(y * width + x);
+                ItemMeta meta = map.getItemMeta();
+                meta.setDisplayName("");
+                map.setItemMeta(meta);
+                Util.attachItemFrame(block, map, facing);
+            }
+        }
+        propagateMaps(maps, topLeftBlock.getLocation());
+    }
+
+    public void placePoster(Poster poster, Block topLeftBlock, BlockFace facing) {
+        placePoster(poster.createItemStacks(), poster.getWidth(), poster.getHeight(), topLeftBlock, facing);
+    }
+
+    /**
+     * Asynchronously creates a poster and calls the callback when finished.
+     *
+     * @param image     image
+     * @param width     width in blocks
+     * @param height    height in blocks
+     * @param world     world the poster will be created in
+     * @param temporary whether the poster is temporary or persistent
+     * @param callback  callback that is invoked when the poster is placed
+     */
+    public void createPoster(File image, final int width, final int height, World world, boolean temporary, final PosterCallback callback) {
+        MapHandler mapHandler = new MapHandler(world, image, width, height, temporary, this);
+
+        mapHandler.setCallback(new MapHandler.Callback() {
+            @Override
+            public void posterReady(PosterImages poster, List<ItemStack> maps) {
+                callback.posterCreated(new Poster(width, height, maps));
+            }
+
+            @Override
+            public void posterFailed(Throwable exception) {
+                callback.creationFailed(exception);
             }
         });
         mapHandler.run();
@@ -104,11 +141,11 @@ public class ImagesComponent extends PluginComponentBase {
      * @param height    poster height in blocks
      * @param temporary whether the poster is temporary or persistent
      */
-    public void startPlacePoster(final Player p, File image, int width, int height, boolean temporary) {
+    public void startPlacePoster(final Player p, File image, final int width, final int height, boolean temporary) {
         final MapHandler mapHandler = new MapHandler(p.getWorld(), image, width, height, temporary, this);
         mapHandler.setCallback(new MapHandler.Callback() {
             @Override
-            public void posterReady(final Poster poster, final List<ItemStack> maps) {
+            public void posterReady(final PosterImages poster, final List<ItemStack> maps) {
                 p.sendMessage(ChatColor.YELLOW + "Rightclick on a wall to place the poster.");
 
                 registerEvents(new Listener() {
@@ -118,21 +155,10 @@ public class ImagesComponent extends PluginComponentBase {
                             return;
                         }
 
-                        final Block topLeftBlock = event.getClickedBlock();
-                        final BlockFace facing = event.getBlockFace();
-
+                        Block topLeftBlock = event.getClickedBlock();
+                        BlockFace facing = event.getBlockFace();
                         try {
-                            for (int x = 0; x < poster.getWidth(); x++) {
-                                for (int y = 0; y < poster.getHeight(); y++) {
-                                    Block block = Util.getRelative(topLeftBlock, facing, -y, -x, 0);
-                                    ItemStack map = maps.get(y * poster.getWidth() + x);
-                                    ItemMeta meta = map.getItemMeta();
-                                    meta.setDisplayName("");
-                                    map.setItemMeta(meta);
-                                    Util.attachItemFrame(block, map, facing);
-                                }
-                            }
-                            propagateMaps(maps, topLeftBlock.getLocation());
+                            placePoster(maps, width, height, topLeftBlock, facing);
                         } catch (Exception e) {
                             p.sendMessage(ChatColor.RED + "Attaching the poster failed.");
                             getLogger().log(Level.SEVERE, "Attaching the poster failed", e);
@@ -167,7 +193,9 @@ public class ImagesComponent extends PluginComponentBase {
         for (Entity entity : location.getWorld().getNearbyEntities(location, 16, 16, 16)) {
             if (entity instanceof Player) {
                 for (ItemStack map : maps) {
-                    ((Player) entity).sendMap(Bukkit.getServer().getMap(map.getDurability()));
+                    @SuppressWarnings("deprecation")
+                    MapView mapView = Bukkit.getServer().getMap(map.getDurability());
+                    ((Player) entity).sendMap(mapView);
                 }
             }
         }
@@ -179,5 +207,11 @@ public class ImagesComponent extends PluginComponentBase {
 
     File getScaledImagesDirectory() {
         return scaledImagesDirectory;
+    }
+
+    public interface PosterCallback {
+        void posterCreated(Poster poster);
+
+        void creationFailed(Throwable exception);
     }
 }

@@ -39,7 +39,7 @@ public class MapHandler implements Runnable {
         component.runTaskAsynchronously(new Runnable() {
             @Override
             public void run() {
-                final Poster poster;
+                final PosterImages poster;
                 try {
                     poster = createPoster();
                 } catch (IOException e) {
@@ -55,7 +55,6 @@ public class MapHandler implements Runnable {
                     @Override
                     @SuppressWarnings("deprecation")
                     public void run() {
-                        ItemStack map;
                         for (BufferedImage image : images) {
                             MapView mapView;
 
@@ -63,9 +62,7 @@ public class MapHandler implements Runnable {
 
                             Util.removeAllRenderers(mapView);
                             mapView.addRenderer(new ImageMapRenderer(image));
-                            map = new ItemStack(Material.MAP, 1, mapView.getId());
-
-                            renderedMaps.add(map);
+                            renderedMaps.add(new ItemStack(Material.MAP, 1, mapView.getId()));
 
                             if (!temporary) {
                                 try {
@@ -85,8 +82,8 @@ public class MapHandler implements Runnable {
         });
     }
 
-    public Poster createPoster() throws IOException {
-        return new Poster(ImageIO.read(image), width, height);
+    private PosterImages createPoster() throws IOException {
+        return new PosterImages(ImageIO.read(image), width, height);
     }
 
     public void setCallback(Callback callback) {
@@ -94,7 +91,7 @@ public class MapHandler implements Runnable {
     }
 
     public interface Callback {
-        void posterReady(Poster poster, List<ItemStack> maps);
+        void posterReady(PosterImages poster, List<ItemStack> maps);
 
         void posterFailed(Throwable exception);
     }
