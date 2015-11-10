@@ -12,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -32,25 +33,23 @@ import java.util.logging.Level;
  */
 public class ImagesComponent extends PluginComponentBase {
     private FileConfiguration mapConfig;
-    private final File mapConfigFile;
-    private final File scaledImagesDirectory;
-    private final File imagesDirectory;
-
-    public ImagesComponent() {
-        registerEvents(new ChunkListener(this));
-
-        imagesDirectory = new File(getDataFolder(), "images");
-        scaledImagesDirectory = new File(imagesDirectory, "scaled");
-        mapConfigFile = new File(imagesDirectory, "maps.yml");
-    }
+    private File mapConfigFile;
+    private File scaledImagesDirectory;
+    private File imagesDirectory;
 
     @Override
     protected void onActivated() {
+        imagesDirectory = new File(getDataFolder(), "images");
+        scaledImagesDirectory = new File(imagesDirectory, "scaled");
+        mapConfigFile = new File(imagesDirectory, "maps.yml");
+
         if (mapConfigFile.exists()) {
             mapConfig = YamlConfiguration.loadConfiguration(mapConfigFile);
         } else {
             mapConfig = new YamlConfiguration();
         }
+
+        registerEvents(new ChunkListener(this));
 
         for (String key : mapConfig.getKeys(false)) {
             new SavedMap(this, mapConfig.getConfigurationSection(key)).loadMap();
@@ -90,12 +89,20 @@ public class ImagesComponent extends PluginComponentBase {
     private void placePoster(List<ItemStack> maps, int width, int height, final Block topLeftBlock, final BlockFace facing) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Block block = Util.getRelative(topLeftBlock, facing, -y, -x, 0);
-                ItemStack map = maps.get(y * width + x);
+                Block block = Util.getRelative(topLeftBlock, facing, -y, x, 0);
+                for (ItemFrame entity : block.getWorld().getEntitiesByClass(ItemFrame.class)) {
+                    if (entity.getLocation().getBlock().getRelative(entity.getAttachedFace()).getLocation().equals(block.getLocation())) {
+                        entity.teleport(new Location(entity.getWorld(), 0, -1, 0)); //workaround so that respawning an item frame immediately works
+                        entity.remove();
+                        break;
+                    }
+                }
+
+                final ItemStack map = maps.get(y * width + x);
                 ItemMeta meta = map.getItemMeta();
                 meta.setDisplayName("");
                 map.setItemMeta(meta);
-                Util.attachItemFrame(block, map, facing);
+                Util.attachItemFrame(Util.getRelative(topLeftBlock, facing, -y, x, 0), map, facing);
             }
         }
         propagateMaps(maps, topLeftBlock.getLocation());

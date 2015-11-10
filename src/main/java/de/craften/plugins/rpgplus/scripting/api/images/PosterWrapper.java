@@ -2,46 +2,91 @@ package de.craften.plugins.rpgplus.scripting.api.images;
 
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
 import de.craften.plugins.rpgplus.components.images.Poster;
-import de.craften.plugins.rpgplus.scripting.api.Inventory;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.TwoArgFunction;
+import org.luaj.vm2.lib.ThreeArgFunction;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A lua wrapper for a {@link Poster}.
  */
 public class PosterWrapper extends LuaTable {
-    private final Poster poster;
     private final ImagesComponent imagesComponent;
+    private final File image;
+    private final int width;
+    private final int height;
+    private final Map<World, Poster> posters = new HashMap<>(1);
 
-    public PosterWrapper(final Poster poster, final ImagesComponent imagesComponent) {
-        this.poster = poster;
+    public PosterWrapper(File image, int width, int height, final ImagesComponent imagesComponent) {
+        this.image = image;
+        this.width = width;
+        this.height = height;
         this.imagesComponent = imagesComponent;
 
-        set("giveTo", new TwoArgFunction() {
+        set("giveTo", new ThreeArgFunction() {
             @Override
-            public LuaValue call(LuaValue self, LuaValue player) {
-                PlayerInventory inventory = ScriptUtil.getPlayer(player).getInventory();
-                for (ItemStack itemStack : PosterWrapper.this.poster.createItemStacks()) {
-                    inventory.addItem(itemStack);
-                }
+            public LuaValue call(LuaValue self, LuaValue playerArg, final LuaValue callback) {
+                final Player player = ScriptUtil.getPlayer(playerArg);
+
+                getPosterForWorld(player.getWorld(), new ImagesComponent.PosterCallback() {
+                    @Override
+                    public void posterCreated(Poster poster) {
+                        PlayerInventory inventory = player.getInventory();
+                        for (ItemStack itemStack : poster.createItemStacks()) {
+                            inventory.addItem(itemStack);
+                        }
+                        callback.checkfunction().call(LuaValue.TRUE);
+                    }
+
+                    @Override
+                    public void creationFailed(Throwable exception) {
+                        callback.checkfunction().call(LuaValue.FALSE);
+                    }
+                });
                 return LuaValue.NIL;
             }
         });
 
-        set("attach", new TwoArgFunction() {
+        set("attach", new ThreeArgFunction() {
             @Override
-            public LuaValue call(LuaValue luaValue, LuaValue location) {
-                imagesComponent.placePoster(poster,
-                        ScriptUtil.getLocation(location.checktable()).getBlock(),
-                        BlockFace.valueOf(location.checktable().get("face").checkjstring()));
+            public LuaValue call(LuaValue self, final LuaValue location, final LuaValue callback) {
+                final Block block = ScriptUtil.getLocation(location.checktable()).getBlock();
+
+                getPosterForWorld(block.getWorld(), new ImagesComponent.PosterCallback() {
+                    @Override
+                    public void posterCreated(Poster poster) {
+                        imagesComponent.placePoster(poster,
+                                block,
+                                BlockFace.valueOf(location.checktable().get("face").checkjstring().toUpperCase()));
+                        callback.checkfunction().call(LuaValue.TRUE);
+                    }
+
+                    @Override
+                    public void creationFailed(Throwable exception) {
+                        callback.checkfunction().call(LuaValue.FALSE);
+                    }
+                });
                 return LuaValue.NIL;
             }
         });
+    }
+
+    private void getPosterForWorld(final World world, ImagesComponent.PosterCallback callback) {
+        Poster poster = posters.get(world);
+        if (poster != null) {
+            callback.posterCreated(poster);
+        }
+        imagesComponent.createPoster(image, width, height, world, true, callback);
     }
 
     @Override
@@ -49,9 +94,9 @@ public class PosterWrapper extends LuaTable {
         if (key.isstring()) {
             switch (key.checkjstring()) {
                 case "width":
-                    return LuaValue.valueOf(poster.getWidth());
+                    return LuaValue.valueOf(width);
                 case "height":
-                    return LuaValue.valueOf(poster.getHeight());
+                    return LuaValue.valueOf(height);
             }
         }
         return super.rawget(key);
