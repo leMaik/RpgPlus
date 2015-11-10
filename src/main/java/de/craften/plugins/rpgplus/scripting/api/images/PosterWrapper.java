@@ -22,10 +22,10 @@ import java.util.Map;
  */
 public class PosterWrapper extends LuaTable {
     private final ImagesComponent imagesComponent;
-    private final File image;
+    private final Map<World, Poster> posters = new HashMap<>(1);
     private final int width;
     private final int height;
-    private final Map<World, Poster> posters = new HashMap<>(1);
+    private File image;
 
     public PosterWrapper(File image, int width, int height, final ImagesComponent imagesComponent) {
         this.image = image;
@@ -89,12 +89,24 @@ public class PosterWrapper extends LuaTable {
         });
     }
 
-    private void getPosterForWorld(final World world, ImagesComponent.PosterCallback callback) {
+    private synchronized void getPosterForWorld(final World world, final ImagesComponent.PosterCallback callback) {
         Poster poster = posters.get(world);
         if (poster != null) {
             callback.posterCreated(poster);
         }
-        imagesComponent.createPoster(image, width, height, world, true, callback);
+        imagesComponent.createPoster(image, width, height, world, true, new ImagesComponent.PosterCallback() {
+            @Override
+            public void posterCreated(Poster poster) {
+                posters.put(world, poster);
+                image = null;
+                callback.posterCreated(poster);
+            }
+
+            @Override
+            public void creationFailed(Throwable exception) {
+                callback.creationFailed(exception);
+            }
+        });
     }
 
     @Override

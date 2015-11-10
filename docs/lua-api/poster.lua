@@ -14,7 +14,7 @@ height = _
 --
 function giveTo(player, callback) end
 
---- Attaches this poster to a wall.
+--- Attaches this poster to a wall. Note that a poster may be attached multiple times.
 -- @param location location of the top left block to attach this poster to, including a `face` field that is either
 -- `north`, `east`, `south` or `west`
 -- @param[opt] callback callback that is invoked after attaching the poster, parameter is a boolean that is `false`
