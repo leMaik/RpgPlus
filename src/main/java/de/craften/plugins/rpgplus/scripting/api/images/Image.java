@@ -10,8 +10,8 @@ import java.io.File;
 /**
  * Lua API for posters and images using maps and item frames.
  */
-public class Images extends LuaTable {
-    public Images(final RpgPlus plugin) {
+public class Image extends LuaTable {
+    public Image(final RpgPlus plugin) {
         set("create", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue path, LuaValue width, LuaValue height) {

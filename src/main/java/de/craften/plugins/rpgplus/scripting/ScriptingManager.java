@@ -3,7 +3,7 @@ package de.craften.plugins.rpgplus.scripting;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.*;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
-import de.craften.plugins.rpgplus.scripting.api.images.Images;
+import de.craften.plugins.rpgplus.scripting.api.images.Image;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.luaj.vm2.Globals;
@@ -30,7 +30,7 @@ public class ScriptingManager extends PluginComponentBase {
     private LuaValue storageModule;
     private EntityEventManager entityEventManager;
     private Inventory inventoryModule;
-    private Images imagesModule;
+    private Image imageModule;
 
     @Override
     protected void onActivated() {
@@ -62,7 +62,7 @@ public class ScriptingManager extends PluginComponentBase {
         entityEventManager = new EntityEventManager();
         plugin.getServer().getPluginManager().registerEvents(entityEventManager, plugin);
         inventoryModule = new Inventory();
-        imagesModule = new Images(plugin);
+        imageModule = new Image(plugin);
     }
 
     public void loadScript(File script) throws ScriptErrorException {
@@ -110,7 +110,7 @@ public class ScriptingManager extends PluginComponentBase {
         return inventoryModule;
     }
 
-    public Images getImagesModule() {
-        return imagesModule;
+    public Image getImageModule() {
+        return imageModule;
     }
 }

@@ -10,6 +10,6 @@ import org.luaj.vm2.lib.TwoArgFunction;
 public class image extends TwoArgFunction {
     @Override
     public LuaValue call(LuaValue luaValue, LuaValue luaValue1) {
-        return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getImagesModule();
+        return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getImageModule();
     }
 }

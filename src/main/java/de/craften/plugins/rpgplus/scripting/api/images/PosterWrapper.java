@@ -45,12 +45,16 @@ public class PosterWrapper extends LuaTable {
                         for (ItemStack itemStack : poster.createItemStacks()) {
                             inventory.addItem(itemStack);
                         }
-                        callback.checkfunction().call(LuaValue.TRUE);
+                        if (!callback.isnil()) {
+                            callback.checkfunction().call(LuaValue.TRUE);
+                        }
                     }
 
                     @Override
                     public void creationFailed(Throwable exception) {
-                        callback.checkfunction().call(LuaValue.FALSE);
+                        if (!callback.isnil()) {
+                            callback.checkfunction().call(LuaValue.FALSE);
+                        }
                     }
                 });
                 return LuaValue.NIL;
@@ -68,12 +72,16 @@ public class PosterWrapper extends LuaTable {
                         imagesComponent.placePoster(poster,
                                 block,
                                 BlockFace.valueOf(location.checktable().get("face").checkjstring().toUpperCase()));
-                        callback.checkfunction().call(LuaValue.TRUE);
+                        if (!callback.isnil()) {
+                            callback.checkfunction().call(LuaValue.TRUE);
+                        }
                     }
 
                     @Override
                     public void creationFailed(Throwable exception) {
-                        callback.checkfunction().call(LuaValue.FALSE);
+                        if (!callback.isnil()) {
+                            callback.checkfunction().call(LuaValue.FALSE);
+                        }
                     }
                 });
                 return LuaValue.NIL;
