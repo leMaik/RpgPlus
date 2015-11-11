@@ -6,14 +6,18 @@ import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.entity.Player;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Sound extends LuaTable {
+    private static Pattern NOTE_PARSER = java.util.regex.Pattern.compile("([A-G])(#?)('?)");
 
     public Sound(final RpgPlus plugin) {
         set("playSound", new TwoArgFunction() {
@@ -29,12 +33,14 @@ public class Sound extends LuaTable {
         });
 
         set("playNote", new ThreeArgFunction() {
-
             @Override
             public LuaValue call(final LuaValue player, final LuaValue instrument, final LuaValue note) {
                 Player p = ScriptUtil.getPlayer(player);
-                p.playNote(p.getLocation(), Instrument.valueOf(instrument.checkjstring().toUpperCase()), new Note(note.checkint()));
-
+                if (note.isint()) {
+                    p.playNote(p.getLocation(), Instrument.valueOf(instrument.checkjstring().toUpperCase()), new Note(note.checkint()));
+                } else {
+                    p.playNote(p.getLocation(), Instrument.valueOf(instrument.checkjstring().toUpperCase()), parseNote(note.checkjstring()));
+                }
                 return LuaValue.NIL;
             }
         });
@@ -51,6 +57,17 @@ public class Sound extends LuaTable {
                 }
             }
         });
+    }
+
+    public static Note parseNote(String note) {
+        Matcher matcher = NOTE_PARSER.matcher(note.toUpperCase());
+        if (matcher.matches()) {
+            Note.Tone tone = Note.Tone.valueOf(matcher.group(1));
+            boolean sharped = !matcher.group(2).isEmpty();
+            int octave = matcher.group(3).length();
+            return new Note(octave, tone, sharped);
+        }
+        throw new LuaError("Invalid note: " + note);
     }
 
     private boolean isSongPlayerAvailable() {
