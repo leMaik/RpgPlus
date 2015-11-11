@@ -9,7 +9,7 @@ function playSound(player, sound) end
 --- Play a note to a specific player.
 -- @param player player to play the note to
 -- @param instrument instrument which will playing
--- @param note note to play
+-- @param note note to play, either its number of a string like "c#'" or "a"
 function playNote(player, instrument, note) end
 
 --- Play a song to a specific player.
