@@ -13,10 +13,10 @@ public class Inventory extends LuaTable {
     public Inventory() {
         set("hasItems", new VarArgFunction() {
             @Override
-            public Varargs invoke(Varargs varargs) {
-                LuaValue player = varargs.arg(1);
-                for (int i = 2; i <= varargs.narg(); i++) {
-                    if (!checkItem(player, varargs.arg(i)).booleanValue()) {
+            public Varargs invoke(Varargs args) {
+                LuaValue player = args.arg(1);
+                for (int i = 2; i <= args.narg(); i++) {
+                    if (!checkItem(player, args.arg(i)).booleanValue()) {
                         return LuaValue.FALSE;
                     }
                 }
@@ -26,12 +26,15 @@ public class Inventory extends LuaTable {
 
         set("giveItems", new VarArgFunction() {
             @Override
-            public Varargs invoke(Varargs varargs) {
-                LuaValue player = varargs.arg(1);
-                for (int i = 2; i <= varargs.narg(); i++) {
-                    giveItem(player, varargs.arg(i));
+            public Varargs invoke(Varargs args) {
+                LuaValue player = args.arg(1);
+
+                LuaValue[] notFittingAmounts = new LuaValue[args.narg() - 1];
+                for (int i = 2; i <= args.narg(); i++) {
+                    notFittingAmounts[i - 2] = giveItem(player, args.arg(i));
                 }
-                return LuaValue.NIL;
+
+                return LuaValue.varargsOf(notFittingAmounts);
             }
         });
 
@@ -55,9 +58,9 @@ public class Inventory extends LuaTable {
         return LuaValue.valueOf(matcher.matches(ScriptUtil.getPlayer(player).getInventory()));
     }
 
-    private void giveItem(LuaValue player, LuaValue item) {
+    private LuaInteger giveItem(LuaValue player, LuaValue item) {
         ItemMatcher matcher = createMatcher(item.checktable());
-        matcher.putInto(ScriptUtil.getPlayer(player).getInventory());
+        return LuaValue.valueOf(matcher.putInto(ScriptUtil.getPlayer(player).getInventory()));
     }
 
     private LuaInteger takeItem(LuaValue player, LuaValue item) {

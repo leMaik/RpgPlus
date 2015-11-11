@@ -11,6 +11,7 @@ function hasItems(player, ...) end
 --- Gives items to a player.
 -- @param player player
 -- @param ... items to give to the player (each as an @{itemstack})
+-- @return amount of each specified item that didn't fit into the inventory, as multiple return values
 --
 function giveItems(player, ...) end
 

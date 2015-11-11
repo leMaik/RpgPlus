@@ -4,6 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+
 /**
  * A matcher for {@link org.bukkit.inventory.ItemStack}s.
  */
@@ -32,8 +34,9 @@ public class ItemMatcher {
         return false;
     }
 
-    public void putInto(Inventory inventory) {
-        inventory.addItem(new ItemStack(type, amount != null ? amount : 1, data != null ? data.shortValue() : 0));
+    public int putInto(Inventory inventory) {
+        Map<Integer, ItemStack> remaining = inventory.addItem(new ItemStack(type, amount != null ? amount : 1, data != null ? data.shortValue() : 0));
+        return remaining.isEmpty() ? 0 : remaining.get(0).getAmount();
     }
 
     public int takeFrom(Inventory inventory) {
