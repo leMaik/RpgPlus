@@ -11,16 +11,16 @@ public class SoundTest {
     public void testParseNote() throws Exception {
         assertEquals(Note.natural(0, Note.Tone.A), Sound.parseNote("a"));
         assertEquals(Note.sharp(0, Note.Tone.D), Sound.parseNote("d#"));
-        assertEquals(Note.sharp(1, Note.Tone.F), Sound.parseNote("f#'"));
+        assertEquals(Note.sharp(2, Note.Tone.F), Sound.parseNote("f#''"));
     }
 
     @Test(expected = LuaError.class)
     public void testParseInvalidNote() throws Exception {
-        assertEquals(Note.natural(0, Note.Tone.A), Sound.parseNote("z#"));
+        Sound.parseNote("z#");
     }
 
     @Test(expected = LuaError.class)
     public void testParseInvalidOctave() throws Exception {
-        assertEquals(Note.natural(0, Note.Tone.A), Sound.parseNote("f'''"));
+        Sound.parseNote("f#'''");
     }
 }

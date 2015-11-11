@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Sound extends LuaTable {
-    private static Pattern NOTE_PARSER = java.util.regex.Pattern.compile("([A-G])(#?)('?)");
+    private static Pattern NOTE_PARSER = java.util.regex.Pattern.compile("([A-G])(#?)('*)");
 
     public Sound(final RpgPlus plugin) {
         set("playSound", new TwoArgFunction() {
@@ -65,7 +65,11 @@ public class Sound extends LuaTable {
             Note.Tone tone = Note.Tone.valueOf(matcher.group(1));
             boolean sharped = !matcher.group(2).isEmpty();
             int octave = matcher.group(3).length();
-            return new Note(octave, tone, sharped);
+            try {
+                return new Note(octave, tone, sharped);
+            } catch (IllegalArgumentException e) {
+                throw new LuaError("Invalid note: " + note + ", " + e.getMessage());
+            }
         }
         throw new LuaError("Invalid note: " + note);
     }
