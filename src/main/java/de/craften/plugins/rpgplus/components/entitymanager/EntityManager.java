@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -35,7 +36,7 @@ public class EntityManager extends PluginComponentBase implements Listener {
         runTaskTimer(new Runnable() {
             @Override
             public void run() {
-                for (ManagedEntity entity : new ArrayList<ManagedEntity>(entities.values())) {
+                for (ManagedEntity entity : new ArrayList<>(entities.values())) {
                     switch (entity.getMovementType()) {
                         case FROZEN:
                             if (!entity.getLocalLocation().equals(entity.getEntity().getLocation())) {
@@ -213,7 +214,13 @@ public class EntityManager extends PluginComponentBase implements Listener {
     }
 
     public <T extends Entity> ManagedEntity<T> spawn(Class<T> entity, Location location) {
-        ManagedEntity<T> managedEntity = new BasicManagedEntity<T>(entity, location, this);
+        ManagedEntity<T> managedEntity;
+        if (entity == Villager.class) {
+            //noinspection unchecked
+            managedEntity = (ManagedEntity<T>) new ManagedVillager(location, this);
+        } else {
+            managedEntity = new BasicManagedEntity<>(entity, location, this);
+        }
         managedEntities.put(managedEntity.getUniqueId(), managedEntity);
         return managedEntity;
     }

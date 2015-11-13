@@ -2,11 +2,11 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.TwoArgFunction;
@@ -33,6 +33,13 @@ public class EntitySpawner {
                 entity.setIsTakingDamage(!options.get("invulnerable").optboolean(false));
                 entity.setMovementType(MovementType.valueOf(options.get("movementType").optjstring("local").toUpperCase()));
                 entity.setNameVisible(options.get("nameVisible").optboolean(true));
+
+                if (entity instanceof ManagedVillager) {
+                    if (!options.get("profession").isnil()) {
+                        ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(options.get("profession").checkjstring().toUpperCase()));
+                    }
+                }
+
                 entity.spawn();
                 return EntityWrapper.wrap(entity);
             }
