@@ -3,24 +3,18 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
-import org.luaj.vm2.LuaFunction;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.ThreeArgFunction;
-import org.luaj.vm2.lib.TwoArgFunction;
-import org.luaj.vm2.lib.VarArgFunction;
-import org.luaj.vm2.lib.ZeroArgFunction;
+import org.bukkit.entity.Villager;
+import org.luaj.vm2.*;
+import org.luaj.vm2.lib.*;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -203,6 +197,11 @@ public class EntityWrapper extends LuaTable {
                     return LuaValue.valueOf(!entity.isTakingDamage());
                 case "nameVisible":
                     return LuaValue.valueOf(entity.isNameVisible());
+                case "profession":
+                    if (entity instanceof ManagedVillager) {
+                        return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
+                    }
+                    return LuaValue.NIL;
             }
         }
         return super.rawget(key);
@@ -233,6 +232,13 @@ public class EntityWrapper extends LuaTable {
                     break;
                 case "nameVisible":
                     entity.setNameVisible(value.checkboolean());
+                    break;
+                case "profession":
+                    if (entity instanceof ManagedVillager) {
+                        ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(value.checkjstring().toUpperCase()));
+                    } else {
+                        throw new LuaError("Entity is not a villager.");
+                    }
                     break;
             }
         }

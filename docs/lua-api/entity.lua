@@ -19,6 +19,9 @@ nameVisible = _
 --- Specifies whether the entity is invulnerable. This field is writable.
 invulnerable = _
 
+--- Only for villagers: The profession of this villager. This field is writable.
+profession = _
+
 --- Navigates to the given location, using A*.
 -- @param destination destination, a table with `x`, `y` and `z` fields
 -- @param[opt] options a table with options for pathing, options are `openDoors` (boolean), `openFenceGates` (boolean) and `speed` (int, in meters per second)
