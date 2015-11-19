@@ -5,19 +5,17 @@ import de.craften.plugins.rpgplus.scripting.api.*;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.Image;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
+import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.ResourceFinder;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.Callable;
 
 public class ScriptingManager extends PluginComponentBase {
@@ -106,8 +104,24 @@ public class ScriptingManager extends PluginComponentBase {
         }
     }
 
-    private void reportScriptError(Exception exception) {
+    private void reportScriptError(final Exception exception) {
         Bukkit.getServer().broadcast("rpgplus.scripting.notifyerrors", "An error occurred while executing the script: " + exception.getMessage());
+        Bukkit.getServer().getConsoleSender().sendMessage("An error occurred while executing the script: " + exception.getMessage());
+
+        final String devKey = RpgPlus.getPlugin(RpgPlus.class).getConfig().getString("pastebinDevKey");
+        if (devKey != null) {
+            runTaskAsynchronously(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String pasteUrl = Pastebin.createStacktracePaste(devKey, "RpgPlus Error - " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), exception);
+                        Bukkit.getServer().broadcast("rpgplus.scripting.notifyerrors", "The full stacktrace is available at: " + pasteUrl);
+                    } catch (IOException e) {
+                        RpgPlus.getPlugin(RpgPlus.class).getLogger().severe("Posting the stack trace of a script error to Pastebin failed");
+                    }
+                }
+            });
+        }
     }
 
     public File getScriptDirectory() {

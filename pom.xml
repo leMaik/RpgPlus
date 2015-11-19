@@ -24,6 +24,11 @@
             <id>wertarbyte-repo</id>
             <url>http://repo.wertarbyte.com/</url>
         </repository>
+        <repository>
+            <id>revonline-repository</id>
+            <name>Revonline Maven Repository</name>
+            <url>http://revonline.comuf.com/maven3/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -53,6 +58,11 @@
             <groupId>org.luaj</groupId>
             <artifactId>luaj-jse</artifactId>
             <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.besaba.revonline</groupId>
+            <artifactId>Pastebin</artifactId>
+            <version>0.1.1</version>
         </dependency>
 
         <dependency>
