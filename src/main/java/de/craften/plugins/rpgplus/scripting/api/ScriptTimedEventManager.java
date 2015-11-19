@@ -43,7 +43,7 @@ public class ScriptTimedEventManager extends LuaTable {
         return new Runnable() {
             @Override
             public void run() {
-                luaFunction.checkfunction().invoke();
+                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(luaFunction.checkfunction());
             }
         };
     }

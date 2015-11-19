@@ -17,6 +17,7 @@ import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class RpgPlusObject extends LuaTable {
 
@@ -60,15 +61,18 @@ public class RpgPlusObject extends LuaTable {
 
                 RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(commandPath, new CommandHandler() {
                     @Override
-                    public boolean onCommand(CommandSender sender, String command, List<String> args) {
-                        LuaValue[] luaArgs = new LuaValue[args.size()];
+                    public boolean onCommand(final CommandSender sender, final String command, List<String> args) {
+                        final LuaValue[] luaArgs = new LuaValue[args.size()];
                         for (int i = 0; i < luaArgs.length; i++) {
                             luaArgs[i] = LuaValue.valueOf(args.get(i));
                         }
 
-                        return handler
-                                .invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs))
-                                .optboolean(1, true);
+                        return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(new Callable<Varargs>() {
+                            @Override
+                            public Varargs call() throws Exception {
+                                return handler.invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs));
+                            }
+                        }).optboolean(1, true);
                     }
                 });
                 return LuaValue.NIL;
@@ -77,7 +81,7 @@ public class RpgPlusObject extends LuaTable {
 
         set("playercommand", new TwoArgFunction() {
             @Override
-            public LuaValue call(LuaValue command, final LuaValue handler) {
+            public LuaValue call(LuaValue command, final LuaValue handler) { //TODO this almost duplicates the command code above, fix that!
                 String[] commandPath;
                 if (command.istable()) {
                     commandPath = new String[command.checktable().length()];
@@ -90,16 +94,20 @@ public class RpgPlusObject extends LuaTable {
 
                 RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(commandPath, new CommandHandler() {
                     @Override
-                    public boolean onCommand(CommandSender sender, String command, List<String> args) {
+                    public boolean onCommand(final CommandSender sender, final String command, List<String> args) {
                         if (sender instanceof Player) {
-                            LuaValue[] luaArgs = new LuaValue[args.size()];
+                            final LuaValue[] luaArgs = new LuaValue[args.size()];
                             for (int i = 0; i < luaArgs.length; i++) {
                                 luaArgs[i] = LuaValue.valueOf(args.get(i));
                             }
 
-                            return handler
-                                    .invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs))
-                                    .optboolean(1, true);
+                            return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(new Callable<Varargs>() {
+                                @Override
+                                public Varargs call() throws Exception {
+                                    return handler
+                                            .invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs));
+                                }
+                            }).optboolean(1, true);
                         } else {
                             return false;
                         }

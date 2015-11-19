@@ -17,7 +17,6 @@ import org.luaj.vm2.*;
 import org.luaj.vm2.lib.*;
 
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -97,7 +96,6 @@ public class EntityWrapper extends LuaTable {
             public Varargs invoke(final Varargs varargs) {
                 final Player player = ScriptUtil.getPlayer(varargs.arg(2));
                 final LuaFunction callback = varargs.checkfunction(4);
-                final AtomicBoolean returnValue = new AtomicBoolean(false);
                 final AtomicReference<Runnable> ask = new AtomicReference<Runnable>();
                 ask.set(new Runnable() {
                     @Override
@@ -105,13 +103,14 @@ public class EntityWrapper extends LuaTable {
                         RpgPlus.getPlugin(RpgPlus.class).getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
                             @Override
                             public void handleAnswer(final Player player, String answer) {
-                                Varargs handled = callback.invoke(LuaValue.valueOf(answer), new OneArgFunction() {
-                                    @Override
-                                    public LuaValue call(LuaValue message) {
-                                        RpgPlus.getPlugin(RpgPlus.class).getDialogs().tell(entity.getName(), player, messageAlternatives(message));
-                                        return LuaValue.NIL;
-                                    }
-                                });
+                                Varargs handled = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(
+                                        callback, LuaValue.valueOf(answer), new OneArgFunction() {
+                                            @Override
+                                            public LuaValue call(LuaValue message) {
+                                                RpgPlus.getPlugin(RpgPlus.class).getDialogs().tell(entity.getName(), player, messageAlternatives(message));
+                                                return LuaValue.NIL;
+                                            }
+                                        });
                                 if (!handled.optboolean(1, true)) {
                                     ask.get().run();
                                 }

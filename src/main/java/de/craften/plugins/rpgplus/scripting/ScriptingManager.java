@@ -6,18 +6,19 @@ import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManag
 import de.craften.plugins.rpgplus.scripting.api.images.Image;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.ResourceFinder;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ScriptingManager extends PluginComponentBase {
     private File scriptDirectory;
@@ -68,10 +69,45 @@ public class ScriptingManager extends PluginComponentBase {
     public void loadScript(File script) throws ScriptErrorException {
         try {
             LuaValue chunk = globals.loadfile(script.getAbsolutePath());
-            chunk.call(script.getAbsolutePath());
+            runSafely(chunk, LuaValue.valueOf(script.getAbsolutePath()));
         } catch (LuaError e) {
             throw new ScriptErrorException("Could not execute " + script.getPath(), e);
         }
+    }
+
+    public Varargs runSafely(Callable<Varargs> callable) {
+        try {
+            return callable.call();
+        } catch (LuaError e) {
+            reportScriptError(e);
+            throw e;
+        } catch (Exception e) {
+            LuaError exception = new LuaError(e);
+            reportScriptError(exception);
+            throw exception;
+        }
+    }
+
+    public Varargs runSafely(LuaValue callable, LuaValue... arguments) {
+        try {
+            return callable.invoke(arguments);
+        } catch (Exception e) {
+            reportScriptError(e);
+            throw e;
+        }
+    }
+
+    public Varargs runSafely(LuaValue callable, Varargs arguments) {
+        try {
+            return callable.invoke(arguments);
+        } catch (Exception e) {
+            reportScriptError(e);
+            throw e;
+        }
+    }
+
+    private void reportScriptError(Exception exception) {
+        Bukkit.getServer().broadcast("rpgplus.scripting.notifyerrors", "An error occurred while executing the script: " + exception.getMessage());
     }
 
     public File getScriptDirectory() {

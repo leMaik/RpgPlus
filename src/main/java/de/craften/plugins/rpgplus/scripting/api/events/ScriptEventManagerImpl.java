@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import de.craften.plugins.rpgplus.RpgPlus;
 import org.bukkit.event.Event;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
@@ -18,7 +19,7 @@ public class ScriptEventManagerImpl {
 
     protected void callHandlers(String eventName, Event event) {
         for (LuaFunction callback : eventHandlers.get(eventName)) {
-            callback.invoke(CoerceJavaToLua.coerce(event));
+            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback, CoerceJavaToLua.coerce(event));
         }
     }
 

@@ -4,3 +4,8 @@ version: VERSION
 main: de.craften.plugins.rpgplus.RpgPlus
 
 softdepend: [NoteBlockAPI]
+
+permissions:
+  rpgplus.scripting.notifyerrors:
+    description: Players with this permission are notified on script errors and get a stacktrace.
+    default: op

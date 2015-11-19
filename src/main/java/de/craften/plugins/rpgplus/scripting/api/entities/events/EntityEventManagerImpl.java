@@ -35,7 +35,7 @@ abstract class EntityEventManagerImpl {
         Multimap<String, LuaFunction> handlers = getHandlers(entity);
         if (handlers != null) {
             for (LuaFunction callback : handlers.get(eventName)) {
-                callback.invoke(CoerceJavaToLua.coerce(event));
+                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback, CoerceJavaToLua.coerce(event));
             }
         }
     }

@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.scripting.api.images;
 
+import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
 import de.craften.plugins.rpgplus.components.images.Poster;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -46,14 +47,14 @@ public class PosterWrapper extends LuaTable {
                             inventory.addItem(itemStack);
                         }
                         if (!callback.isnil()) {
-                            callback.checkfunction().call(LuaValue.TRUE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.TRUE);
                         }
                     }
 
                     @Override
                     public void creationFailed(Throwable exception) {
                         if (!callback.isnil()) {
-                            callback.checkfunction().call(LuaValue.FALSE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.FALSE);
                         }
                     }
                 });
@@ -73,14 +74,14 @@ public class PosterWrapper extends LuaTable {
                                 block,
                                 BlockFace.valueOf(location.checktable().get("face").checkjstring().toUpperCase()));
                         if (!callback.isnil()) {
-                            callback.checkfunction().call(LuaValue.TRUE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.TRUE);
                         }
                     }
 
                     @Override
                     public void creationFailed(Throwable exception) {
                         if (!callback.isnil()) {
-                            callback.checkfunction().call(LuaValue.FALSE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.FALSE);
                         }
                     }
                 });
