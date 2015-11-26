@@ -32,15 +32,15 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
 </ul>
 
 
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
-  <li><strong>rpgplus.image</strong></li>
+  <li><a href="../modules/rpgplus.image.html">rpgplus.image</a></li>
   <li><a href="../modules/rpgplus.inventory.html">rpgplus.inventory</a></li>
-  <li><a href="../modules/rpgplus.types.html">rpgplus.types</a></li>
+  <li><strong>rpgplus.types</strong></li>
   <li><a href="../modules/rpgplus.html">rpgplus</a></li>
   <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
   <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
@@ -58,18 +58,17 @@
 
 <div id="content">
 
-<h1>Module <code>rpgplus.image</code></h1>
-<p>Provides image functions.</p>
-<p>
+<h1>Module <code>rpgplus.types</code></h1>
+<p>This <em>pseudo-module</em> defines tables that are used as parameters in various functions.</p>
+<p> Neither this module nor its
+ fields actually exist. The fields of this module are only used to document tables that various functions require.</p>
 
-</p>
 
-
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Fields">Fields</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#create">create (path[, width=1[, height=1]])</a></td>
-	<td class="summary">Creates a new poster.</td>
+	<td class="name" nowrap><a href="#itemstack">itemstack</a></td>
+	<td class="summary">A normal table that defines an item stack.</td>
 	</tr>
 </table>
 
@@ -77,38 +76,39 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
 
     <dl class="function">
     <dt>
-    <a name = "create"></a>
-    <strong>create (path[, width=1[, height=1]])</strong>
+    <a name = "itemstack"></a>
+    <strong>itemstack</strong>
     </dt>
     <dd>
-    Creates a new poster.  This rescales the original image to fit the specified dimensions.
+    A normal table that defines an item stack.  I.e. it is used in the Inventory API.
 
 
-    <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">path</span>
-         path of the poster, relativ to the script directory
+        <li><span class="parameter">type</span>
+         type of the item, must be a <a href="https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html">Bukkit Material</a>
         </li>
-        <li><span class="parameter">width</span>
-         width of the poster, in blocks
+        <li><span class="parameter">data</span>
+         data of the item, if <code>nil</code>, the data is ignored when matching and set to 0 when giving the item to a player
+         (<em>default</em> nil)
+        </li>
+        <li><span class="parameter">amount</span>
+         amount of the item
          (<em>default</em> 1)
         </li>
-        <li><span class="parameter">height</span>
-         height of the poster, in blocks
-         (<em>default</em> 1)
+        <li><span class="parameter">name</span>
+         item name
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">lore</span>
+         list of lines for the lore of this item
+         (<em>optional</em>)
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../classes/Poster.html#">Poster</a></span>
-        the new poster
-    </ol>
 
 
 
