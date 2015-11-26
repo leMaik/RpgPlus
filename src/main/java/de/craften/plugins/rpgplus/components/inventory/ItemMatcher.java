@@ -120,6 +120,34 @@ public class ItemMatcher {
         return new Builder();
     }
 
+    /**
+     * Creates a new item matcher from the given string item stack representation.
+     *
+     * @param idColonData string of the format <code>id[:data[:amount]]</code>
+     * @return item matcher for the specified item stack
+     * @throws IllegalArgumentException if the string has the wrong format
+     */
+    public static ItemMatcher fromString(String idColonData) {
+        if (idColonData.matches("\\d+(:\\d+(:\\d+)?)?")) {
+            String[] parts = idColonData.split(":");
+
+            ItemMatcher itemMatcher = new ItemMatcher();
+            itemMatcher.type = Material.getMaterial(Integer.parseInt(parts[0]));
+
+            if (parts.length >= 2) {
+                itemMatcher.data = Integer.parseInt(parts[1]);
+            }
+
+            if (parts.length == 3) {
+                itemMatcher.amount = Integer.parseInt(parts[2]);
+            }
+
+            return itemMatcher;
+        } else {
+            throw new IllegalArgumentException("String '" + idColonData + "' has illegal format, expected 'id:data'");
+        }
+    }
+
     public static class Builder {
         private final ItemMatcher matcher;
 

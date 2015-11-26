@@ -152,4 +152,14 @@ public class ScriptUtil {
         }
         return builder.build();
     }
+
+    public static ItemMatcher createItemMatcher(LuaValue itemstack) {
+        if (itemstack.isstring()) {
+            return ItemMatcher.fromString(itemstack.checkjstring());
+        } else if (itemstack.istable()) {
+            return createItemMatcher(itemstack.checktable());
+        } else {
+            throw new LuaError("Expected string or table to represent an itemstack.");
+        }
+    }
 }

@@ -3,9 +3,7 @@ package de.craften.plugins.rpgplus.scripting.api;
 import de.craften.plugins.rpgplus.components.trading.Merchant;
 import de.craften.plugins.rpgplus.components.trading.MerchantOffer;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-import de.craften.plugins.rpgplus.util.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -29,13 +27,13 @@ public class Trading extends LuaTable {
                     MerchantOffer offer;
                     if (offerConfig.length() == 3) {
                         offer = new MerchantOffer(
-                                getItem(offerConfig.get(1)),
-                                getItem(offerConfig.get(2)),
-                                getItem(offerConfig.get(3)));
+                                ScriptUtil.createItemMatcher(offerConfig.get(1)).getItemStack(),
+                                ScriptUtil.createItemMatcher(offerConfig.get(2)).getItemStack(),
+                                ScriptUtil.createItemMatcher(offerConfig.get(3)).getItemStack());
                     } else if (offerConfig.length() == 2) {
                         offer = new MerchantOffer(
-                                getItem(offerConfig.get(1)),
-                                getItem(offerConfig.get(2)));
+                                ScriptUtil.createItemMatcher(offerConfig.get(1)).getItemStack(),
+                                ScriptUtil.createItemMatcher(offerConfig.get(2)).getItemStack());
                     } else {
                         throw new LuaError("Invalid argument length, offer array must contain at least two items");
                     }
@@ -50,13 +48,4 @@ public class Trading extends LuaTable {
         });
     }
 
-    private ItemStack getItem(LuaValue item) {
-        if (item.isstring()) {
-            return new Item(item.checkjstring()).getItemStack();
-        } else if (item.istable()) {
-            return ScriptUtil.createItemMatcher(item.checktable()).getItemStack();
-        } else {
-            throw new LuaError("Expected string or table to represent an itemstack.");
-        }
-    }
 }

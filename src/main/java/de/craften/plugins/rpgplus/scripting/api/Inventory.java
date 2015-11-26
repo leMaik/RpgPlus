@@ -53,17 +53,17 @@ public class Inventory extends LuaTable {
     }
 
     private static LuaBoolean checkItem(LuaValue player, LuaValue item) {
-        ItemMatcher matcher = ScriptUtil.createItemMatcher(item.checktable());
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(item);
         return LuaValue.valueOf(matcher.matches(ScriptUtil.getPlayer(player).getInventory()));
     }
 
     private static LuaInteger giveItem(LuaValue player, LuaValue item) {
-        ItemMatcher matcher = ScriptUtil.createItemMatcher(item.checktable());
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(item);
         return LuaValue.valueOf(matcher.putInto(ScriptUtil.getPlayer(player).getInventory()));
     }
 
     private static LuaInteger takeItem(LuaValue player, LuaValue item) {
-        ItemMatcher matcher = ScriptUtil.createItemMatcher(item.checktable());
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(item);
         return LuaValue.valueOf(matcher.takeFrom(ScriptUtil.getPlayer(player).getInventory()));
     }
 
