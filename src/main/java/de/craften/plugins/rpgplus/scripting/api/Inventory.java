@@ -2,7 +2,6 @@ package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-import org.bukkit.Material;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.VarArgFunction;
 
@@ -53,30 +52,19 @@ public class Inventory extends LuaTable {
         });
     }
 
-    private LuaBoolean checkItem(LuaValue player, LuaValue item) {
-        ItemMatcher matcher = createMatcher(item.checktable());
+    private static LuaBoolean checkItem(LuaValue player, LuaValue item) {
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(item.checktable());
         return LuaValue.valueOf(matcher.matches(ScriptUtil.getPlayer(player).getInventory()));
     }
 
-    private LuaInteger giveItem(LuaValue player, LuaValue item) {
-        ItemMatcher matcher = createMatcher(item.checktable());
+    private static LuaInteger giveItem(LuaValue player, LuaValue item) {
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(item.checktable());
         return LuaValue.valueOf(matcher.putInto(ScriptUtil.getPlayer(player).getInventory()));
     }
 
-    private LuaInteger takeItem(LuaValue player, LuaValue item) {
-        ItemMatcher matcher = createMatcher(item.checktable());
+    private static LuaInteger takeItem(LuaValue player, LuaValue item) {
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(item.checktable());
         return LuaValue.valueOf(matcher.takeFrom(ScriptUtil.getPlayer(player).getInventory()));
     }
 
-    private ItemMatcher createMatcher(LuaTable table) {
-        ItemMatcher.Builder builder = ItemMatcher.builder();
-        builder.type(Material.valueOf(table.get("type").checkjstring().toUpperCase()));
-        if (!table.get("data").isnil()) {
-            builder.data(table.get("data").checkint());
-        }
-        if (!table.get("amount").isnil()) {
-            builder.amount(table.get("amount").checkint());
-        }
-        return builder.build();
-    }
 }

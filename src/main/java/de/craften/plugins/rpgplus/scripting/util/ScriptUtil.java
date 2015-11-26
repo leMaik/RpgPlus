@@ -2,9 +2,11 @@ package de.craften.plugins.rpgplus.scripting.util;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -13,6 +15,8 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -118,5 +122,34 @@ public class ScriptUtil {
                 location.get("x").checkdouble(),
                 location.get("y").checkdouble(),
                 location.get("z").checkdouble());
+    }
+
+    /**
+     * Creates an item matcher bases on the given itemstack table.
+     *
+     * @param itemstack table that represents an itemstack
+     * @return item matcher for the represented itemstack
+     */
+    public static ItemMatcher createItemMatcher(LuaTable itemstack) {
+        ItemMatcher.Builder builder = ItemMatcher.builder();
+        builder.type(Material.valueOf(itemstack.get("type").checkjstring().toUpperCase()));
+        if (!itemstack.get("data").isnil()) {
+            builder.data(itemstack.get("data").checkint());
+        }
+        if (!itemstack.get("amount").isnil()) {
+            builder.amount(itemstack.get("amount").checkint());
+        }
+        if (!itemstack.get("name").isnil()) {
+            builder.name(itemstack.get("name").checkjstring());
+        }
+        if (!itemstack.get("lore").isnil()) {
+            LuaTable luaLore = itemstack.get("lore").checktable();
+            List<String> lore = new ArrayList<>(luaLore.length());
+            for (int i = 1; i <= luaLore.length(); i++) {
+                lore.add(luaLore.get(i).checkjstring());
+            }
+            builder.lore(lore);
+        }
+        return builder.build();
     }
 }

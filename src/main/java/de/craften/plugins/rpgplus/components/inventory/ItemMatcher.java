@@ -3,7 +3,9 @@ package de.craften.plugins.rpgplus.components.inventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,11 +15,15 @@ public class ItemMatcher {
     private Material type;
     private Integer data;
     private Integer amount;
+    private String name;
+    private List<String> lore;
 
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
         return typeMatches(itemStack)
                 && dataMatches(itemStack)
-                && (ignoreAmount || amountMatches(itemStack));
+                && (ignoreAmount || amountMatches(itemStack))
+                && nameMatches(itemStack)
+                && loreMatches(itemStack);
         //TODO check for more properties, i.e. book content
     }
 
@@ -35,8 +41,23 @@ public class ItemMatcher {
     }
 
     public int putInto(Inventory inventory) {
-        Map<Integer, ItemStack> remaining = inventory.addItem(new ItemStack(type, amount != null ? amount : 1, data != null ? data.shortValue() : 0));
+        Map<Integer, ItemStack> remaining = inventory.addItem(getItemStack());
         return remaining.isEmpty() ? 0 : remaining.get(0).getAmount();
+    }
+
+    public ItemStack getItemStack() {
+        ItemStack itemStack = new ItemStack(type, amount != null ? amount : 1, data != null ? data.shortValue() : 0);
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (name != null) {
+            meta.setDisplayName(name);
+        }
+        if (lore != null) {
+            meta.setLore(lore);
+        }
+
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 
     public int takeFrom(Inventory inventory) {
@@ -73,6 +94,28 @@ public class ItemMatcher {
         return amount == null || itemStack.getAmount() == amount;
     }
 
+    private boolean nameMatches(ItemStack itemStack) {
+        return name == null || itemStack.getItemMeta().getDisplayName().equals(name);
+    }
+
+    private boolean loreMatches(ItemStack itemStack) {
+        if (lore == null) {
+            return true;
+        }
+
+        List<String> actualLore = itemStack.getItemMeta().getLore();
+        if (actualLore.size() != lore.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < actualLore.size(); i++) {
+            if (!actualLore.get(i).equals(lore.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -96,6 +139,16 @@ public class ItemMatcher {
 
         public Builder amount(Integer amount) {
             matcher.amount = amount;
+            return this;
+        }
+
+        public Builder name(String name) {
+            matcher.name = name;
+            return this;
+        }
+
+        public Builder lore(List<String> lore) {
+            matcher.lore = lore;
             return this;
         }
 
