@@ -174,13 +174,6 @@ public class EntityWrapper extends LuaTable {
             }
         });
         
-        set("getWorldName", new ZeroArgFunction() {
-            
-            @Override
-            public LuaValue call() {
-                return LuaValue.valueOf(entity.getEntity().getWorld().getName());
-            }
-        });
     }
 
     @Override
@@ -210,6 +203,8 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
                     }
                     return LuaValue.NIL;
+                case "worldName":
+                    return LuaValue.valueOf(entity.getEntity().getWorld().getName());
             }
         }
         return super.rawget(key);
