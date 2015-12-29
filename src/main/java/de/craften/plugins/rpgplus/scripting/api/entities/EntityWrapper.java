@@ -8,6 +8,7 @@ import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
@@ -172,6 +173,7 @@ public class EntityWrapper extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+        
     }
 
     @Override
@@ -201,6 +203,8 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
                     }
                     return LuaValue.NIL;
+                case "worldName":
+                    return LuaValue.valueOf(entity.getEntity().getWorld().getName());
             }
         }
         return super.rawget(key);
