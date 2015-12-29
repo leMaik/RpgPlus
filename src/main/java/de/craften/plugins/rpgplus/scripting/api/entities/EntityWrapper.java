@@ -8,6 +8,7 @@ import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
@@ -170,6 +171,14 @@ public class EntityWrapper extends LuaTable {
             public LuaValue call() {
                 entity.kill();
                 return LuaValue.NIL;
+            }
+        });
+        
+        set("getWorldName", new ZeroArgFunction() {
+            
+            @Override
+            public LuaValue call() {
+                return LuaValue.valueOf(entity.getEntity().getWorld().getName());
             }
         });
     }
