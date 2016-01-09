@@ -206,6 +206,18 @@ class BasicManagedEntity<T extends Entity> implements ManagedEntity<T> {
     }
 
     @Override
+    public LivingEntity getTarget(){
+        return (entity instanceof Creature) ? ((Creature) entity).getTarget() : null;
+    }
+
+    @Override
+    public void setTarget(LivingEntity target) {
+        if(entity instanceof Creature){
+            ((Creature) entity).setTarget(target);
+        }
+    }
+
+    @Override
     public UUID getUniqueId() {
         return id;
     }

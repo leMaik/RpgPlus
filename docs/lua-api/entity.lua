@@ -25,6 +25,9 @@ profession = _
 --- Name of the world of the entity. This field is only readable.
 worldName = _
 
+--- Target of the entity. This field is writable.
+target = _
+
 --- Navigates to the given location, using A*.
 -- @param destination destination, a table with `x`, `y` and `z` fields
 -- @param[opt] options a table with options for pathing, options are `openDoors` (boolean), `openFenceGates` (boolean) and `speed` (int, in meters per second)
