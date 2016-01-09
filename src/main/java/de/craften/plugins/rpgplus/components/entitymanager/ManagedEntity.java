@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import java.util.UUID;
@@ -127,6 +128,17 @@ public interface ManagedEntity<T extends Entity> {
      * Callback that is invoked whenever the location of this entity has changed.
      */
     void onLocationChanged();
+
+    /**
+     * Gets the target of the creature
+     * @return LivingEntity as target
+     */
+    LivingEntity getTarget();
+
+    /**
+     * Sets the Target of an entity
+     */
+    void setTarget(LivingEntity target);
 
     /**
      * Get the unique ID of this managed entity. This is not the unique ID of the actual entity and will persist if the

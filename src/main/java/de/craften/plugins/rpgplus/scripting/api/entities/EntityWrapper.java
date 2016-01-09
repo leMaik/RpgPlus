@@ -11,6 +11,7 @@ import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -173,7 +174,7 @@ public class EntityWrapper extends LuaTable {
                 return LuaValue.NIL;
             }
         });
-        
+
     }
 
     @Override
@@ -205,6 +206,8 @@ public class EntityWrapper extends LuaTable {
                     return LuaValue.NIL;
                 case "worldName":
                     return LuaValue.valueOf(entity.getEntity().getWorld().getName());
+                case "target":
+                    return ScriptUtil.getTarget(entity);
             }
         }
         return super.rawget(key);
@@ -243,6 +246,8 @@ public class EntityWrapper extends LuaTable {
                         throw new LuaError("Entity is not a villager.");
                     }
                     break;
+                case "target":
+                    entity.setTarget(value == LuaValue.NIL ? null : ScriptUtil.getPlayer(value));
             }
         }
         super.rawset(key, value);
