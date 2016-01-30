@@ -4,7 +4,6 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
-import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -155,11 +154,6 @@ public class RpgPlusObject extends LuaTable {
                 return LuaValue.NIL;
             }
         });
-
-        //Functions to register and unregister event handlers
-        ScriptEventManager events = new ScriptEventManager();
-        plugin.registerEvents(events);
-        events.installOn(this);
 
         EntitySpawner entitySpawner = new EntitySpawner();
         entitySpawner.installOn(this);

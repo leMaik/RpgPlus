@@ -103,6 +103,15 @@ public class TimerComponent extends PluginComponentBase {
         }
     }
 
+    /**
+     * Remove all handlers.
+     */
+    public void removeAll() {
+        skippedTimeStarts.clear();
+        callbacks.clear();
+
+    }
+
     private static class Timer {
         private final int id;
         private final long time;

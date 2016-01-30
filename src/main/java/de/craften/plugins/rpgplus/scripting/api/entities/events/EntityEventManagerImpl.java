@@ -69,6 +69,13 @@ abstract class EntityEventManagerImpl {
         }
     }
 
+    /**
+     * Removes all event handlers.
+     */
+    public void reset() {
+        eventHandlers.clear();
+    }
+
     /*
     public static void main(String[] args) throws Exception {
         //to use this program, bukkit and mockito need to be in the classpath

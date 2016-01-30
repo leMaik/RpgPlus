@@ -10,7 +10,8 @@ import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
-import de.craften.plugins.rpgplus.util.components.PluginComponent;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -56,15 +57,38 @@ public class RpgPlus extends JavaPlugin {
         }
     }
 
-    @Override
-    public void onDisable() {
-        entityManager.clear();
+    public void reload() {
+        getLogger().info("Reloading...");
+        scriptingManager.reset();
+        entityManager.removeAll();
+        commandManager.removeAll();
+        timerManager.removeAll();
+        dialogs.reset();
+
+        try {
+            scriptingManager.loadScript(new File(getDataFolder(), "main.lua"));
+        } catch (ScriptErrorException e) {
+            getLogger().log(Level.WARNING, "Could not run main script", e);
+        }
+        getLogger().info("Reloaded");
     }
 
-    public void addComponents(PluginComponent... components) {
-        for (PluginComponent c : components) {
-            c.activateFor(this);
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equals("rpgplus")) {
+            if (args.length == 1 && args[0].equals("reload")) {
+                reloadConfig();
+                reload();
+                sender.sendMessage("RpgPlus reloaded.");
+                return true;
+            }
         }
+        return false;
+    }
+
+    @Override
+    public void onDisable() {
+        entityManager.removeAll();
     }
 
     public ScriptingManager getScriptingManager() {

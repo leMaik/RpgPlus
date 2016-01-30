@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.scripting;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.*;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
+import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.Image;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
@@ -21,10 +22,11 @@ import java.util.concurrent.Callable;
 public class ScriptingManager extends PluginComponentBase {
     private File scriptDirectory;
     private Globals globals;
-    private LuaTable rpgPlusObject;
+    private RpgPlusObject rpgPlusObject;
+    private ScriptEventManager eventManager;
     private LuaValue schedulerModule;
     private LuaValue tradingModule;
-    private LuaValue timerModule;
+    private ScriptTimedEventManager timerModule;
     private LuaValue soundModule;
     private LuaValue storageModule;
     private EntityEventManager entityEventManager;
@@ -52,7 +54,12 @@ public class ScriptingManager extends PluginComponentBase {
 
         RpgPlus plugin = RpgPlus.getPlugin(RpgPlus.class);
         scriptDirectory = plugin.getDataFolder();
+
         rpgPlusObject = new RpgPlusObject(this);
+        eventManager = new ScriptEventManager();
+        registerEvents(eventManager);
+        eventManager.installOn(rpgPlusObject);
+
         schedulerModule = new Scheduler(plugin);
         tradingModule = new Trading(plugin);
         timerModule = new ScriptTimedEventManager(plugin);
@@ -62,6 +69,14 @@ public class ScriptingManager extends PluginComponentBase {
         plugin.getServer().getPluginManager().registerEvents(entityEventManager, plugin);
         inventoryModule = new Inventory();
         imageModule = new Image(plugin);
+    }
+
+    /**
+     * Resets the script manager.
+     */
+    public void reset() {
+        eventManager.reset();
+        entityEventManager.reset();
     }
 
     public void loadScript(File script) throws ScriptErrorException {

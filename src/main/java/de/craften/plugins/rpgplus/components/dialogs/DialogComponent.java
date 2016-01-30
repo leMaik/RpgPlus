@@ -63,4 +63,11 @@ public class DialogComponent extends PluginComponentBase implements Listener {
             event.setCancelled(true);
         }
     }
+
+    /**
+     * Resets any running conversations.
+     */
+    public void reset() {
+        waitForChatAnswer.clear();
+    }
 }
