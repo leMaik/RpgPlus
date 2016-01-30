@@ -9,9 +9,13 @@ import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Bukkit;
-import org.luaj.vm2.*;
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaError;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.ResourceFinder;
+import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.*;
@@ -50,6 +54,32 @@ public class ScriptingManager extends PluginComponentBase {
                 return originalFinder.findResource(s);
             }
         };
+        final LuaValue originalRequire = globals.get("require");
+        globals.set("require", new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                switch (args.checkjstring(1)) {
+                    case "rpgplus.image":
+                        return imageModule;
+                    case "rpgplus.inventory":
+                        return inventoryModule;
+                    case "rpgplus.scheduler":
+                        return schedulerModule;
+                    case "rpgplus.sound":
+                        return soundModule;
+                    case "rpgplus.storage":
+                        return storageModule;
+                    case "rpgplus.timer":
+                        return timerModule;
+                    case "rpgplus.trading":
+                        return tradingModule;
+                    case "rpgplus":
+                        return rpgPlusObject;
+                    default:
+                        return originalRequire.invoke(args);
+                }
+            }
+        });
         LuaC.install(globals);
 
         RpgPlus plugin = RpgPlus.getPlugin(RpgPlus.class);
@@ -143,39 +173,7 @@ public class ScriptingManager extends PluginComponentBase {
         return scriptDirectory;
     }
 
-    public LuaTable getMainModule() {
-        return rpgPlusObject;
-    }
-
-    public LuaValue getSchedulerModule() {
-        return schedulerModule;
-    }
-
-    public LuaValue getTradingModule() {
-        return tradingModule;
-    }
-
-    public LuaValue getTimerModule() {
-        return timerModule;
-    }
-
-    public LuaValue getSoundModule() {
-        return soundModule;
-    }
-
-    public LuaValue getStorageModule() {
-        return storageModule;
-    }
-
     public EntityEventManager getEntityEventManager() {
         return entityEventManager;
-    }
-
-    public Inventory getInventoryModule() {
-        return inventoryModule;
-    }
-
-    public Image getImageModule() {
-        return imageModule;
     }
 }
