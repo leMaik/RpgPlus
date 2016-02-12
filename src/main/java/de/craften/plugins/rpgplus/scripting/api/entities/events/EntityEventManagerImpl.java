@@ -2,8 +2,9 @@ package de.craften.plugins.rpgplus.scripting.api.entities.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import de.craften.plugins.managedentities.ManagedEntity;
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -20,10 +21,10 @@ import java.util.Map;
  * functions from this code.
  */
 abstract class EntityEventManagerImpl {
-    private final Map<ManagedEntity, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
+    private final Map<RpgPlusEntity, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
 
     private Multimap<String, LuaFunction> getHandlers(Entity entity) {
-        ManagedEntity managedEntity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
+        RpgPlusEntity managedEntity = (RpgPlusEntity) RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
         return managedEntity != null ? eventHandlers.get(managedEntity) : null;
     }
 
@@ -41,7 +42,7 @@ abstract class EntityEventManagerImpl {
     }
 
     public LuaValue on(LuaValue entity, LuaValue eventName, LuaValue callback) {
-        ManagedEntity managedEntity = ScriptUtil.getManagedEntity(entity, true);
+        RpgPlusEntity managedEntity = ScriptUtil.getManagedEntity(entity, true);
         Multimap<String, LuaFunction> handlers = eventHandlers.get(managedEntity);
         if (handlers == null) {
             handlers = ArrayListMultimap.create();
@@ -52,7 +53,7 @@ abstract class EntityEventManagerImpl {
     }
 
     public LuaValue off(LuaValue entity, LuaValue eventName, LuaValue callback) {
-        ManagedEntity managedEntity = ScriptUtil.getManagedEntity(entity, true);
+        RpgPlusEntity managedEntity = ScriptUtil.getManagedEntity(entity, true);
         if (eventName.isnil()) {
             return LuaValue.valueOf(!eventHandlers.remove(managedEntity).isEmpty());
         } else {

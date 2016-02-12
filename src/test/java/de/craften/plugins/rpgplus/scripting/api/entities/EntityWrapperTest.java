@@ -1,6 +1,6 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.test.util.LuaCodeTest;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Damageable;
@@ -14,14 +14,14 @@ import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.*;
 
 public class EntityWrapperTest extends LuaCodeTest {
-    private ManagedEntity managedEntity;
+    private RpgPlusEntity managedEntity;
     private Entity entity;
 
     private void mockDamagableEntity() {
         //create a mocked, minimal creeper
         entity = mock(Creeper.class);
         assumeTrue(entity instanceof Damageable);
-        managedEntity = mock(ManagedEntity.class);
+        managedEntity = mock(RpgPlusEntity.class);
         when(managedEntity.getEntity()).thenReturn(entity);
     }
 
@@ -82,6 +82,6 @@ public class EntityWrapperTest extends LuaCodeTest {
         verify(managedEntity).setNameVisible(true);
 
         executeLua("entity.invulnerable = false");
-        verify(managedEntity).setIsTakingDamage(true);
+        verify(managedEntity).setTakingDamage(true);
     }
 }

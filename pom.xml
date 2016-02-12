@@ -64,6 +64,11 @@
             <artifactId>Pastebin</artifactId>
             <version>0.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>de.craften.plugins.managedentities</groupId>
+            <artifactId>ManagedEntities</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

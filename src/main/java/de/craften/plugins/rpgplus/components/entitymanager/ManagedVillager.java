@@ -6,11 +6,11 @@ import org.bukkit.entity.Villager;
 /**
  * A managed villager.
  */
-public class ManagedVillager extends BasicManagedEntity<Villager> {
+public class ManagedVillager extends RpgPlusEntity<Villager> {
     private Villager.Profession profession;
 
-    ManagedVillager(Location location, EntityManager manager) {
-        super(Villager.class, location, manager);
+    public ManagedVillager(Location location) {
+        super(location);
     }
 
     public Villager.Profession getProfession() {
@@ -25,10 +25,11 @@ public class ManagedVillager extends BasicManagedEntity<Villager> {
     }
 
     @Override
-    public void spawn() {
-        super.spawn();
+    protected Villager spawnEntity(Location location) {
+        Villager villager = location.getWorld().spawn(location, Villager.class);
         if (profession != null) {
             this.getEntity().setProfession(profession);
         }
+        return villager;
     }
 }

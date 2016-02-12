@@ -1,7 +1,8 @@
 package de.craften.plugins.rpgplus.scripting.util;
 
+import de.craften.plugins.managedentities.ManagedEntity;
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
 import org.bukkit.Bukkit;
@@ -74,8 +75,8 @@ public class ScriptUtil {
     public static Entity getEntity(LuaValue entity) {
         if (entity.isuserdata(Entity.class)) {
             return (Entity) CoerceLuaToJava.coerce(entity, Entity.class);
-        } else if (entity.isuserdata(ManagedEntity.class)) {
-            return ((ManagedEntity) CoerceLuaToJava.coerce(entity, ManagedEntity.class)).getEntity();
+        } else if (entity.isuserdata(RpgPlusEntity.class)) {
+            return ((RpgPlusEntity) CoerceLuaToJava.coerce(entity, RpgPlusEntity.class)).getEntity();
         } else if (entity instanceof EntityWrapper) {
             return ((EntityWrapper) entity).getEntity().getEntity();
         }
@@ -90,14 +91,14 @@ public class ScriptUtil {
      * @return the managed entity or null
      * @throws LuaError if there are missing attributes or if strict is true and the entity is not a managed entity
      */
-    public static ManagedEntity getManagedEntity(LuaValue entity, boolean strict) {
+    public static RpgPlusEntity getManagedEntity(LuaValue entity, boolean strict) {
         if (entity.isuserdata(Entity.class)) {
             ManagedEntity managedEntity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity((Entity) CoerceLuaToJava.coerce(entity, Entity.class));
-            if (managedEntity != null) {
-                return managedEntity;
+            if (managedEntity instanceof RpgPlusEntity) {
+                return (RpgPlusEntity) managedEntity;
             }
-        } else if (entity.isuserdata(ManagedEntity.class)) {
-            return (ManagedEntity) CoerceLuaToJava.coerce(entity, ManagedEntity.class);
+        } else if (entity.isuserdata(RpgPlusEntity.class)) {
+            return (RpgPlusEntity) CoerceLuaToJava.coerce(entity, RpgPlusEntity.class);
         } else if (entity instanceof EntityWrapper) {
             return ((EntityWrapper) entity).getEntity();
         }

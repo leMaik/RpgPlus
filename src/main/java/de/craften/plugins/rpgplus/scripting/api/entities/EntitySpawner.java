@@ -1,10 +1,12 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
+import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
-import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
+import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.luaj.vm2.LuaTable;
@@ -20,18 +22,24 @@ public class EntitySpawner {
 
             @Override
             public LuaValue call(LuaValue entityType, LuaValue optionsArg) {
-                EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
+                final EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
                 LuaTable options = optionsArg.checktable();
 
-                ManagedEntity entity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().spawn(
-                        type.getEntityClass(),
-                        ScriptUtil.getLocation(optionsArg.checktable())
-                );
+                RpgPlusEntity entity;
+                if (type == EntityType.VILLAGER) {
+                    entity = new ManagedVillager(ScriptUtil.getLocation(optionsArg.checktable()));
+                } else {
+                    entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
+                        @Override
+                        protected Entity spawnEntity(Location location) {
+                            return location.getWorld().spawn(location, type.getEntityClass());
+                        }
+                    };
+                }
 
                 entity.setName(options.get("name").optjstring(""));
                 entity.setSecondName(options.get("secondName").optjstring(""));
-                entity.setIsTakingDamage(!options.get("invulnerable").optboolean(false));
-                entity.setMovementType(MovementType.valueOf(options.get("movementType").optjstring("local").toUpperCase()));
+                entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
                 entity.setNameVisible(options.get("nameVisible").optboolean(true));
 
                 if (entity instanceof ManagedVillager) {

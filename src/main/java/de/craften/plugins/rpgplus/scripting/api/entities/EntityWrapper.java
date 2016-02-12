@@ -2,8 +2,8 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
+import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
@@ -20,13 +20,13 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A lua wrapper for a {@link de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity}.
+ * A lua wrapper for a {@link RpgPlusEntity}.
  */
 public class EntityWrapper extends LuaTable {
     private static final Random random = new Random();
-    private final ManagedEntity entity;
+    private final RpgPlusEntity entity;
 
-    public EntityWrapper(final ManagedEntity entity) {
+    public EntityWrapper(final RpgPlusEntity entity) {
         this.entity = entity;
 
         set("navigateTo", new VarArgFunction() {
@@ -81,8 +81,8 @@ public class EntityWrapper extends LuaTable {
             @Override
             public LuaValue call(LuaValue entityArg, LuaValue destinationArg) {
                 LuaTable destination = destinationArg.checktable();
-                entity.moveTo(new Location(
-                        Bukkit.getWorld(destination.get("world").optjstring(entity.getLocalLocation().getWorld().getName())),
+                entity.teleport(new Location(
+                        Bukkit.getWorld(destination.get("world").optjstring(entity.getLocation().getWorld().getName())),
                         destination.get("x").checkdouble(),
                         destination.get("y").checkdouble(),
                         destination.get("z").checkdouble()
@@ -152,7 +152,7 @@ public class EntityWrapper extends LuaTable {
         set("despawn", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
-                entity.despawn();
+                entity.remove();
                 return LuaValue.NIL;
             }
         });
@@ -227,7 +227,7 @@ public class EntityWrapper extends LuaTable {
                     entity.setSecondName(value.checkjstring());
                     break;
                 case "invulnerable":
-                    entity.setIsTakingDamage(!value.checkboolean());
+                    entity.setTakingDamage(!value.checkboolean());
                     break;
                 case "nameVisible":
                     entity.setNameVisible(value.checkboolean());
@@ -252,11 +252,11 @@ public class EntityWrapper extends LuaTable {
         }
     }
 
-    public ManagedEntity getEntity() {
+    public RpgPlusEntity getEntity() {
         return entity;
     }
 
-    public static LuaValue wrap(ManagedEntity entity) {
+    public static LuaValue wrap(RpgPlusEntity entity) {
         return new EntityWrapper(entity);
     }
 }

@@ -1,9 +1,8 @@
 package de.craften.plugins.rpgplus.components.pathfinding;
 
 import com.google.common.collect.Lists;
+import de.craften.plugins.managedentities.ManagedEntity;
 import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedEntity;
-import de.craften.plugins.rpgplus.components.entitymanager.MovementType;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
@@ -59,7 +58,6 @@ public class PathfindingComponent extends PluginComponentBase {
 
     private class Navigator {
         private final ManagedEntity entity;
-        private final MovementType originalMovementType;
         private final Location startingLocation;
         private final ArrayList<Tile> path;
         private final int speed;
@@ -70,13 +68,11 @@ public class PathfindingComponent extends PluginComponentBase {
 
         public Navigator(Entity entity, Location startingLocation, ArrayList<Tile> path, int speed, PathingBehaviours behaviours, Runnable callback) {
             this.entity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
-            originalMovementType = this.entity.getMovementType();
             this.startingLocation = startingLocation;
             this.path = path;
             this.speed = speed;
             this.behaviours = behaviours;
             this.callback = callback;
-            this.entity.setMovementType(MovementType.MOVING);
         }
 
         public void update() {
@@ -92,7 +88,7 @@ public class PathfindingComponent extends PluginComponentBase {
                 } else {
                     dest.setY(subi >= speed / 2 ? next.getBlockY() : current.getBlockY());
                 }
-                entity.moveTo(dest.add(0.5, 0, 0.5));
+                entity.teleport(dest.add(0.5, 0, 0.5));
 
                 subi++;
                 if (subi == speed - 1) {
@@ -102,7 +98,6 @@ public class PathfindingComponent extends PluginComponentBase {
                 }
             } else {
                 navigators.remove(entity.getEntity().getUniqueId());
-                entity.setMovementType(originalMovementType);
                 if (callback != null) {
                     callback.run();
                 }

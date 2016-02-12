@@ -1,8 +1,8 @@
 package de.craften.plugins.rpgplus;
 
+import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
-import de.craften.plugins.rpgplus.components.entitymanager.EntityManager;
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
 import de.craften.plugins.rpgplus.components.pathfinding.PathfindingComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
@@ -32,7 +32,7 @@ public class RpgPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         scriptingManager = new ScriptingManager();
-        entityManager = new EntityManager();
+        entityManager = new EntityManager(this);
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         storage = new StorageComponent(new File(getDataFolder(), "storage"));
@@ -41,7 +41,6 @@ public class RpgPlus extends JavaPlugin {
         images = new ImagesComponent();
 
         scriptingManager.activateFor(this);
-        entityManager.activateFor(this);
         commandManager.activateFor(this);
         timerManager.activateFor(this);
         storage.activateFor(this);
@@ -58,7 +57,7 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        entityManager.clear();
+        entityManager.removeAll();
     }
 
     public void addComponents(PluginComponent... components) {
