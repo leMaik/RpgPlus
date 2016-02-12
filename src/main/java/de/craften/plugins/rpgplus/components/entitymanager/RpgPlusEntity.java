@@ -78,4 +78,14 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
         }
         //TODO remember the target if the entity is not spawned yet
     }
+
+    @Override
+    public void teleport(Location location) {
+        Location old = getLocation();
+        if (old != null) {
+            super.teleport(location.clone().setDirection(location.toVector().subtract(old.toVector())));
+        } else {
+            super.teleport(location);
+        }
+    }
 }
