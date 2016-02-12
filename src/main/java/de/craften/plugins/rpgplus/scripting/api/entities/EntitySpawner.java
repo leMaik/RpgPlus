@@ -1,6 +1,5 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
-import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
@@ -48,6 +47,7 @@ public class EntitySpawner {
                     }
                 }
 
+                RpgPlus.getPlugin(RpgPlus.class).getEntityManager().addEntity(entity);
                 entity.spawn();
                 return EntityWrapper.wrap(entity);
             }
