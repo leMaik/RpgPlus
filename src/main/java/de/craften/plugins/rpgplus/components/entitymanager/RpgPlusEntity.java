@@ -4,16 +4,17 @@ import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.managedentities.behavior.SecondNameBehavior;
 import de.craften.plugins.managedentities.behavior.VisibleNameBehavior;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
-
-import java.util.UUID;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.Player;
 
 /**
  * A basic managed entity without any special logic.
  */
 public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<T> {
-    private boolean isTakingDamage;
-    private boolean nameVisible;
+    private boolean isTakingDamage = true;
+    private boolean nameVisible = true;
 
     public RpgPlusEntity(Location location) {
         super(location);
@@ -52,8 +53,14 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
     }
 
     public void setNameVisible(boolean nameVisible) {
-        this.nameVisible = nameVisible;
-        //TODO this has no effect right now
+        if (nameVisible != this.nameVisible) {
+            this.nameVisible = nameVisible;
+            if (nameVisible) {
+                removeBehavior(getBehaviors(VisibleNameBehavior.class).iterator().next());
+            } else {
+                addBehavior(new VisibleNameBehavior());
+            }
+        }
     }
 
     public Object getTarget() {
