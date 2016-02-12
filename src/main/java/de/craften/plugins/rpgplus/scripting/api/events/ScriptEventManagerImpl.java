@@ -44,6 +44,10 @@ public class ScriptEventManagerImpl {
         });
     }
 
+    public void reset() {
+        eventHandlers.clear();
+    }
+
     /*
     public static void main(String[] args) throws Exception {
         //to use this program, bukkit needs to be in the classpath

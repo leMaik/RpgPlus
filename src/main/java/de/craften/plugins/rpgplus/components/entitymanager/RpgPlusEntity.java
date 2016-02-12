@@ -1,14 +1,10 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
-import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.managedentities.behavior.SecondNameBehavior;
 import de.craften.plugins.managedentities.behavior.VisibleNameBehavior;
-import de.craften.plugins.rpgplus.util.EntityUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -58,5 +54,21 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
     public void setNameVisible(boolean nameVisible) {
         this.nameVisible = nameVisible;
         //TODO this has no effect right now
+    }
+
+    public Object getTarget() {
+        Entity entity = getEntity();
+        if (entity instanceof Creature) {
+            return ((Creature) entity).getTarget();
+        }
+        return null;
+    }
+
+    public void setTarget(Player player) {
+        Entity entity = getEntity();
+        if (entity instanceof Creature) {
+            ((Monster) entity).setTarget(player);
+        }
+        //TODO remember the target if the entity is not spawned yet
     }
 }

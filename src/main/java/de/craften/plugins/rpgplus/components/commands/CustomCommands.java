@@ -34,6 +34,13 @@ public class CustomCommands extends PluginComponentBase {
         dispatcher.registerCommand(Arrays.asList(commandPath), handler);
     }
 
+    /**
+     * Remove all registered commands.
+     */
+    public void removeAll() {
+        dispatcher.removeAll();
+    }
+
     private class DispatchedComand extends Command {
         protected DispatchedComand(String name) {
             super(name);

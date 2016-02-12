@@ -68,5 +68,12 @@ class CommandDispatcher implements CommandHandler {
             }
             return false;
         }
+
+        /**
+         * Remove all custom commands.
+         */
+        public void removeAll() {
+            handlers.clear();
+        }
     }
 }

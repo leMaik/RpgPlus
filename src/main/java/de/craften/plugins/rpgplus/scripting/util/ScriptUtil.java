@@ -10,10 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
 import java.util.ArrayList;
@@ -44,6 +46,15 @@ public class ScriptUtil {
             }
         }
     }
+
+    /**
+     * Get the target from entity as LuaValue
+     * @param entity entity
+     * @return lua value that represents the entity target
+     */
+    public static LuaValue getTarget(RpgPlusEntity entity){
+        return CoerceJavaToLua.coerce(entity.getTarget());
+    };
 
     /**
      * Get the player that is represented by the given lua value.

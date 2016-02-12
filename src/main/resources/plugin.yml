@@ -5,7 +5,15 @@ main: de.craften.plugins.rpgplus.RpgPlus
 
 softdepend: [NoteBlockAPI]
 
+commands:
+  rpgplus:
+    description: RpgPlus command
+    permission: rpgplus.command
+
 permissions:
   rpgplus.scripting.notifyerrors:
     description: Players with this permission are notified on script errors and get a stacktrace.
+    default: op
+  rpgplus.command:
+    description: Players with this permission may perform any RpgPlus command (i.e. reloading).
     default: op
