@@ -28,7 +28,7 @@ public class ManagedVillager extends RpgPlusEntity<Villager> {
     protected Villager spawnEntity(Location location) {
         Villager villager = location.getWorld().spawn(location, Villager.class);
         if (profession != null) {
-            this.getEntity().setProfession(profession);
+            villager.setProfession(profession);
         }
         return villager;
     }
