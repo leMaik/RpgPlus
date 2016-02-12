@@ -3,11 +3,9 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.managedentities.behavior.SecondNameBehavior;
 import de.craften.plugins.managedentities.behavior.VisibleNameBehavior;
+import de.craften.plugins.managedentities.util.nms.NmsEntityUtil;
 import org.bukkit.Location;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 /**
  * A basic managed entity without any special logic.
@@ -21,6 +19,15 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
 
         addBehavior(new VisibleNameBehavior());
         addBehavior(new SecondNameBehavior());
+    }
+
+    @Override
+    public void spawn() {
+        super.spawn();
+
+        if (getEntity() instanceof LivingEntity && !isTakingDamage) {
+            NmsEntityUtil.setInvulnerable((LivingEntity) getEntity(), true);
+        }
     }
 
     public String getName() {
@@ -45,7 +52,10 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
 
     public void setTakingDamage(boolean isTakingDamage) {
         this.isTakingDamage = isTakingDamage;
-        //TODO this has no effect right now
+
+        if (getEntity() instanceof LivingEntity) {
+            NmsEntityUtil.setInvulnerable((LivingEntity) getEntity(), !isTakingDamage);
+        }
     }
 
     public boolean isNameVisible() {
