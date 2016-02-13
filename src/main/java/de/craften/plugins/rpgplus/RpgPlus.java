@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus;
 
 import de.craften.plugins.managedentities.EntityManager;
+import de.craften.plugins.rpgplus.components.WeakPlayerMaps;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
@@ -22,6 +23,7 @@ import java.util.logging.Level;
  */
 public class RpgPlus extends JavaPlugin {
     private ScriptingManager scriptingManager;
+    private WeakPlayerMaps weakPlayerMaps;
     private EntityManager entityManager;
     private CustomCommands commandManager;
     private TimerComponent timerManager;
@@ -33,6 +35,7 @@ public class RpgPlus extends JavaPlugin {
     @Override
     public void onEnable() {
         scriptingManager = new ScriptingManager();
+        weakPlayerMaps = new WeakPlayerMaps();
         entityManager = new EntityManager(this);
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
@@ -42,6 +45,7 @@ public class RpgPlus extends JavaPlugin {
         images = new ImagesComponent();
 
         scriptingManager.activateFor(this);
+        weakPlayerMaps.activateFor(this);
         commandManager.activateFor(this);
         timerManager.activateFor(this);
         storage.activateFor(this);
@@ -63,6 +67,7 @@ public class RpgPlus extends JavaPlugin {
         commandManager.removeAll();
         timerManager.removeAll();
         dialogs.reset();
+        weakPlayerMaps.reset();
 
         try {
             scriptingManager.loadScript(new File(getDataFolder(), "main.lua"));
@@ -92,6 +97,10 @@ public class RpgPlus extends JavaPlugin {
 
     public ScriptingManager getScriptingManager() {
         return scriptingManager;
+    }
+
+    public WeakPlayerMaps getWeakPlayerMaps() {
+        return weakPlayerMaps;
     }
 
     /**
