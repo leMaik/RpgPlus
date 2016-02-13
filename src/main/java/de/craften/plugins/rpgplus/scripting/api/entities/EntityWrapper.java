@@ -10,6 +10,7 @@ import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Damageable;
@@ -255,9 +256,9 @@ public class EntityWrapper extends LuaTable {
 
     private String messageAlternatives(LuaValue messages) {
         if (messages.istable()) {
-            return messages.checktable().get(random.nextInt(messages.length()) + 1).checkjstring();
+            return ChatColor.translateAlternateColorCodes('&', messages.checktable().get(random.nextInt(messages.length()) + 1).checkjstring());
         } else {
-            return messages.checkjstring();
+            return ChatColor.translateAlternateColorCodes('&', messages.checkjstring());
         }
     }
 
