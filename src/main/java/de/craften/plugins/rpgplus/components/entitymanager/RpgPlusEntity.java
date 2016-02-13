@@ -93,7 +93,12 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
     public void teleport(Location location) {
         Location old = getLocation();
         if (old != null) {
-            super.teleport(location.clone().setDirection(location.toVector().subtract(old.toVector())));
+            Location target = location.clone().setDirection(location.toVector().subtract(old.toVector()));
+            super.teleport(target);
+            
+            if (getEntity() instanceof LivingEntity) {
+                NmsEntityUtil.setHeadRotation((LivingEntity) getEntity(), target.getYaw(), target.getPitch());
+            }
         } else {
             super.teleport(location);
         }
