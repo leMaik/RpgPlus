@@ -5,6 +5,8 @@ import de.craften.plugins.rpgplus.components.commands.CommandHandler;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaError;
@@ -129,7 +131,7 @@ public class RpgPlusObject extends LuaTable {
                     for (int i = 1; i <= players.length(); i++) {
                         Player p = ScriptUtil.getPlayer(players.get(i));
                         for (int j = 2; j <= varargs.narg(); j++) {
-                            p.sendMessage(varargs.checkjstring(j));
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
                         }
                     }
                 } else {
@@ -145,7 +147,7 @@ public class RpgPlusObject extends LuaTable {
             public Varargs invoke(Varargs varargs) {
                 if (varargs.narg() >= 1) {
                     for (int i = 1; i <= varargs.narg(); i++) {
-                        plugin.getServer().broadcastMessage(varargs.checkjstring(i));
+                        plugin.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(i)));
                     }
                 } else {
                     throw new LuaError("Invalid count of arguments. At least one argument are required.");

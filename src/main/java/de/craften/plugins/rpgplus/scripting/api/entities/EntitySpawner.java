@@ -4,6 +4,8 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -36,8 +38,8 @@ public class EntitySpawner {
                     };
                 }
 
-                entity.setName(options.get("name").optjstring(""));
-                entity.setSecondName(options.get("secondName").optjstring(""));
+                entity.setName(ChatColor.translateAlternateColorCodes('&', options.get("name").optjstring("")));
+                entity.setSecondName(ChatColor.translateAlternateColorCodes('&', options.get("secondName").optjstring("")));
                 entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
                 entity.setNameVisible(options.get("nameVisible").optboolean(true));
 
