@@ -5,7 +5,9 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -152,13 +154,13 @@ public class ScriptUtil {
             builder.amount(itemstack.get("amount").checkint());
         }
         if (!itemstack.get("name").isnil()) {
-            builder.name(itemstack.get("name").checkjstring());
+            builder.name(ChatColor.translateAlternateColorCodes('&', itemstack.get("name").checkjstring()));
         }
         if (!itemstack.get("lore").isnil()) {
             LuaTable luaLore = itemstack.get("lore").checktable();
             List<String> lore = new ArrayList<>(luaLore.length());
             for (int i = 1; i <= luaLore.length(); i++) {
-                lore.add(luaLore.get(i).checkjstring());
+                lore.add(ChatColor.translateAlternateColorCodes('&', luaLore.get(i).checkjstring()));
             }
             builder.lore(lore);
         }
