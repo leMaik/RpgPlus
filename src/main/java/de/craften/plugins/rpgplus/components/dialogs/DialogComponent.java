@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.components.dialogs;
 
 import de.craften.plugins.mcguilib.text.TextBuilder;
+import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -8,20 +9,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Component for dialogs with NPCs and mobs.
  */
 public class DialogComponent extends PluginComponentBase implements Listener {
-    private Map<UUID, AnswerHandler> waitForChatAnswer;
-
-    @Override
-    protected void onActivated() {
-        waitForChatAnswer = new HashMap<>();
-    }
+    private Map<Player, AnswerHandler> waitForChatAnswer = RpgPlus.getPlugin(RpgPlus.class).getWeakPlayerMaps().createMap(AnswerHandler.class);
 
     /**
      * Tell a message to a player.
@@ -47,12 +41,12 @@ public class DialogComponent extends PluginComponentBase implements Listener {
      */
     public void ask(String name, Player player, String question, AnswerHandler callback) {
         tell(name, player, question);
-        waitForChatAnswer.put(player.getUniqueId(), callback);
+        waitForChatAnswer.put(player, callback);
     }
 
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
-        AnswerHandler handler = waitForChatAnswer.remove(event.getPlayer().getUniqueId());
+        AnswerHandler handler = waitForChatAnswer.get(event.getPlayer());
         if (handler != null) {
             TextBuilder
                     .create("> ").gray().italic()
