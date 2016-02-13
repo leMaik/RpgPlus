@@ -2,7 +2,7 @@ package de.craften.plugins.rpgplus.scripting;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.*;
-import de.craften.plugins.rpgplus.scripting.api.actionbar.ActionBarManager;
+import de.craften.plugins.rpgplus.scripting.api.actionbar.ActionBarModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.Image;
@@ -38,7 +38,7 @@ public class ScriptingManager extends PluginComponentBase {
     private EntityEventManager entityEventManager;
     private Inventory inventoryModule;
     private Image imageModule;
-    private ActionBarManager actionbarModule;
+    private ActionBarModule actionbarModule;
     
     @Override
     protected void onActivated() {
@@ -104,7 +104,7 @@ public class ScriptingManager extends PluginComponentBase {
         plugin.getServer().getPluginManager().registerEvents(entityEventManager, plugin);
         inventoryModule = new Inventory();
         imageModule = new Image(plugin);
-        actionbarModule = new ActionBarManager();
+        actionbarModule = new ActionBarModule();
     }
 
     /**
