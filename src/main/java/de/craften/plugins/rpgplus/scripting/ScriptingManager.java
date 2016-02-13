@@ -2,12 +2,14 @@ package de.craften.plugins.rpgplus.scripting;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.scripting.api.*;
+import de.craften.plugins.rpgplus.scripting.api.actionbar.ActionBarModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.Image;
 import de.craften.plugins.rpgplus.scripting.api.storage.Storage;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
+
 import org.bukkit.Bukkit;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
@@ -36,7 +38,8 @@ public class ScriptingManager extends PluginComponentBase {
     private EntityEventManager entityEventManager;
     private Inventory inventoryModule;
     private Image imageModule;
-
+    private ActionBarModule actionbarModule;
+    
     @Override
     protected void onActivated() {
         globals = JsePlatform.standardGlobals();
@@ -75,6 +78,8 @@ public class ScriptingManager extends PluginComponentBase {
                         return tradingModule;
                     case "rpgplus":
                         return rpgPlusObject;
+                    case "rpgplus.actionbar":
+                    	return actionbarModule;
                     default:
                         return originalRequire.invoke(args);
                 }
@@ -99,6 +104,7 @@ public class ScriptingManager extends PluginComponentBase {
         plugin.getServer().getPluginManager().registerEvents(entityEventManager, plugin);
         inventoryModule = new Inventory();
         imageModule = new Image(plugin);
+        actionbarModule = new ActionBarModule();
     }
 
     /**
@@ -107,6 +113,7 @@ public class ScriptingManager extends PluginComponentBase {
     public void reset() {
         eventManager.reset();
         entityEventManager.reset();
+        actionbarModule.reset();
     }
 
     public void loadScript(File script) throws ScriptErrorException {
