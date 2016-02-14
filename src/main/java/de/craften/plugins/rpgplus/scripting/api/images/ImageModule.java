@@ -17,7 +17,7 @@ public class ImageModule extends LuaTable implements ScriptingModule {
 
     public ImageModule(RpgPlus plugin) {
         this.plugin = plugin;
-        Luaify.convert(this);
+        Luaify.convertInPlace(this);
     }
 
     @LuaFunction("create")

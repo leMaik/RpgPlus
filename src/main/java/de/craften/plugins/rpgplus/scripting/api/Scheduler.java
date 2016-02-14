@@ -23,7 +23,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
 
     public Scheduler(final Plugin plugin) {
         this.plugin = plugin;
-        Luaify.convert(this);
+        Luaify.convertInPlace(this);
     }
 
     @LuaFunction("async")

@@ -14,7 +14,7 @@ public class LuaifyTest {
                 return LuaValue.valueOf(2 * varargs.checkint(1));
             }
         };
-        Luaify.convert(table);
+        Luaify.convertInPlace(table);
 
         assertTrue("function should exist on that table", table.get("testFunction").isfunction());
         assertEquals("function should work correctly", 42, table.get("testFunction").invoke(LuaValue.valueOf(21)).checkint(1));

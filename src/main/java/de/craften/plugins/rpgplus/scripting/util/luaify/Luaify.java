@@ -56,7 +56,7 @@ public class Luaify {
      *
      * @param table input object and table to put the wrapper functions into
      */
-    public static void convert(final LuaTable table) {
+    public static void convertInPlace(final LuaTable table) {
         convert(table, table);
     }
 

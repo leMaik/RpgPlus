@@ -17,7 +17,7 @@ public class ActionBarModule extends LuaTable implements ScriptingModule {
 
     public ActionBarModule(RpgPlus plugin) {
         this.actionBars = plugin.getWeakPlayerMaps().createMap(ActionBar.class);
-        Luaify.convert(this);
+        Luaify.convertInPlace(this);
     }
 
     @LuaFunction("set")
