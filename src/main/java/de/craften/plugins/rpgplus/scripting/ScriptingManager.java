@@ -70,6 +70,10 @@ public class ScriptingManager {
      * Resets the script manager.
      */
     public void reset() {
+        //re-install globals to ensure that require()-d modules are also reloaded
+        globals = createGlobals();
+        LuaC.install(globals);
+
         for (ScriptingModule module : modules.values()) {
             module.reset();
         }
