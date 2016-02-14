@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.storage;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.storage.StorageException;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.luaj.vm2.LuaError;
@@ -15,8 +16,8 @@ import java.util.Map;
 /**
  * Lua module for storage.
  */
-public class Storage extends LuaTable {
-    public Storage() {
+public class StorageModule extends LuaTable implements ScriptingModule {
+    public StorageModule() {
         set("get", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue key, LuaValue defaultValue) {
@@ -63,6 +64,16 @@ public class Storage extends LuaTable {
                 return new PlayerTable(Bukkit.getServer().getPlayer(player.checkjstring()));
             }
         });
+    }
+
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        //nothing to do
     }
 
     private class PlayerTable extends LuaTable {

@@ -7,12 +7,11 @@ import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
+import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -28,9 +27,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class EntityWrapper extends LuaTable {
     private static final Random random = new Random();
     private final RpgPlusEntity entity;
+    private final EntityEventManager entityEventManager;
 
-    public EntityWrapper(final RpgPlusEntity entity) {
+    public EntityWrapper(final RpgPlusEntity entity, EntityEventManager entityEventManager) {
         this.entity = entity;
+        this.entityEventManager = entityEventManager;
 
         set("navigateTo", new VarArgFunction() {
             @Override
@@ -141,14 +142,14 @@ public class EntityWrapper extends LuaTable {
         set("on", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
-                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getEntityEventManager().on(entity, eventName, callback);
+                return EntityWrapper.this.entityEventManager.on(entity, eventName, callback);
             }
         });
 
         set("off", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
-                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().getEntityEventManager().off(entity, eventName, callback);
+                return EntityWrapper.this.entityEventManager.off(entity, eventName, callback);
             }
         });
 
@@ -264,9 +265,5 @@ public class EntityWrapper extends LuaTable {
 
     public RpgPlusEntity getEntity() {
         return entity;
-    }
-
-    public static LuaValue wrap(RpgPlusEntity entity) {
-        return new EntityWrapper(entity);
     }
 }

@@ -3,8 +3,8 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -18,6 +18,12 @@ import org.luaj.vm2.lib.TwoArgFunction;
  * Lua API for spawning entities.
  */
 public class EntitySpawner {
+    private final EntityEventManager entityEventManager;
+
+    public EntitySpawner(EntityEventManager entityEventManager) {
+        this.entityEventManager = entityEventManager;
+    }
+
     public void installOn(LuaTable object) {
         object.set("spawn", new TwoArgFunction() {
 
@@ -51,7 +57,7 @@ public class EntitySpawner {
 
                 RpgPlus.getPlugin(RpgPlus.class).getEntityManager().addEntity(entity);
                 entity.spawn();
-                return EntityWrapper.wrap(entity);
+                return new EntityWrapper(entity, entityEventManager);
             }
         });
     }

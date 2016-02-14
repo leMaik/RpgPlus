@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import org.bukkit.plugin.Plugin;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -13,7 +14,7 @@ import org.luaj.vm2.lib.VarArgFunction;
 /**
  * Lua API for using the scheduler.
  */
-public class Scheduler extends LuaTable {
+public class Scheduler extends LuaTable implements ScriptingModule {
     public Scheduler(final Plugin plugin) {
         set("async", new OneArgFunction() {
             @Override
@@ -110,5 +111,15 @@ public class Scheduler extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+    }
+
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        //TODO reset repeating tasks
     }
 }

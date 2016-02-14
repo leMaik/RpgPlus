@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.songplayer.SongPlayerWrapper;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
@@ -16,7 +17,7 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Sound extends LuaTable {
+public class Sound extends LuaTable implements ScriptingModule {
     private static Pattern NOTE_PARSER = java.util.regex.Pattern.compile("([A-G])(#?)('*)");
 
     public Sound(final RpgPlus plugin) {
@@ -81,5 +82,15 @@ public class Sound extends LuaTable {
         } catch (ClassNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        //TODO stop all playing songs
     }
 }

@@ -11,11 +11,22 @@ import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
+import de.craften.plugins.rpgplus.scripting.api.*;
+import de.craften.plugins.rpgplus.scripting.api.actionbar.ActionBarModule;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
+import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
+import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
+import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
+import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
+import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 
 /**
@@ -31,10 +42,34 @@ public class RpgPlus extends JavaPlugin {
     private PathfindingComponent pathfinding;
     private DialogComponent dialogs;
     private ImagesComponent images;
+    private ScriptEventManager scriptEventManager;
+    private EntityEventManager entityEventManager;
 
     @Override
     public void onEnable() {
-        scriptingManager = new ScriptingManager();
+        scriptingManager = new ScriptingManager(getDataFolder()) {
+            @Override
+            protected void reportScriptError(final Exception exception) {
+                getServer().broadcast("rpgplus.scripting.notifyerrors", "[RpgPlus] An error occurred while executing the script: " + exception.getMessage());
+                getLogger().severe("An error occurred while executing the script: " + exception.getMessage());
+
+                final String devKey = getConfig().getString("pastebinDevKey");
+                if (devKey != null) {
+                    getServer().getScheduler().runTaskAsynchronously(RpgPlus.this, new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String pasteUrl = Pastebin.createStacktracePaste(devKey, "RpgPlus Error - " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), exception);
+                                getServer().broadcast("rpgplus.scripting.notifyerrors", "The full stacktrace is available at: " + pasteUrl);
+                            } catch (IOException e) {
+                                getLogger().severe("Posting the stack trace of a script error to Pastebin failed");
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
         weakPlayerMaps = new WeakPlayerMaps();
         entityManager = new EntityManager(this);
         commandManager = new CustomCommands();
@@ -44,7 +79,26 @@ public class RpgPlus extends JavaPlugin {
         dialogs = new DialogComponent();
         images = new ImagesComponent();
 
-        scriptingManager.activateFor(this);
+        RpgPlusObject rpgPlusObject = new RpgPlusObject(this);
+        scriptEventManager = new ScriptEventManager();
+        scriptEventManager.installOn(rpgPlusObject);
+        getServer().getPluginManager().registerEvents(scriptEventManager, this);
+
+        entityEventManager = new EntityEventManager();
+        getServer().getPluginManager().registerEvents(entityEventManager, this);
+        EntitySpawner entitySpawner = new EntitySpawner(entityEventManager);
+        entitySpawner.installOn(rpgPlusObject);
+
+        scriptingManager.registerModule("rpgplus", rpgPlusObject);
+        scriptingManager.registerModule("rpgplus.image", new ImageModule(this));
+        scriptingManager.registerModule("rpgplus.scheduler", new Scheduler(this));
+        scriptingManager.registerModule("rpgplus.trading", new Trading(this));
+        scriptingManager.registerModule("rpgplus.timer", new ScriptTimedEventManager(this));
+        scriptingManager.registerModule("rpgplus.sound", new Sound(this));
+        scriptingManager.registerModule("rpgplus.storage", new StorageModule());
+        scriptingManager.registerModule("rpgplus.inventory", new InventoryModule());
+        scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
+
         weakPlayerMaps.activateFor(this);
         commandManager.activateFor(this);
         timerManager.activateFor(this);
@@ -54,7 +108,7 @@ public class RpgPlus extends JavaPlugin {
         images.activateFor(this);
 
         try {
-            scriptingManager.loadScript(new File(getDataFolder(), "main.lua"));
+            scriptingManager.executeScript(new File(getDataFolder(), "main.lua"));
         } catch (ScriptErrorException e) {
             getLogger().log(Level.WARNING, "Could not run main script", e);
         }
@@ -63,6 +117,8 @@ public class RpgPlus extends JavaPlugin {
     public void reload() {
         getLogger().info("Reloading...");
         scriptingManager.reset();
+        scriptEventManager.reset();
+        entityEventManager.reset();
         entityManager.removeAll();
         commandManager.removeAll();
         timerManager.removeAll();
@@ -70,7 +126,7 @@ public class RpgPlus extends JavaPlugin {
         weakPlayerMaps.reset();
 
         try {
-            scriptingManager.loadScript(new File(getDataFolder(), "main.lua"));
+            scriptingManager.executeScript(new File(getDataFolder(), "main.lua"));
         } catch (ScriptErrorException e) {
             getLogger().log(Level.WARNING, "Could not run main script", e);
         }

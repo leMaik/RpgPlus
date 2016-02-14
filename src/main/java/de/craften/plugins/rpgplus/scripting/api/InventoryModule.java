@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.VarArgFunction;
@@ -8,8 +9,8 @@ import org.luaj.vm2.lib.VarArgFunction;
 /**
  * Lua API for the player's inventory.
  */
-public class Inventory extends LuaTable {
-    public Inventory() {
+public class InventoryModule extends LuaTable implements ScriptingModule {
+    public InventoryModule() {
         set("hasItems", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {
@@ -67,4 +68,13 @@ public class Inventory extends LuaTable {
         return LuaValue.valueOf(matcher.takeFrom(ScriptUtil.getPlayer(player).getInventory()));
     }
 
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        //nothing to do
+    }
 }

@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.actionbar;
 
 import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,10 +12,12 @@ import org.luaj.vm2.lib.ThreeArgFunction;
 
 import java.util.Map;
 
-public class ActionBarModule extends LuaTable {
-    private Map<Player, ActionBar> actionBars = RpgPlus.getPlugin(RpgPlus.class).getWeakPlayerMaps().createMap(ActionBar.class);
+public class ActionBarModule extends LuaTable implements ScriptingModule {
+    private final Map<Player, ActionBar> actionBars;
 
-    public ActionBarModule() {
+    public ActionBarModule(RpgPlus plugin) {
+        this.actionBars = plugin.getWeakPlayerMaps().createMap(ActionBar.class);
+
         set("set", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue player, LuaValue message, LuaValue duration) {
@@ -45,6 +48,12 @@ public class ActionBarModule extends LuaTable {
         });
     }
 
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
     public void reset() {
         for (ActionBar actionBar : actionBars.values()) {
             actionBar.end();

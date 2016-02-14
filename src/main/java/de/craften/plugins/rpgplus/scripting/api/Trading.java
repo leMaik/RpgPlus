@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.components.trading.Merchant;
 import de.craften.plugins.rpgplus.components.trading.MerchantOffer;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -15,7 +16,7 @@ import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 /**
  * Lua API for trading using villagers.
  */
-public class Trading extends LuaTable {
+public class Trading extends LuaTable implements ScriptingModule {
     public Trading(final Plugin plugin) {
         set("open", new VarArgFunction() {
             @Override
@@ -48,4 +49,13 @@ public class Trading extends LuaTable {
         });
     }
 
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        //nothing to do
+    }
 }

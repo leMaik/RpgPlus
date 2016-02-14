@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.test.util.LuaCodeTest;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Damageable;
@@ -26,7 +27,7 @@ public class EntityWrapperTest extends LuaCodeTest {
     @Test
     public void testHealthField() {
         mockDamagableEntity();
-        setLuaVariable("entity", EntityWrapper.wrap(managedEntity));
+        setLuaVariable("entity", new EntityWrapper(managedEntity, mock(EntityEventManager.class)));
 
         //test if getting health works
         when(((Damageable) entity).getHealth()).thenReturn(42.0);
@@ -40,7 +41,7 @@ public class EntityWrapperTest extends LuaCodeTest {
     @Test
     public void testMaximumHealthField() {
         mockDamagableEntity();
-        setLuaVariable("entity", EntityWrapper.wrap(managedEntity));
+        setLuaVariable("entity", new EntityWrapper(managedEntity, mock(EntityEventManager.class)));
 
         //test if getting maximum health works
         when(((Damageable) entity).getMaxHealth()).thenReturn(42.0);
@@ -54,7 +55,7 @@ public class EntityWrapperTest extends LuaCodeTest {
     @Test
     public void setSimpleFields() {
         mockDamagableEntity();
-        setLuaVariable("entity", EntityWrapper.wrap(managedEntity));
+        setLuaVariable("entity", new EntityWrapper(managedEntity, mock(EntityEventManager.class)));
 
         // test getters
         when(managedEntity.getName()).thenReturn("name");

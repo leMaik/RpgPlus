@@ -2,10 +2,8 @@ package de.craften.plugins.rpgplus.scripting.api;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.commands.CommandHandler;
-import de.craften.plugins.rpgplus.scripting.ScriptingManager;
-import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,9 +18,9 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class RpgPlusObject extends LuaTable {
+public class RpgPlusObject extends LuaTable implements ScriptingModule {
 
-    public RpgPlusObject(final ScriptingManager plugin) {
+    public RpgPlusObject(final RpgPlus plugin) {
         set("log", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs varargs) {
@@ -156,8 +154,15 @@ public class RpgPlusObject extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+    }
 
-        EntitySpawner entitySpawner = new EntitySpawner();
-        entitySpawner.installOn(this);
+    @Override
+    public LuaValue getModule() {
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        //nothing to do
     }
 }
