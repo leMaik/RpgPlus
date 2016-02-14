@@ -2,7 +2,6 @@ package de.craften.plugins.rpgplus.components.pathfinding;
 
 import com.google.common.collect.Lists;
 import de.craften.plugins.managedentities.ManagedEntity;
-import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
@@ -11,7 +10,6 @@ import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Entity;
 import org.bukkit.material.Openable;
 
 import java.util.*;
@@ -47,7 +45,7 @@ public class PathfindingComponent extends PluginComponentBase {
      * @return pathing result
      * @throws AStar.InvalidPathException if the start or end location is in the air
      */
-    public PathingResult navigate(Entity entity, Location destination, int speed, PathingBehaviours behaviours, Runnable callback) throws AStar.InvalidPathException {
+    public PathingResult navigate(ManagedEntity entity, Location destination, int speed, PathingBehaviours behaviours, Runnable callback) throws AStar.InvalidPathException {
         AStar astar = new AStar(entity.getLocation().subtract(0, 1, 0), destination.subtract(0, 1, 0), 200, behaviours);
         ArrayList<Tile> path = astar.iterate();
         if (path != null) {
@@ -66,8 +64,8 @@ public class PathfindingComponent extends PluginComponentBase {
         private int i = 1;
         private int subi = 0;
 
-        public Navigator(Entity entity, Location startingLocation, ArrayList<Tile> path, int speed, PathingBehaviours behaviours, Runnable callback) {
-            this.entity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
+        public Navigator(ManagedEntity entity, Location startingLocation, ArrayList<Tile> path, int speed, PathingBehaviours behaviours, Runnable callback) {
+            this.entity = entity;
             this.startingLocation = startingLocation;
             this.path = path;
             this.speed = speed;

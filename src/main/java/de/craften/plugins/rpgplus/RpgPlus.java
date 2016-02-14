@@ -33,20 +33,31 @@ import java.util.logging.Level;
  * The main plugin class of RpgPlus.
  */
 public class RpgPlus extends JavaPlugin {
-    private ScriptingManager scriptingManager;
-    private WeakPlayerMaps weakPlayerMaps;
-    private EntityManager entityManager;
-    private CustomCommands commandManager;
-    private TimerComponent timerManager;
-    private StorageComponent storage;
-    private PathfindingComponent pathfinding;
-    private DialogComponent dialogs;
-    private ImagesComponent images;
-    private ScriptEventManager scriptEventManager;
-    private EntityEventManager entityEventManager;
+    private final ScriptingManager scriptingManager;
+    private final WeakPlayerMaps weakPlayerMaps;
+    private final EntityManager entityManager;
+    private final CustomCommands commandManager;
+    private final TimerComponent timerManager;
+    private final StorageComponent storage;
+    private final PathfindingComponent pathfinding;
+    private final DialogComponent dialogs;
+    private final ImagesComponent images;
+    private final ScriptEventManager scriptEventManager;
+    private final EntityEventManager entityEventManager;
 
-    @Override
-    public void onEnable() {
+    public RpgPlus() {
+        weakPlayerMaps = new WeakPlayerMaps();
+        entityManager = new EntityManager(this);
+        commandManager = new CustomCommands();
+        timerManager = new TimerComponent();
+        storage = new StorageComponent(new File(getDataFolder(), "storage"));
+        pathfinding = new PathfindingComponent();
+        dialogs = new DialogComponent();
+        images = new ImagesComponent();
+
+        scriptEventManager = new ScriptEventManager();
+        entityEventManager = new EntityEventManager();
+
         scriptingManager = new ScriptingManager(getDataFolder()) {
             @Override
             protected void reportScriptError(final Exception exception) {
@@ -69,22 +80,14 @@ public class RpgPlus extends JavaPlugin {
                 }
             }
         };
+    }
 
-        weakPlayerMaps = new WeakPlayerMaps();
-        entityManager = new EntityManager(this);
-        commandManager = new CustomCommands();
-        timerManager = new TimerComponent();
-        storage = new StorageComponent(new File(getDataFolder(), "storage"));
-        pathfinding = new PathfindingComponent();
-        dialogs = new DialogComponent();
-        images = new ImagesComponent();
-
+    @Override
+    public void onEnable() {
         RpgPlusObject rpgPlusObject = new RpgPlusObject(this);
-        scriptEventManager = new ScriptEventManager();
         scriptEventManager.installOn(rpgPlusObject);
         getServer().getPluginManager().registerEvents(scriptEventManager, this);
 
-        entityEventManager = new EntityEventManager();
         getServer().getPluginManager().registerEvents(entityEventManager, this);
         EntitySpawner entitySpawner = new EntitySpawner(entityEventManager);
         entitySpawner.installOn(rpgPlusObject);
@@ -95,7 +98,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.trading", new Trading(this));
         scriptingManager.registerModule("rpgplus.timer", new ScriptTimedEventManager(this));
         scriptingManager.registerModule("rpgplus.sound", new Sound(this));
-        scriptingManager.registerModule("rpgplus.storage", new StorageModule());
+        scriptingManager.registerModule("rpgplus.storage", new StorageModule(storage.getStorage()));
         scriptingManager.registerModule("rpgplus.inventory", new InventoryModule());
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
 

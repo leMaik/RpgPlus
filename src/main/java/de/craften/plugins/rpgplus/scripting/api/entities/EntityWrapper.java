@@ -62,7 +62,7 @@ public class EntityWrapper extends LuaTable {
                 }
                 try {
                     PathingResult result = RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(
-                            entity.getEntity(),
+                            entity,
                             new Location(entity.getEntity().getWorld(),
                                     destination.get("x").checkdouble(),
                                     destination.get("y").checkdouble(),
