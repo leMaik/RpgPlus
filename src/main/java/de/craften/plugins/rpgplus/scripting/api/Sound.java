@@ -91,6 +91,8 @@ public class Sound extends LuaTable implements ScriptingModule {
 
     @Override
     public void reset() {
-        //TODO stop all playing songs
+        if(isSongPlayerAvailable()) {
+            SongPlayerWrapper.stopAllSongs();
+        }
     }
 }

@@ -1,9 +1,7 @@
 package de.craften.plugins.rpgplus.components.songplayer;
 
-import com.xxmicloxx.NoteBlockAPI.NBSDecoder;
-import com.xxmicloxx.NoteBlockAPI.RadioSongPlayer;
-import com.xxmicloxx.NoteBlockAPI.Song;
-import com.xxmicloxx.NoteBlockAPI.SongPlayer;
+import com.xxmicloxx.NoteBlockAPI.*;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -25,5 +23,14 @@ public class SongPlayerWrapper {
         songPlayer.setAutoDestroy(true);
         songPlayer.addPlayer(player);
         songPlayer.setPlaying(true);
+    }
+
+    /**
+     * Stops all songs that are currently playing.
+     */
+    public static void stopAllSongs() {
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            NoteBlockPlayerMain.stopPlaying(player);
+        }
     }
 }
