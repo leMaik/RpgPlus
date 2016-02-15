@@ -5,6 +5,8 @@ import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
+import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -12,7 +14,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.TwoArgFunction;
 
 /**
  * Lua API for spawning entities.
@@ -25,40 +26,39 @@ public class EntitySpawner {
     }
 
     public void installOn(LuaTable object) {
-        object.set("spawn", new TwoArgFunction() {
+        Luaify.convert(this, object);
+    }
 
-            @Override
-            public LuaValue call(LuaValue entityType, LuaValue optionsArg) {
-                final EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
-                LuaTable options = optionsArg.checktable();
+    @LuaFunction("spawn")
+    public EntityWrapper spawnEntity(LuaValue entityType, LuaValue optionsArg) {
+        final EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
+        LuaTable options = optionsArg.checktable();
 
-                RpgPlusEntity entity;
-                if (type == EntityType.VILLAGER) {
-                    entity = new ManagedVillager(ScriptUtil.getLocation(optionsArg.checktable()));
-                } else {
-                    entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
-                        @Override
-                        protected Entity spawnEntity(Location location) {
-                            return location.getWorld().spawn(location, type.getEntityClass());
-                        }
-                    };
+        RpgPlusEntity entity;
+        if (type == EntityType.VILLAGER) {
+            entity = new ManagedVillager(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else {
+            entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
+                @Override
+                protected Entity spawnEntity(Location location) {
+                    return location.getWorld().spawn(location, type.getEntityClass());
                 }
+            };
+        }
 
-                entity.setName(ChatColor.translateAlternateColorCodes('&', options.get("name").optjstring("")));
-                entity.setSecondName(ChatColor.translateAlternateColorCodes('&', options.get("secondName").optjstring("")));
-                entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
-                entity.setNameVisible(options.get("nameVisible").optboolean(true));
+        entity.setName(ChatColor.translateAlternateColorCodes('&', options.get("name").optjstring("")));
+        entity.setSecondName(ChatColor.translateAlternateColorCodes('&', options.get("secondName").optjstring("")));
+        entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
+        entity.setNameVisible(options.get("nameVisible").optboolean(true));
 
-                if (entity instanceof ManagedVillager) {
-                    if (!options.get("profession").isnil()) {
-                        ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(options.get("profession").checkjstring().toUpperCase()));
-                    }
-                }
-
-                RpgPlus.getPlugin(RpgPlus.class).getEntityManager().addEntity(entity);
-                entity.spawn();
-                return new EntityWrapper(entity, entityEventManager);
+        if (entity instanceof ManagedVillager) {
+            if (!options.get("profession").isnil()) {
+                ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(options.get("profession").checkjstring().toUpperCase()));
             }
-        });
+        }
+
+        RpgPlus.getPlugin(RpgPlus.class).getEntityManager().addEntity(entity);
+        entity.spawn();
+        return new EntityWrapper(entity, entityEventManager);
     }
 }

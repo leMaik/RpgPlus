@@ -3,54 +3,51 @@ package de.craften.plugins.rpgplus.scripting.api;
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
+import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.luaj.vm2.*;
-import org.luaj.vm2.lib.VarArgFunction;
 
 /**
  * Lua API for the player's inventory.
  */
 public class InventoryModule extends LuaTable implements ScriptingModule {
     public InventoryModule() {
-        set("hasItems", new VarArgFunction() {
-            @Override
-            public Varargs invoke(Varargs args) {
-                LuaValue player = args.arg(1);
-                for (int i = 2; i <= args.narg(); i++) {
-                    if (!checkItem(player, args.arg(i)).booleanValue()) {
-                        return LuaValue.FALSE;
-                    }
-                }
-                return LuaValue.TRUE;
+        Luaify.convertInPlace(this);
+    }
+
+    @LuaFunction("hasItems")
+    public LuaBoolean hasItems(Varargs args) {
+        LuaValue player = args.arg(1);
+        for (int i = 2; i <= args.narg(); i++) {
+            if (!checkItem(player, args.arg(i)).booleanValue()) {
+                return LuaValue.FALSE;
             }
-        });
+        }
+        return LuaValue.TRUE;
+    }
 
-        set("giveItems", new VarArgFunction() {
-            @Override
-            public Varargs invoke(Varargs args) {
-                LuaValue player = args.arg(1);
+    @LuaFunction("giveItems")
+    public Varargs giveItems(Varargs args) {
+        LuaValue player = args.arg(1);
 
-                LuaValue[] notFittingAmounts = new LuaValue[args.narg() - 1];
-                for (int i = 2; i <= args.narg(); i++) {
-                    notFittingAmounts[i - 2] = giveItem(player, args.arg(i));
-                }
+        LuaValue[] notFittingAmounts = new LuaValue[args.narg() - 1];
+        for (int i = 2; i <= args.narg(); i++) {
+            notFittingAmounts[i - 2] = giveItem(player, args.arg(i));
+        }
 
-                return LuaValue.varargsOf(notFittingAmounts);
-            }
-        });
+        return LuaValue.varargsOf(notFittingAmounts);
+    }
 
-        set("takeItems", new VarArgFunction() {
-            @Override
-            public Varargs invoke(Varargs args) {
-                LuaValue player = args.arg(1);
+    @LuaFunction("takeItems")
+    public Varargs takeItems(Varargs args) {
+        LuaValue player = args.arg(1);
 
-                LuaValue[] missingAmounts = new LuaValue[args.narg() - 1];
-                for (int i = 2; i <= args.narg(); i++) {
-                    missingAmounts[i - 2] = takeItem(player, args.arg(i));
-                }
+        LuaValue[] missingAmounts = new LuaValue[args.narg() - 1];
+        for (int i = 2; i <= args.narg(); i++) {
+            missingAmounts[i - 2] = takeItem(player, args.arg(i));
+        }
 
-                return LuaValue.varargsOf(missingAmounts);
-            }
-        });
+        return LuaValue.varargsOf(missingAmounts);
     }
 
     private static LuaBoolean checkItem(LuaValue player, LuaValue item) {

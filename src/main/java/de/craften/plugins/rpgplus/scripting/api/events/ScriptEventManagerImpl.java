@@ -3,11 +3,11 @@ package de.craften.plugins.rpgplus.scripting.api.events;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.event.Event;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 /**
@@ -24,24 +24,22 @@ public class ScriptEventManagerImpl {
     }
 
     public void installOn(LuaTable object) {
-        object.set("on", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue eventName, LuaValue callback) {
-                eventHandlers.put(eventName.checkjstring(), callback.checkfunction());
-                return LuaValue.NIL;
-            }
-        });
+        Luaify.convert(this, object);
+    }
 
-        object.set("off", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue eventName, LuaValue callback) {
-                if (callback.isnil()) {
-                    return LuaValue.valueOf(!eventHandlers.removeAll(eventName.checkjstring()).isEmpty());
-                } else {
-                    return LuaFunction.valueOf(eventHandlers.remove(eventName.checkjstring(), callback.checkfunction()));
-                }
-            }
-        });
+    @de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction("on")
+    public LuaValue on(LuaValue eventName, LuaValue callback) {
+        eventHandlers.put(eventName.checkjstring(), callback.checkfunction());
+        return LuaValue.NIL;
+    }
+
+    @de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction("off")
+    public LuaValue off(LuaValue eventName, LuaValue callback) {
+        if (callback.isnil()) {
+            return LuaValue.valueOf(!eventHandlers.removeAll(eventName.checkjstring()).isEmpty());
+        } else {
+            return LuaFunction.valueOf(eventHandlers.remove(eventName.checkjstring(), callback.checkfunction()));
+        }
     }
 
     public void reset() {
