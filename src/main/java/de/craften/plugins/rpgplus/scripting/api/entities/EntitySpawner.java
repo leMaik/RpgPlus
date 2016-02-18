@@ -51,6 +51,16 @@ public class EntitySpawner {
         entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
         entity.setNameVisible(options.get("nameVisible").optboolean(true));
 
+        switch (options.get("movementType").optjstring("local")) {
+            case "normal":
+                entity.setFrozen(false);
+                break;
+            case "frozen":
+            case "local": //TODO entity should move the head when the movementType is set to local
+                entity.setFrozen(true);
+                break;
+        }
+
         if (entity instanceof ManagedVillager) {
             if (!options.get("profession").isnil()) {
                 ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(options.get("profession").checkjstring().toUpperCase()));
