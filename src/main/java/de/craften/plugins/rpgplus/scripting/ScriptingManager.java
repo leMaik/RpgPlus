@@ -30,7 +30,7 @@ public class ScriptingManager {
     }
 
     public void registerModule(String name, ScriptingModule module) {
-
+        modules.put(name, module);
     }
 
     private Globals createGlobals() {

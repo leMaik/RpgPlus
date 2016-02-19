@@ -15,7 +15,12 @@ import java.util.Map;
  * Component for dialogs with NPCs and mobs.
  */
 public class DialogComponent extends PluginComponentBase implements Listener {
-    private Map<Player, AnswerHandler> waitForChatAnswer = RpgPlus.getPlugin(RpgPlus.class).getWeakPlayerMaps().createMap(AnswerHandler.class);
+    private Map<Player, AnswerHandler> waitForChatAnswer;
+
+    @Override
+    protected void onActivated() {
+        waitForChatAnswer = RpgPlus.getPlugin(RpgPlus.class).getWeakPlayerMaps().createMap(AnswerHandler.class);
+    }
 
     /**
      * Tell a message to a player.

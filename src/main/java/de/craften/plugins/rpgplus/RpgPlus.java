@@ -35,7 +35,7 @@ import java.util.logging.Level;
 public class RpgPlus extends JavaPlugin {
     private final ScriptingManager scriptingManager;
     private final WeakPlayerMaps weakPlayerMaps;
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
     private final CustomCommands commandManager;
     private final TimerComponent timerManager;
     private final StorageComponent storage;
@@ -47,7 +47,6 @@ public class RpgPlus extends JavaPlugin {
 
     public RpgPlus() {
         weakPlayerMaps = new WeakPlayerMaps();
-        entityManager = new EntityManager(this);
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         storage = new StorageComponent(new File(getDataFolder(), "storage"));
@@ -84,6 +83,7 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        entityManager = new EntityManager(this);
         RpgPlusObject rpgPlusObject = new RpgPlusObject(this);
         scriptEventManager.installOn(rpgPlusObject);
         getServer().getPluginManager().registerEvents(scriptEventManager, this);
