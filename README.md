@@ -1,4 +1,4 @@
-# RpgPlus [![Build Status](https://travis-ci.org/leMaik/RpgPlus.svg?branch=development)](https://travis-ci.org/leMaik/RpgPlus)
+# RpgPlus [![Build Status](https://travis-ci.org/leMaik/RpgPlus.svg?branch=master)](https://travis-ci.org/leMaik/RpgPlus)
 RpgPlus is a Bukkit plugin that allows easy scripting of complex RPG worlds using Lua. It is currently in development
 and will support dialogs, NPCs, phasing, event handling and much more. We aim to provide a powerful framework for
 scripting RPGs.
