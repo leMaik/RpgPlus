@@ -230,10 +230,10 @@ public class EntityWrapper extends LuaTable {
                     }
                     break;
                 case "name":
-                    entity.setName(value.checkjstring());
+                    entity.setName(ChatColor.translateAlternateColorCodes('&', value.checkjstring()));
                     break;
                 case "secondName":
-                    entity.setSecondName(value.checkjstring());
+                    entity.setSecondName(ChatColor.translateAlternateColorCodes('&', value.checkjstring()));
                     break;
                 case "invulnerable":
                     entity.setTakingDamage(!value.checkboolean());
