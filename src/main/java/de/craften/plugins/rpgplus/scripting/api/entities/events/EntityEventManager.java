@@ -78,6 +78,7 @@ public class EntityEventManager extends EntityEventManagerImpl implements Listen
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        callHandlers("entity.attack.entity", event, event.getDamager());
         callHandlers("entity.damage.byEntity", event);
     }
 
