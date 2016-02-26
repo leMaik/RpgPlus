@@ -30,6 +30,7 @@ public class YamlStorage implements Storage {
 
     public YamlStorage(File storageDirectory) throws IOException {
         this.storageDirectory = storageDirectory;
+        storageDirectory.mkdirs();
         storageFile = new File(storageDirectory, "global.yml");
 
         YamlConfiguration storage = new YamlConfiguration();

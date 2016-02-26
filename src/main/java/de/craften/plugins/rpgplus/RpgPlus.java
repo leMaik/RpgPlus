@@ -92,6 +92,14 @@ public class RpgPlus extends JavaPlugin {
         EntitySpawner entitySpawner = new EntitySpawner(entityEventManager);
         entitySpawner.installOn(rpgPlusObject);
 
+        weakPlayerMaps.activateFor(this);
+        commandManager.activateFor(this);
+        timerManager.activateFor(this);
+        storage.activateFor(this);
+        pathfinding.activateFor(this);
+        dialogs.activateFor(this);
+        images.activateFor(this);
+
         scriptingManager.registerModule("rpgplus", rpgPlusObject);
         scriptingManager.registerModule("rpgplus.image", new ImageModule(this));
         scriptingManager.registerModule("rpgplus.scheduler", new Scheduler(this));
@@ -101,14 +109,6 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.storage", new StorageModule(storage.getStorage()));
         scriptingManager.registerModule("rpgplus.inventory", new InventoryModule());
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
-
-        weakPlayerMaps.activateFor(this);
-        commandManager.activateFor(this);
-        timerManager.activateFor(this);
-        storage.activateFor(this);
-        pathfinding.activateFor(this);
-        dialogs.activateFor(this);
-        images.activateFor(this);
 
         try {
             scriptingManager.executeScript(new File(getDataFolder(), "main.lua"));
