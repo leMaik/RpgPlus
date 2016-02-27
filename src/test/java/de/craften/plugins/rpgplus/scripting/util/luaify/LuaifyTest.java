@@ -102,4 +102,19 @@ public class LuaifyTest {
 
         assertEquals("void methods should return LuaValue.NONE", LuaValue.NONE, table.get("test").invoke(LuaValue.valueOf("test")));
     }
+
+    @Test
+    public void testInheritedMethods() throws Exception {
+        class Base {
+            @LuaFunction("foo")
+            public void foo() {
+            }
+        }
+        class Subclass extends Base {
+        }
+
+        LuaTable luaified = new LuaTable();
+        Luaify.convert(new Subclass(), luaified);
+        assertTrue("inherited methods should be wrapped", luaified.get("foo").isfunction());
+    }
 }
