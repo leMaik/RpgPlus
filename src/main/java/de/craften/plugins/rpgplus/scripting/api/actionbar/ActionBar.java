@@ -32,7 +32,7 @@ public class ActionBar {
             public void run() {
                 if (duration > 0) {
                     age++;
-                    if (age >= duration - 2) {
+                    if (age >= (duration - 2)*20) {
                         end();
                     }
                 }
@@ -45,7 +45,7 @@ public class ActionBar {
                     e.printStackTrace();
                 }
             }
-        }, 20, 0);
+        }, 1, 0);
 
     }
 
