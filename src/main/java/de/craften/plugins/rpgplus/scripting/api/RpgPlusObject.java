@@ -144,7 +144,7 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
         }
     }
 
-    @LuaFunction("dropItem")
+    @LuaFunction("dropItems")
     public void dropItems(Varargs args) {
         if (args.narg() >= 2) {
             Location loc = ScriptUtil.getLocation(args.checktable(1));
