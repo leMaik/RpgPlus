@@ -1,10 +1,10 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
-import de.craften.plugins.rpgplus.RpgPlus;
-import de.craften.plugins.rpgplus.components.commands.CommandHandler;
-import de.craften.plugins.rpgplus.scripting.ScriptingModule;
-import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaError;
@@ -15,8 +15,10 @@ import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.components.commands.CommandHandler;
+import de.craften.plugins.rpgplus.scripting.ScriptingModule;
+import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 
 public class RpgPlusObject extends LuaTable implements ScriptingModule {
 
@@ -154,6 +156,23 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
                 return LuaValue.NIL;
             }
         });
+        
+        set("dropItem", new VarArgFunction() {
+        	@Override
+        	public Varargs invoke(Varargs args) {
+        		if (args.narg() >= 2) {
+        			Location loc = ScriptUtil.getLocation(args.checktable(1));
+        			
+        			for (int i = 2; i <= args.narg(); i++) {
+        				loc.getWorld().dropItemNaturally(loc, ScriptUtil.createItemMatcher(args.checkvalue(i)).getItemStack());
+        			}
+        			
+        		} else {
+                    throw new LuaError("Invalid count of arguments. At least one argument are required.");
+        		}
+        		return LuaValue.NIL;
+        	}
+		});
     }
 
     @Override
