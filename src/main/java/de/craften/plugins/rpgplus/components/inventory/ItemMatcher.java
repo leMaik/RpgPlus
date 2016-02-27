@@ -17,11 +17,13 @@ public class ItemMatcher {
     private Integer amount;
     private String name;
     private List<String> lore;
+    private boolean unbreakable;
 
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
         return typeMatches(itemStack)
                 && dataMatches(itemStack)
                 && (ignoreAmount || amountMatches(itemStack))
+                && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable
                 && nameMatches(itemStack)
                 && loreMatches(itemStack);
         //TODO check for more properties, i.e. book content
@@ -54,6 +56,9 @@ public class ItemMatcher {
         }
         if (lore != null) {
             meta.setLore(lore);
+        }
+        if (unbreakable) {
+            meta.spigot().setUnbreakable(true);
         }
 
         itemStack.setItemMeta(meta);
@@ -177,6 +182,11 @@ public class ItemMatcher {
 
         public Builder lore(List<String> lore) {
             matcher.lore = lore;
+            return this;
+        }
+
+        public Builder unbreakable(boolean unbreakable) {
+            matcher.unbreakable = unbreakable;
             return this;
         }
 

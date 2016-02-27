@@ -5,14 +5,8 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -51,12 +45,15 @@ public class ScriptUtil {
 
     /**
      * Get the target from entity as LuaValue
+     *
      * @param entity entity
      * @return lua value that represents the entity target
      */
-    public static LuaValue getTarget(RpgPlusEntity entity){
+    public static LuaValue getTarget(RpgPlusEntity entity) {
         return CoerceJavaToLua.coerce(entity.getTarget());
-    };
+    }
+
+    ;
 
     /**
      * Get the player that is represented by the given lua value.
@@ -163,6 +160,9 @@ public class ScriptUtil {
                 lore.add(ChatColor.translateAlternateColorCodes('&', luaLore.get(i).checkjstring()));
             }
             builder.lore(lore);
+        }
+        if (itemstack.get("unbreakable").optboolean(false)) {
+            builder.unbreakable(true);
         }
         return builder.build();
     }
