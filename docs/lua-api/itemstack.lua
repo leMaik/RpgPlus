@@ -8,4 +8,5 @@
 -- @field[opt=1] amount amount of the item
 -- @field[opt] name item name
 -- @field[opt] lore list of lines for the lore of this item
+-- @field[opt=false] unbreakable whether the item should be unbreakable
 itemstack = _

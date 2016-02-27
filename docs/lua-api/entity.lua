@@ -120,6 +120,12 @@ function respawn() end
 --
 function on(event, handler) end
 
+--- Register an event handler that is only called once.
+-- @param event event to add a one-time handler to
+-- @param handler a handler function that is invoked whenever the event happens, gets the event as first parameter
+--
+function once(event, handler) end
+
 --- Remove an event handler.
 -- @param[opt] event event to remove an event handler from; if not specified, all event handlers of this entity will be removed
 -- @param[optchain] handler the handler function to remove as previously added with @{on}; if not specified, all handlers of this event will be removed
