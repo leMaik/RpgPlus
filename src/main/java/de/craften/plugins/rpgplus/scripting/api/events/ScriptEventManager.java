@@ -1,5 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.events;
 
+import de.craften.plugins.rpgplus.scripting.ScriptingManager;
+import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
@@ -23,6 +25,9 @@ import org.bukkit.event.world.*;
  * <code>rpgplus.off()</code>.
  */
 public class ScriptEventManager extends ScriptEventManagerImpl implements Listener {
+    public ScriptEventManager(SafeInvoker invoker) {
+        super(invoker);
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

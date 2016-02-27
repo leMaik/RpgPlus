@@ -34,7 +34,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                     @Override
                     public void run() {
-                        RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(function.checkfunction(), varargs);
+                        RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(function.checkfunction(), varargs);
                     }
                 });
                 return LuaValue.NIL;
@@ -50,7 +50,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                     @Override
                     public void run() {
-                        RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(function.checkfunction(), varargs);
+                        RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(function.checkfunction(), varargs);
                     }
                 });
                 return LuaValue.NIL;
@@ -63,7 +63,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
         int task = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
-                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(function.checkfunction());
+                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(function.checkfunction());
             }
         }, delay.checklong());
         return LuaValue.valueOf(task);
@@ -77,7 +77,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
                 int task = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                     @Override
                     public void run() {
-                        RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(function.checkfunction(), varargs);
+                        RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(function.checkfunction(), varargs);
                     }
                 }, delay.checklong());
                 return LuaValue.valueOf(task);
@@ -91,7 +91,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
             int task = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(varargs.checkfunction(2));
+                    RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(varargs.checkfunction(2));
                 }
             }, 0, varargs.checklong(1));
             repeatingTasks.add(task);
@@ -100,7 +100,7 @@ public class Scheduler extends LuaTable implements ScriptingModule {
             int task = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(varargs.checkfunction(3));
+                    RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(varargs.checkfunction(3));
                 }
             }, varargs.checklong(1), varargs.checklong(2));
             repeatingTasks.add(task);

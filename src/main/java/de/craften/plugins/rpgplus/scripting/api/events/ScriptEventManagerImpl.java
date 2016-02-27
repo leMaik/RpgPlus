@@ -2,7 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import de.craften.plugins.rpgplus.RpgPlus;
+import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.event.Event;
 import org.luaj.vm2.LuaFunction;
@@ -19,12 +19,17 @@ import java.util.Collection;
  * functions from this code.
  */
 public class ScriptEventManagerImpl {
-    Multimap<String, LuaFunction> eventHandlers = ArrayListMultimap.create();
+    private Multimap<String, LuaFunction> eventHandlers = ArrayListMultimap.create();
+    private final SafeInvoker invoker;
+
+    public ScriptEventManagerImpl(SafeInvoker invoker) {
+        this.invoker = invoker;
+    }
 
     protected void callHandlers(String eventName, Event event) {
         Collection<LuaFunction> callbacks = eventHandlers.get(eventName);
         for (LuaFunction callback : callbacks.toArray(new LuaFunction[callbacks.size()])) {
-            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback, CoerceJavaToLua.coerce(event));
+            invoker.invokeSafely(callback, CoerceJavaToLua.coerce(event));
         }
     }
 
@@ -42,7 +47,7 @@ public class ScriptEventManagerImpl {
         eventHandlers.put(eventName.checkjstring(), new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {
-                off(eventName, callback);
+                off(eventName, this);
                 return callback.invoke(args);
             }
         });

@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.scripting;
 
+import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-public class ScriptingManager {
+public class ScriptingManager implements SafeInvoker {
     private final Map<String, ScriptingModule> modules;
     private final File scriptDirectory;
     private Globals globals;
@@ -82,7 +83,7 @@ public class ScriptingManager {
     public Varargs executeScript(File script) throws ScriptErrorException {
         try {
             LuaValue chunk = globals.loadfile(script.getAbsolutePath());
-            return runSafely(chunk, LuaValue.valueOf(script.getAbsolutePath()));
+            return invokeSafely(chunk, LuaValue.valueOf(script.getAbsolutePath()));
         } catch (LuaError e) {
             throw new ScriptErrorException("Could not execute " + script.getPath(), e);
         }
@@ -91,13 +92,14 @@ public class ScriptingManager {
     public Varargs executeScript(String script, String name) throws ScriptErrorException {
         try {
             LuaValue chunk = globals.load(script, name);
-            return runSafely(chunk, LuaValue.valueOf(name));
+            return invokeSafely(chunk, LuaValue.valueOf(name));
         } catch (LuaError e) {
             throw new ScriptErrorException("Could not execute script " + name, e);
         }
     }
 
-    public Varargs runSafely(Callable<Varargs> callable) {
+    @Override
+    public Varargs invokeSafely(Callable<Varargs> callable) {
         try {
             return callable.call();
         } catch (LuaError e) {
@@ -110,7 +112,8 @@ public class ScriptingManager {
         }
     }
 
-    public Varargs runSafely(LuaValue callable, LuaValue... arguments) {
+    @Override
+    public Varargs invokeSafely(LuaValue callable, LuaValue... arguments) {
         try {
             return callable.invoke(arguments);
         } catch (Exception e) {
@@ -119,7 +122,8 @@ public class ScriptingManager {
         }
     }
 
-    public Varargs runSafely(LuaValue callable, Varargs arguments) {
+    @Override
+    public Varargs invokeSafely(LuaValue callable, Varargs arguments) {
         try {
             return callable.invoke(arguments);
         } catch (Exception e) {

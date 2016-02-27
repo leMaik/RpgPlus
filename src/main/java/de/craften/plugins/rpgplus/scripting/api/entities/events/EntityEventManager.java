@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.scripting.api.entities.events;
 
+import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
@@ -14,6 +15,9 @@ import org.bukkit.event.vehicle.*;
  * An event manager for entity events.
  */
 public class EntityEventManager extends EntityEventManagerImpl implements Listener {
+    public EntityEventManager(SafeInvoker invoker) {
+        super(invoker);
+    }
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {

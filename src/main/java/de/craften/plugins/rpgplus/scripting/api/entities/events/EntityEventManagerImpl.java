@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -24,6 +25,11 @@ import java.util.Map;
  */
 abstract class EntityEventManagerImpl {
     private final Map<RpgPlusEntity, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
+    private final SafeInvoker invoker;
+
+    public EntityEventManagerImpl(SafeInvoker invoker) {
+        this.invoker = invoker;
+    }
 
     private Multimap<String, LuaFunction> getHandlers(Entity entity) {
         RpgPlusEntity managedEntity = (RpgPlusEntity) RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
@@ -39,7 +45,7 @@ abstract class EntityEventManagerImpl {
         if (handlers != null) {
             Collection<LuaFunction> callbacks = handlers.get(eventName);
             for (LuaFunction callback : callbacks.toArray(new LuaFunction[callbacks.size()])) {
-                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback, CoerceJavaToLua.coerce(event));
+                invoker.invokeSafely(callback, CoerceJavaToLua.coerce(event));
             }
         }
     }
@@ -55,11 +61,11 @@ abstract class EntityEventManagerImpl {
         return LuaValue.NIL;
     }
 
-    public void once(final LuaValue entity, final LuaValue eventName, final LuaValue callback) {
-        on(entity, eventName, new VarArgFunction() {
+    public LuaValue once(final LuaValue entity, final LuaValue eventName, final LuaValue callback) {
+        return on(entity, eventName, new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {
-                off(entity, eventName, callback);
+                off(entity, eventName, this);
                 return callback.invoke(args);
             }
         });

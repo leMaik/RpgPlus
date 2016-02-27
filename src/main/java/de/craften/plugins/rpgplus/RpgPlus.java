@@ -54,9 +54,6 @@ public class RpgPlus extends JavaPlugin {
         dialogs = new DialogComponent();
         images = new ImagesComponent();
 
-        scriptEventManager = new ScriptEventManager();
-        entityEventManager = new EntityEventManager();
-
         scriptingManager = new ScriptingManager(getDataFolder()) {
             @Override
             protected void reportScriptError(final Exception exception) {
@@ -79,6 +76,9 @@ public class RpgPlus extends JavaPlugin {
                 }
             }
         };
+
+        scriptEventManager = new ScriptEventManager(scriptingManager);
+        entityEventManager = new EntityEventManager(scriptingManager);
     }
 
     @Override

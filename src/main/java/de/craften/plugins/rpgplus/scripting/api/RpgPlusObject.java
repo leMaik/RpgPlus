@@ -53,7 +53,7 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
         RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
             @Override
             public boolean onCommand(final CommandSender sender, final String command, final List<String> args) {
-                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(new Callable<Varargs>() {
+                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(new Callable<Varargs>() {
                     @Override
                     public Varargs call() throws Exception {
                         return handler.invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), asVarargs(args));
@@ -69,7 +69,7 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
             @Override
             public boolean onCommand(final CommandSender sender, final String command, final List<String> args) {
                 if (sender instanceof Player) {
-                    return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(new Callable<Varargs>() {
+                    return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(new Callable<Varargs>() {
                         @Override
                         public Varargs call() throws Exception {
                             return handler

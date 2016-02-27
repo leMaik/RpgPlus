@@ -44,7 +44,7 @@ public class ScriptTimedEventManager extends LuaTable implements ScriptingModule
         return new Runnable() {
             @Override
             public void run() {
-                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(luaFunction.checkfunction());
+                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(luaFunction.checkfunction());
             }
         };
     }

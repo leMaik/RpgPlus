@@ -47,14 +47,14 @@ public class PosterWrapper extends LuaTable {
                             inventory.addItem(itemStack);
                         }
                         if (!callback.isnil()) {
-                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.TRUE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(callback.checkfunction(), LuaValue.TRUE);
                         }
                     }
 
                     @Override
                     public void creationFailed(Throwable exception) {
                         if (!callback.isnil()) {
-                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.FALSE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(callback.checkfunction(), LuaValue.FALSE);
                         }
                     }
                 });
@@ -74,14 +74,14 @@ public class PosterWrapper extends LuaTable {
                                 block,
                                 BlockFace.valueOf(location.checktable().get("face").checkjstring().toUpperCase()));
                         if (!callback.isnil()) {
-                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.TRUE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(callback.checkfunction(), LuaValue.TRUE);
                         }
                     }
 
                     @Override
                     public void creationFailed(Throwable exception) {
                         if (!callback.isnil()) {
-                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback.checkfunction(), LuaValue.FALSE);
+                            RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(callback.checkfunction(), LuaValue.FALSE);
                         }
                     }
                 });

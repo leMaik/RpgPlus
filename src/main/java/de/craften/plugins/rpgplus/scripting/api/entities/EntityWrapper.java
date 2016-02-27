@@ -107,7 +107,7 @@ public class EntityWrapper extends LuaTable {
                         RpgPlus.getPlugin(RpgPlus.class).getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
                             @Override
                             public void handleAnswer(final Player player, String answer) {
-                                Varargs handled = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(
+                                Varargs handled = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(
                                         callback, LuaValue.valueOf(answer), new OneArgFunction() {
                                             @Override
                                             public LuaValue call(LuaValue message) {
@@ -143,6 +143,13 @@ public class EntityWrapper extends LuaTable {
             @Override
             public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
                 return EntityWrapper.this.entityEventManager.on(entity, eventName, callback);
+            }
+        });
+
+        set("once", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
+                return EntityWrapper.this.entityEventManager.once(entity, eventName, callback);
             }
         });
 
