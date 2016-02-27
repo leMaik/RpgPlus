@@ -50,28 +50,13 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
 
     @LuaFunction("command")
     public void registerCommand(LuaValue command, final LuaValue handler) {
-        String[] commandPath;
-        if (command.istable()) {
-            commandPath = new String[command.checktable().length()];
-            for (int i = 0; i < commandPath.length; i++) {
-                commandPath[i] = command.get(i + 1).checkjstring();
-            }
-        } else {
-            commandPath = new String[]{command.checkjstring()};
-        }
-
-        RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(commandPath, new CommandHandler() {
+        RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
             @Override
-            public boolean onCommand(final CommandSender sender, final String command, List<String> args) {
-                final LuaValue[] luaArgs = new LuaValue[args.size()];
-                for (int i = 0; i < luaArgs.length; i++) {
-                    luaArgs[i] = LuaValue.valueOf(args.get(i));
-                }
-
+            public boolean onCommand(final CommandSender sender, final String command, final List<String> args) {
                 return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(new Callable<Varargs>() {
                     @Override
                     public Varargs call() throws Exception {
-                        return handler.invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs));
+                        return handler.invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), asVarargs(args));
                     }
                 }).optboolean(1, true);
             }
@@ -79,31 +64,16 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
     }
 
     @LuaFunction("playercommand")
-    public void registerPlayerCommand(LuaValue command, final LuaValue handler) { //TODO this almost duplicates the command code above, fix that!
-        String[] commandPath;
-        if (command.istable()) {
-            commandPath = new String[command.checktable().length()];
-            for (int i = 0; i < commandPath.length; i++) {
-                commandPath[i] = command.get(i + 1).checkjstring();
-            }
-        } else {
-            commandPath = new String[]{command.checkjstring()};
-        }
-
-        RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(commandPath, new CommandHandler() {
+    public void registerPlayerCommand(LuaValue command, final LuaValue handler) {
+        RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
             @Override
-            public boolean onCommand(final CommandSender sender, final String command, List<String> args) {
+            public boolean onCommand(final CommandSender sender, final String command, final List<String> args) {
                 if (sender instanceof Player) {
-                    final LuaValue[] luaArgs = new LuaValue[args.size()];
-                    for (int i = 0; i < luaArgs.length; i++) {
-                        luaArgs[i] = LuaValue.valueOf(args.get(i));
-                    }
-
                     return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(new Callable<Varargs>() {
                         @Override
                         public Varargs call() throws Exception {
                             return handler
-                                    .invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), LuaValue.varargsOf(luaArgs));
+                                    .invoke(CoerceJavaToLua.coerce(sender), LuaValue.valueOf(command), asVarargs(args));
                         }
                     }).optboolean(1, true);
                 } else {
@@ -165,5 +135,24 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
     @Override
     public void reset() {
         //nothing to do
+    }
+
+    private static String[] getCommandPath(LuaValue command) {
+        if (command.istable()) {
+            String[] commandPath = new String[command.checktable().length()];
+            for (int i = 0; i < commandPath.length; i++) {
+                commandPath[i] = command.get(i + 1).checkjstring();
+            }
+            return commandPath;
+        }
+        return new String[]{command.checkjstring()};
+    }
+
+    private static Varargs asVarargs(List<String> args) {
+        final LuaValue[] luaArgs = new LuaValue[args.size()];
+        for (int i = 0; i < luaArgs.length; i++) {
+            luaArgs[i] = LuaValue.valueOf(args.get(i));
+        }
+        return LuaValue.varargsOf(luaArgs);
     }
 }
