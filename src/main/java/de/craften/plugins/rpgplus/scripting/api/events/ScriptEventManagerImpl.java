@@ -8,7 +8,11 @@ import org.bukkit.event.Event;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+
+import java.util.Collection;
 
 /**
  * The internal implementation of the {@link ScriptEventManager}. Used to separate the huge number of listener
@@ -18,7 +22,8 @@ public class ScriptEventManagerImpl {
     Multimap<String, LuaFunction> eventHandlers = ArrayListMultimap.create();
 
     protected void callHandlers(String eventName, Event event) {
-        for (LuaFunction callback : eventHandlers.get(eventName)) {
+        Collection<LuaFunction> callbacks = eventHandlers.get(eventName);
+        for (LuaFunction callback : callbacks.toArray(new LuaFunction[callbacks.size()])) {
             RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback, CoerceJavaToLua.coerce(event));
         }
     }
@@ -28,9 +33,19 @@ public class ScriptEventManagerImpl {
     }
 
     @de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction("on")
-    public LuaValue on(LuaValue eventName, LuaValue callback) {
+    public void on(LuaValue eventName, LuaValue callback) {
         eventHandlers.put(eventName.checkjstring(), callback.checkfunction());
-        return LuaValue.NIL;
+    }
+
+    @de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction("once")
+    public void once(final LuaValue eventName, final LuaValue callback) {
+        eventHandlers.put(eventName.checkjstring(), new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                off(eventName, callback);
+                return callback.invoke(args);
+            }
+        });
     }
 
     @de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction("off")

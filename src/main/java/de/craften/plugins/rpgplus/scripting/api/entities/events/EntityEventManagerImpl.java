@@ -2,7 +2,6 @@ package de.craften.plugins.rpgplus.scripting.api.entities.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import de.craften.plugins.managedentities.ManagedEntity;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -11,8 +10,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityEvent;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +37,8 @@ abstract class EntityEventManagerImpl {
     protected void callHandlers(String eventName, Event event, Entity entity) {
         Multimap<String, LuaFunction> handlers = getHandlers(entity);
         if (handlers != null) {
-            for (LuaFunction callback : handlers.get(eventName)) {
+            Collection<LuaFunction> callbacks = handlers.get(eventName);
+            for (LuaFunction callback : callbacks.toArray(new LuaFunction[callbacks.size()])) {
                 RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().runSafely(callback, CoerceJavaToLua.coerce(event));
             }
         }
@@ -50,6 +53,16 @@ abstract class EntityEventManagerImpl {
         }
         handlers.put(eventName.checkjstring(), callback.checkfunction());
         return LuaValue.NIL;
+    }
+
+    public void once(final LuaValue entity, final LuaValue eventName, final LuaValue callback) {
+        on(entity, eventName, new VarArgFunction() {
+            @Override
+            public Varargs invoke(Varargs args) {
+                off(entity, eventName, callback);
+                return callback.invoke(args);
+            }
+        });
     }
 
     public LuaValue off(LuaValue entity, LuaValue eventName, LuaValue callback) {
