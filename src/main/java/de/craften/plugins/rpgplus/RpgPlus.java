@@ -60,7 +60,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager = new ScriptingManager(scriptDirectory.toFile()) {
             @Override
             protected void reportScriptError(final Exception exception) {
-                getServer().broadcast("rpgplus.scripting.notifyerrors", "[RpgPlus] An error occurred while executing the script: " + exception.getMessage());
+                getServer().broadcast("[RpgPlus] An error occurred while executing the script: " + exception.getMessage(), "rpgplus.scripting.notifyerrors");
                 getLogger().severe("An error occurred while executing the script: " + exception.getMessage());
 
                 final String devKey = getConfig().getString("pastebinDevKey");
