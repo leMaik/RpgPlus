@@ -70,7 +70,7 @@ public class RpgPlus extends JavaPlugin {
                         public void run() {
                             try {
                                 String pasteUrl = Pastebin.createStacktracePaste(devKey, "RpgPlus Error - " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), exception);
-                                getServer().broadcast("rpgplus.scripting.notifyerrors", "The full stacktrace is available at: " + pasteUrl);
+                                getServer().broadcast("The full stacktrace is available at: " + pasteUrl, "rpgplus.scripting.notifyerrors");
                             } catch (IOException e) {
                                 getLogger().severe("Posting the stack trace of a script error to Pastebin failed");
                             }
