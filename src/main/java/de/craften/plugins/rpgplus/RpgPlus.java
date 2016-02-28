@@ -132,7 +132,7 @@ public class RpgPlus extends JavaPlugin {
         weakPlayerMaps.reset();
 
         try {
-            scriptingManager.executeScript(new File(getDataFolder(), "main.lua"));
+            scriptingManager.executeScript(new File(scriptingManager.getScriptDirectory(), "main.lua"));
         } catch (ScriptErrorException e) {
             getLogger().log(Level.WARNING, "Could not run main script", e);
         }
