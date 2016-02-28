@@ -25,6 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -54,7 +56,8 @@ public class RpgPlus extends JavaPlugin {
         dialogs = new DialogComponent();
         images = new ImagesComponent();
 
-        scriptingManager = new ScriptingManager(getDataFolder()) {
+        Path scriptDirectory = Paths.get(getDataFolder().getAbsolutePath()).resolve(getConfig().getString("scriptDirectory", ""));
+        scriptingManager = new ScriptingManager(scriptDirectory.toFile()) {
             @Override
             protected void reportScriptError(final Exception exception) {
                 getServer().broadcast("rpgplus.scripting.notifyerrors", "[RpgPlus] An error occurred while executing the script: " + exception.getMessage());
@@ -111,7 +114,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
 
         try {
-            scriptingManager.executeScript(new File(getDataFolder(), "main.lua"));
+            scriptingManager.executeScript(new File(scriptingManager.getScriptDirectory(), "main.lua"));
         } catch (ScriptErrorException e) {
             getLogger().log(Level.WARNING, "Could not run main script", e);
         }
