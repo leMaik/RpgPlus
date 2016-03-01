@@ -67,7 +67,7 @@
         <dependency>
             <groupId>de.craften.plugins.managedentities</groupId>
             <artifactId>ManagedEntities</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
 
         <dependency>
