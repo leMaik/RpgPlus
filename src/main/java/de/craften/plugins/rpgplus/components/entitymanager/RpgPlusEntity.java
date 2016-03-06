@@ -5,7 +5,9 @@ import de.craften.plugins.managedentities.behavior.SecondNameBehavior;
 import de.craften.plugins.managedentities.behavior.VisibleNameBehavior;
 import de.craften.plugins.managedentities.util.nms.NmsEntityUtil;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 /**
  * A basic managed entity without any special logic.
@@ -73,7 +75,12 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
         }
     }
 
-    public Object getTarget() {
+    /**
+     * Gets the target of this entity. This only works if the underlying entity is a {@link LivingEntity}.
+     *
+     * @return the target of this entity or null if this entity has no target
+     */
+    public LivingEntity getTarget() {
         Entity entity = getEntity();
         if (entity instanceof Creature) {
             return ((Creature) entity).getTarget();
@@ -81,10 +88,15 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
         return null;
     }
 
-    public void setTarget(Player player) {
+    /**
+     * Sets the target of this entity. This only works if the underlying entity is a {@link LivingEntity}.
+     *
+     * @param target target of this entity
+     */
+    public void setTarget(LivingEntity target) {
         Entity entity = getEntity();
         if (entity instanceof Creature) {
-            ((Monster) entity).setTarget(player);
+            ((Creature) entity).setTarget(target);
         }
         //TODO remember the target if the entity is not spawned yet
     }
@@ -95,7 +107,7 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
         if (old != null) {
             Location target = location.clone().setDirection(location.toVector().subtract(old.toVector()));
             super.teleport(target);
-            
+
             if (getEntity() instanceof LivingEntity) {
                 NmsEntityUtil.setHeadRotation((LivingEntity) getEntity(), target.getYaw(), target.getPitch());
             }
