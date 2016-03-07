@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
 import de.craften.plugins.managedentities.ManagedEntityBase;
+import de.craften.plugins.managedentities.behavior.Behavior;
 import de.craften.plugins.managedentities.behavior.SecondNameBehavior;
 import de.craften.plugins.managedentities.behavior.VisibleNameBehavior;
 import de.craften.plugins.managedentities.util.nms.NmsEntityUtil;
@@ -68,9 +69,11 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
         if (nameVisible != this.nameVisible) {
             this.nameVisible = nameVisible;
             if (nameVisible) {
-                removeBehavior(getBehaviors(VisibleNameBehavior.class).iterator().next());
-            } else {
                 addBehavior(new VisibleNameBehavior());
+            } else {
+                for (Behavior behavior : getBehaviors(VisibleNameBehavior.class)) {
+                    removeBehavior(behavior);
+                }
             }
         }
     }
