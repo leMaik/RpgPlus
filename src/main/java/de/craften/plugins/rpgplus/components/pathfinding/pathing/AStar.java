@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.components.pathfinding.pathing;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.material.Door;
 import org.bukkit.material.Openable;
 
 import java.util.ArrayList;
@@ -328,7 +329,7 @@ public class AStar {
             case DARK_OAK_DOOR:
             case JUNGLE_DOOR:
             case SPRUCE_DOOR:
-                if (block.getState().getData().getData() == 8) {
+                if (((Door) block.getState()).isTopHalf()) {
                     return canBlockBeWalkedThrough(block.getRelative(0, -1, 0));
                 }
                 return behaviours.canOpenDoors() || ((Openable) block.getState().getData()).isOpen();
