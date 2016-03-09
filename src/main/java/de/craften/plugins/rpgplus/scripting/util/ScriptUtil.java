@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.ast.Stat;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
@@ -121,18 +122,23 @@ public class ScriptUtil {
     }
 
     /**
-     * Get the location (without pitch and yaw) that is represented by the given lua table.
+     * Get the location (without pitch and yaw) that is represented by the given lua value. If that value already is a
+     * {@link Location} userdata object, that object is returned
      *
-     * @param location lua table that represents a location
+     * @param location lua table that represents a location or a {@link Location} userdata object
      * @return the location
      * @throws LuaError if there are missing attributes
      */
-    public static Location getLocation(LuaTable location) {
-        return new Location(
-                Bukkit.getWorld(location.get("world").checkjstring()),
-                location.get("x").checkdouble(),
-                location.get("y").checkdouble(),
-                location.get("z").checkdouble());
+    public static Location getLocation(LuaValue location) {
+        if (location.isuserdata(Location.class)) {
+            return (Location) location.checkuserdata(Location.class);
+        } else {
+            return new Location(
+                    Bukkit.getWorld(location.get("world").checkjstring()),
+                    location.get("x").checkdouble(),
+                    location.get("y").checkdouble(),
+                    location.get("z").checkdouble());
+        }
     }
 
     /**

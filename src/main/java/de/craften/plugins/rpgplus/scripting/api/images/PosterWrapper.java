@@ -65,7 +65,7 @@ public class PosterWrapper extends LuaTable {
         set("attach", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue self, final LuaValue location, final LuaValue callback) {
-                final Block block = ScriptUtil.getLocation(location.checktable()).getBlock();
+                final Block block = ScriptUtil.getLocation(location).getBlock();
 
                 getPosterForWorld(block.getWorld(), new ImagesComponent.PosterCallback() {
                     @Override
