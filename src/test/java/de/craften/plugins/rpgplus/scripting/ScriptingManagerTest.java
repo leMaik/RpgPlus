@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ScriptingManagerTest {
     @Rule
@@ -32,7 +33,7 @@ public class ScriptingManagerTest {
                 "return inc()"
         }, "\n");
 
-        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot());
+        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot(), false);
         Varargs returnValue;
         returnValue = scriptingManager.executeScript(executedScript, "test");
         assertEquals("script should work properly", 1, returnValue.checkint(1));
@@ -42,5 +43,26 @@ public class ScriptingManagerTest {
         scriptingManager.reset();
         returnValue = scriptingManager.executeScript(executedScript, "test");
         assertEquals("modules should reload when the script manager is reset", 1, returnValue.checkint(1));
+    }
+
+    @Test
+    public void testGlobalVariableWarning() throws Exception {
+        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot(), true);
+        try {
+            scriptingManager.executeScript(StringUtils.join(new String[]{
+                    "globalVar = 42"
+            }, "\n"), "test");
+            fail("Defining global variables should fail in strict mode");
+        } catch (ScriptErrorException ignore) {
+        }
+
+        scriptingManager = new ScriptingManager(testFolder.getRoot(), false);
+        try {
+            scriptingManager.executeScript(StringUtils.join(new String[]{
+                    "globalVar = 42"
+            }, "\n"), "test");
+        } catch (ScriptErrorException ignore) {
+            fail("Defining global variables should not fail in non-strict mode");
+        }
     }
 }

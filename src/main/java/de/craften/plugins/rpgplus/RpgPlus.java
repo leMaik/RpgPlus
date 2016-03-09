@@ -57,7 +57,7 @@ public class RpgPlus extends JavaPlugin {
         images = new ImagesComponent();
 
         Path scriptDirectory = Paths.get(getDataFolder().getAbsolutePath()).resolve(getConfig().getString("scriptDirectory", ""));
-        scriptingManager = new ScriptingManager(scriptDirectory.toFile()) {
+        scriptingManager = new ScriptingManager(scriptDirectory.toFile(), getConfig().getBoolean("strictMode", false)) {
             @Override
             protected void reportScriptError(final Exception exception) {
                 getServer().broadcast("[RpgPlus] An error occurred while executing the script: " + exception.getMessage(), "rpgplus.scripting.notifyerrors");
