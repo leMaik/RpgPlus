@@ -10,9 +10,9 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class ScriptingManagerTest {
     @Rule
@@ -33,7 +33,7 @@ public class ScriptingManagerTest {
                 "return inc()"
         }, "\n");
 
-        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot(), false);
+        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.DISABLED);
         Varargs returnValue;
         returnValue = scriptingManager.executeScript(executedScript, "test");
         assertEquals("script should work properly", 1, returnValue.checkint(1));
@@ -47,22 +47,41 @@ public class ScriptingManagerTest {
 
     @Test
     public void testGlobalVariableWarning() throws Exception {
-        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot(), true);
+        ScriptingManager scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.ERROR);
         try {
             scriptingManager.executeScript(StringUtils.join(new String[]{
                     "globalVar = 42"
             }, "\n"), "test");
-            fail("Defining global variables should fail in strict mode");
+            fail("Defining global variables should fail if strict mode is set to throw errors");
         } catch (ScriptErrorException ignore) {
         }
 
-        scriptingManager = new ScriptingManager(testFolder.getRoot(), false);
+        final AtomicBoolean warned = new AtomicBoolean(false);
+        scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.WARN) {
+            @Override
+            protected void reportScriptWarning(String warning) {
+                warned.set(true);
+            }
+        };
+        scriptingManager.executeScript(StringUtils.join(new String[]{
+                "globalVar = 42"
+        }, "\n"), "test");
+        assertTrue("Defining global variables should show a warning if strict mode is set to show warnings", warned.get());
+
+        warned.set(false);
+        scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.DISABLED) {
+            @Override
+            protected void reportScriptWarning(String warning) {
+                warned.set(true);
+            }
+        };
         try {
             scriptingManager.executeScript(StringUtils.join(new String[]{
                     "globalVar = 42"
             }, "\n"), "test");
         } catch (ScriptErrorException ignore) {
-            fail("Defining global variables should not fail in non-strict mode");
+            fail("Defining global variables should not fail if strict mode is disabled");
         }
+        assertFalse("Defining global variables should not show a warning if strict mode is disabled", warned.get());
     }
 }

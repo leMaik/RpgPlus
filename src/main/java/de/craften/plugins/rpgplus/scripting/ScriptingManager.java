@@ -19,10 +19,10 @@ import java.util.concurrent.Callable;
 public class ScriptingManager implements SafeInvoker {
     private final Map<String, ScriptingModule> modules;
     private final File scriptDirectory;
-    private final boolean strictMode;
+    private final StrictModeOption strictMode;
     private Globals globals;
 
-    public ScriptingManager(File scriptDirectory, boolean strictMode) {
+    public ScriptingManager(File scriptDirectory, StrictModeOption strictMode) {
         this.scriptDirectory = scriptDirectory;
         modules = new HashMap<>();
         this.strictMode = strictMode;
@@ -64,20 +64,30 @@ public class ScriptingManager implements SafeInvoker {
             }
         });
 
-        if (strictMode) {
+        if (strictMode != StrictModeOption.DISABLED) {
             //Throw when using global variables
             LuaValue metaTable = globals.getmetatable();
             if (metaTable == null) {
                 metaTable = new LuaTable();
             }
-            metaTable.rawset("__newindex", new ThreeArgFunction() {
-                @Override
-                public LuaValue call(LuaValue table, LuaValue key, LuaValue value) {
-                    throw new LuaError("Undefined variable '" + key + "'. (Strict mode: global variables are disabled)");
-                    //table.rawset(key, value);
-                    //return NONE;
-                }
-            });
+            if (strictMode == StrictModeOption.ERROR) {
+                metaTable.rawset("__newindex", new ThreeArgFunction() {
+                    @Override
+                    public LuaValue call(LuaValue table, LuaValue key, LuaValue value) {
+                        throw new LuaError("Undefined variable '" + key + "'. (Strict mode: global variables are disabled)");
+                        //table.rawset(key, value);
+                        //return NONE;
+                    }
+                });
+            } else if (strictMode == StrictModeOption.WARN) {
+                metaTable.rawset("__newindex", new ThreeArgFunction() {
+                    @Override
+                    public LuaValue call(LuaValue table, LuaValue key, LuaValue value) {
+                        reportScriptWarning("Strict mode warning: Variable '" + key + "' is global");
+                        return NONE;
+                    }
+                });
+            }
             globals.setmetatable(metaTable);
         }
 
@@ -158,7 +168,22 @@ public class ScriptingManager implements SafeInvoker {
         exception.printStackTrace();
     }
 
+    /**
+     * Send a script warning.
+     *
+     * @param warning warning
+     */
+    protected void reportScriptWarning(final String warning) {
+        System.out.println(warning);
+    }
+
     public File getScriptDirectory() {
         return scriptDirectory;
+    }
+
+    public enum StrictModeOption {
+        DISABLED,
+        WARN,
+        ERROR
     }
 }

@@ -19,6 +19,7 @@ import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,10 +58,16 @@ public class RpgPlus extends JavaPlugin {
         images = new ImagesComponent();
 
         Path scriptDirectory = Paths.get(getDataFolder().getAbsolutePath()).resolve(getConfig().getString("scriptDirectory", ""));
-        scriptingManager = new ScriptingManager(scriptDirectory.toFile(), getConfig().getBoolean("strictMode", false)) {
+        ScriptingManager.StrictModeOption strictMode;
+        if (getConfig().isBoolean("strictMode")) {
+            strictMode = getConfig().getBoolean("strictMode") ? ScriptingManager.StrictModeOption.ERROR : ScriptingManager.StrictModeOption.DISABLED;
+        } else {
+            strictMode = ScriptingManager.StrictModeOption.valueOf(getConfig().getString("strictMode", "disabled").toUpperCase());
+        }
+        scriptingManager = new ScriptingManager(scriptDirectory.toFile(), strictMode) {
             @Override
             protected void reportScriptError(final Exception exception) {
-                getServer().broadcast("[RpgPlus] An error occurred while executing the script: " + exception.getMessage(), "rpgplus.scripting.notifyerrors");
+                getServer().broadcast("[RpgPlus] " + ChatColor.RED + "An error occurred while executing the script: " + exception.getMessage(), "rpgplus.scripting.notifyerrors");
                 getLogger().severe("An error occurred while executing the script: " + exception.getMessage());
 
                 final String devKey = getConfig().getString("pastebinDevKey");
@@ -77,6 +84,12 @@ public class RpgPlus extends JavaPlugin {
                         }
                     });
                 }
+            }
+
+            @Override
+            protected void reportScriptWarning(String warning) {
+                getServer().broadcast("[RpgPlus] " + ChatColor.GOLD + warning, "rpgplus.scripting.notifyerrors");
+                getLogger().warning(warning);
             }
         };
 
