@@ -84,6 +84,7 @@ public class ScriptingManager implements SafeInvoker {
                     @Override
                     public LuaValue call(LuaValue table, LuaValue key, LuaValue value) {
                         reportScriptWarning("Strict mode warning: Variable '" + key + "' is global");
+                        table.rawset(key, value);
                         return NONE;
                     }
                 });

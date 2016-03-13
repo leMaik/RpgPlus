@@ -67,6 +67,8 @@ public class ScriptingManagerTest {
                 "globalVar = 42"
         }, "\n"), "test");
         assertTrue("Defining global variables should show a warning if strict mode is set to show warnings", warned.get());
+        assertEquals("Assigning global variables should work if strict mode is set to show warnings", 42,
+                scriptingManager.executeScript("return globalVar;", "test").checkint(1));
 
         warned.set(false);
         scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.DISABLED) {
@@ -83,5 +85,7 @@ public class ScriptingManagerTest {
             fail("Defining global variables should not fail if strict mode is disabled");
         }
         assertFalse("Defining global variables should not show a warning if strict mode is disabled", warned.get());
+        assertEquals("Assigning global variables should work if strict mode is disabled", 42,
+                scriptingManager.executeScript("return globalVar;", "test").checkint(1));
     }
 }
