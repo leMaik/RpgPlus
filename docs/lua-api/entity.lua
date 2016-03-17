@@ -31,6 +31,9 @@ worldName = _
 --- Target of the entity. This field is writable.
 target = _
 
+--- The Bukkit entity that is wrapped by this entity. Note that this may be `nil` if the entity is not spawned. This field is read-only.
+bukkitEntity = _
+
 --- Navigates to the given location, using A*.
 -- @param destination destination, a table with `x`, `y` and `z` fields
 -- @param[opt] options a table with options for pathing, options are `openDoors` (boolean), `openFenceGates` (boolean) and `speed` (int, in meters per second)

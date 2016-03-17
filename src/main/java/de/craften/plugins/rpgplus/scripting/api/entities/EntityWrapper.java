@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.*;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
@@ -219,6 +220,8 @@ public class EntityWrapper extends LuaTable {
                     return LuaValue.valueOf(entity.getEntity().getWorld().getName());
                 case "target":
                     return ScriptUtil.getTarget(entity);
+                case "bukkitEntity":
+                    return CoerceJavaToLua.coerce(entity.getEntity());
             }
         }
         return super.rawget(key);
