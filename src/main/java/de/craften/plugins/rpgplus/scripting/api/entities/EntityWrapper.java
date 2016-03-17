@@ -213,6 +213,8 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
                     }
                     return LuaValue.NIL;
+                case "location":
+                    return ScriptUtil.getLocation(entity.getLocation());
                 case "worldName":
                     return LuaValue.valueOf(entity.getEntity().getWorld().getName());
                 case "target":

@@ -22,6 +22,9 @@ invulnerable = _
 --- Only for villagers: The profession of this villager. This field is writable.
 profession = _
 
+--- Location of the entity. This field is only readable, use `teleportTo` to teleport the entity.
+location = _
+
 --- Name of the world of the entity. This field is only readable.
 worldName = _
 

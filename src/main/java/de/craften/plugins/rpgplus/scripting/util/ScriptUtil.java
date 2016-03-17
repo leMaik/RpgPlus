@@ -121,7 +121,7 @@ public class ScriptUtil {
     }
 
     /**
-     * Get the location (without pitch and yaw) that is represented by the given lua value. If that value already is a
+     * Get the location that is represented by the given lua value. If that value already is a
      * {@link Location} userdata object, that object is returned
      *
      * @param location lua table that represents a location or a {@link Location} userdata object
@@ -136,8 +136,27 @@ public class ScriptUtil {
                     Bukkit.getWorld(location.get("world").checkjstring()),
                     location.get("x").checkdouble(),
                     location.get("y").checkdouble(),
-                    location.get("z").checkdouble());
+                    location.get("z").checkdouble(),
+                    (float) location.get("yaw").optdouble(0),
+                    (float) location.get("pitch").optdouble(0));
         }
+    }
+
+    /**
+     * Get a Lua location table from the given location.
+     *
+     * @param location location
+     * @return location table
+     */
+    public static LuaTable getLocation(Location location) {
+        LuaTable locationTable = new LuaTable();
+        locationTable.set("world", LuaValue.valueOf(location.getWorld().getName()));
+        locationTable.set("x", LuaValue.valueOf(location.getX()));
+        locationTable.set("y", LuaValue.valueOf(location.getY()));
+        locationTable.set("z", LuaValue.valueOf(location.getZ()));
+        locationTable.set("yaw", LuaValue.valueOf(location.getYaw()));
+        locationTable.set("pitch", LuaValue.valueOf(location.getPitch()));
+        return locationTable;
     }
 
     /**
