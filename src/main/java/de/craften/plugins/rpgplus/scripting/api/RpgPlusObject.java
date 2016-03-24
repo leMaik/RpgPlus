@@ -50,7 +50,7 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
 
     @LuaFunction("command")
     public void registerCommand(LuaValue command, final LuaValue handler) {
-        RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
+        plugin.getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
             @Override
             public boolean onCommand(final CommandSender sender, final String command, final List<String> args) {
                 return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(new Callable<Varargs>() {
@@ -65,7 +65,7 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
 
     @LuaFunction("playercommand")
     public void registerPlayerCommand(LuaValue command, final LuaValue handler) {
-        RpgPlus.getPlugin(RpgPlus.class).getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
+        plugin.getCommandManager().registerCommand(getCommandPath(command), new CommandHandler() {
             @Override
             public boolean onCommand(final CommandSender sender, final String command, final List<String> args) {
                 if (sender instanceof Player) {

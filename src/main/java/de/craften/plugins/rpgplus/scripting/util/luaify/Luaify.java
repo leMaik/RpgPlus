@@ -33,7 +33,7 @@ public class Luaify {
                             if (method.getParameterTypes().length == 1 && method.getParameterTypes()[0] == Varargs.class) {
                                 returnValue = method.invoke(input, args);
                             } else {
-                                returnValue = method.invoke(input, convertArguments(args, method.getParameterTypes()));
+                                returnValue = method.invoke(input, (Object[]) convertArguments(args, method.getParameterTypes()));
                             }
 
                             if (method.getReturnType() == Void.TYPE) {
