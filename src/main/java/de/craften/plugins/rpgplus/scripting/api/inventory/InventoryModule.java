@@ -59,8 +59,8 @@ public class InventoryModule extends LuaTable implements ScriptingModule {
         Inventory inv = Bukkit.createInventory(null, args.arg(2).optint(1) * 9, title);
 
         InventoryWrapper inventoryWrapper = new InventoryWrapper(inv);
-        inventoryWrapper.setItems(args.arg(4).checktable());
-        inventoryWrapper.open(args.arg(1));
+        inventoryWrapper.setItems(inventoryWrapper, args.arg(4).checktable());
+        inventoryWrapper.open(inventoryWrapper, args.arg(1));
 
         return inventoryWrapper;
     }
