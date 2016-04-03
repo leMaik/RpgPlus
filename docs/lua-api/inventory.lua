@@ -21,3 +21,12 @@ function giveItems(player, ...) end
 -- @return missing amount of each specified item, as multiple return values
 --
 function takeItems(player, ...) end
+
+--- Opens an inventory.
+-- @param player player
+-- @param size size of the inventory (rows of 9)
+-- @param title title of the inventory
+-- @param items table of items in the inventory, with slots as keys
+-- @return Inventory inventory
+--
+function openChest(player, size, title, items) end
