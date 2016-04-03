@@ -3,8 +3,9 @@
 
 --- Sets the items in this inventory.
 -- @param items table of items in the inventory, with slots as keys
+-- @param[opt=true] clear whether the inventory should be cleared before adding the items
 --
-function setItems(items) end
+function setItems(items, clear) end
 
 --- Sets the item in the given slot of this inventory.
 -- @param slot slot

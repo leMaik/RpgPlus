@@ -117,4 +117,17 @@ public class LuaifyTest {
         Luaify.convert(new Subclass(), luaified);
         assertTrue("inherited methods should be wrapped", luaified.get("foo").isfunction());
     }
+
+    @Test
+    public void testMissingParameters() throws Exception {
+        LuaTable table = new LuaTable();
+        Luaify.convert(new Object() {
+            @LuaFunction("test")
+            public void testFunction(LuaValue param, LuaValue param2) {
+                assertEquals("Missing parameters should be set to LuaValue.NIL", LuaValue.NIL, param);
+                assertEquals("Missing parameters should be set to LuaValue.NIL", LuaValue.NIL, param2);
+            }
+        }, table);
+        table.get("test").invoke();
+    }
 }

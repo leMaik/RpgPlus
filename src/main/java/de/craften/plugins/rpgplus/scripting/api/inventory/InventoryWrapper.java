@@ -21,17 +21,30 @@ public class InventoryWrapper extends LuaTable {
     }
 
     @LuaFunction("setItems")
-    public void setItems(LuaValue inv, LuaTable items) {
-        inventory.clear();
+    public void setItems(LuaValue inv, LuaTable items, LuaValue clear) {
+        if (clear.optboolean(true)) {
+            inventory.clear();
+        }
+
         for (LuaValue slot : items.keys()) {
             ItemStack item = ScriptUtil.createItemMatcher(items.get(slot)).getItemStack();
             inventory.setItem(slot.checkint(), item);
+        }
+
+        //re-open inventory to update it
+        for (HumanEntity viewer : inventory.getViewers()) {
+            viewer.openInventory(inventory);
         }
     }
 
     @LuaFunction("setItem")
     public void setItem(LuaValue inv, LuaValue slot, LuaTable item) {
         inventory.setItem(slot.checkint(), ScriptUtil.createItemMatcher(item).getItemStack());
+
+        //re-open inventory to update it
+        for (HumanEntity viewer : inventory.getViewers()) {
+            viewer.openInventory(inventory);
+        }
     }
 
     @LuaFunction("open")
