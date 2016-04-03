@@ -21,7 +21,7 @@ public class InventoryWrapper extends LuaTable {
     }
 
     @LuaFunction("setItems")
-    public void setItems(LuaTable items) {
+    public void setItems(LuaValue inv, LuaTable items) {
         inventory.clear();
         for (LuaValue slot : items.keys()) {
             ItemStack item = ScriptUtil.createItemMatcher(items.get(slot)).getItemStack();
@@ -30,12 +30,12 @@ public class InventoryWrapper extends LuaTable {
     }
 
     @LuaFunction("setItem")
-    public void setItem(LuaValue slot, LuaTable item) {
+    public void setItem(LuaValue inv, LuaValue slot, LuaTable item) {
         inventory.setItem(slot.checkint(), ScriptUtil.createItemMatcher(item).getItemStack());
     }
 
     @LuaFunction("open")
-    public void open(LuaValue player) {
+    public void open(LuaValue inv, LuaValue player) {
         ScriptUtil.getPlayer(player).openInventory(inventory);
     }
 
