@@ -32,10 +32,16 @@
 
 <h2>Contents</h2>
 <ul>
-<li><a href="#Functions">Functions</a></li>
+<li><a href="#Methods">Methods</a></li>
 </ul>
 
 
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/Entity.html">Entity</a></li>
+  <li><strong>Inventory</strong></li>
+  <li><a href="../classes/Poster.html">Poster</a></li>
+</ul>
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../modules/rpgplus.actionbar.html">rpgplus.actionbar</a></li>
@@ -44,42 +50,40 @@
   <li><a href="../modules/rpgplus.types.html">rpgplus.types</a></li>
   <li><a href="../modules/rpgplus.html">rpgplus</a></li>
   <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
-  <li><strong>rpgplus.sound</strong></li>
+  <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
   <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
   <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
   <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
-</ul>
-<h2>Classes</h2>
-<ul class="$(kind=='Topics' and '' or 'nowrap'">
-  <li><a href="../classes/Entity.html">Entity</a></li>
-  <li><a href="../classes/Inventory.html">Inventory</a></li>
-  <li><a href="../classes/Poster.html">Poster</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>rpgplus.sound</code></h1>
-<p>Provides sound and music functions.</p>
+<h1>Class <code>Inventory</code></h1>
+<p>An inventory.</p>
 <p>
 
 </p>
 
 
-<h2><a href="#Functions">Functions</a></h2>
+<h2><a href="#Methods">Methods</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#playSound">playSound (player, sound)</a></td>
-	<td class="summary">Play a sound to a specific player.</td>
+	<td class="name" nowrap><a href="#Inventory:setItems">Inventory:setItems (items[, clear=true])</a></td>
+	<td class="summary">Sets the items in this inventory.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#playNote">playNote (player, instrument, note)</a></td>
-	<td class="summary">Play a note to a specific player.</td>
+	<td class="name" nowrap><a href="#Inventory:setItem">Inventory:setItem (slot, item)</a></td>
+	<td class="summary">Sets the item in the given slot of this inventory.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#playSong">playSong (player, song)</a></td>
-	<td class="summary">Play a song to a specific player.</td>
+	<td class="name" nowrap><a href="#Inventory:open">Inventory:open (player)</a></td>
+	<td class="summary">Opens this inventory for a player.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Inventory:close">Inventory:close ()</a></td>
+	<td class="summary">Closes this inventory for all viewers.</td>
 	</tr>
 </table>
 
@@ -87,24 +91,25 @@
 <br/>
 
 
-    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
 
     <dl class="function">
     <dt>
-    <a name = "playSound"></a>
-    <strong>playSound (player, sound)</strong>
+    <a name = "Inventory:setItems"></a>
+    <strong>Inventory:setItems (items[, clear=true])</strong>
     </dt>
     <dd>
-    Play a sound to a specific player.
+    Sets the items in this inventory.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">player</span>
-         player to play the sound to
+        <li><span class="parameter">items</span>
+         table of items in the inventory, with slots as keys
         </li>
-        <li><span class="parameter">sound</span>
-         sound to play
+        <li><span class="parameter">clear</span>
+         whether the inventory should be cleared before adding the items
+         (<em>default</em> true)
         </li>
     </ul>
 
@@ -114,23 +119,20 @@
 
 </dd>
     <dt>
-    <a name = "playNote"></a>
-    <strong>playNote (player, instrument, note)</strong>
+    <a name = "Inventory:setItem"></a>
+    <strong>Inventory:setItem (slot, item)</strong>
     </dt>
     <dd>
-    Play a note to a specific player.
+    Sets the item in the given slot of this inventory.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">player</span>
-         player to play the note to
+        <li><span class="parameter">slot</span>
+         slot
         </li>
-        <li><span class="parameter">instrument</span>
-         instrument which will playing
-        </li>
-        <li><span class="parameter">note</span>
-         note to play, either its number of a string like "c#'" or "a"
+        <li><span class="parameter">item</span>
+         item to put into the slot
         </li>
     </ul>
 
@@ -140,28 +142,34 @@
 
 </dd>
     <dt>
-    <a name = "playSong"></a>
-    <strong>playSong (player, song)</strong>
+    <a name = "Inventory:open"></a>
+    <strong>Inventory:open (player)</strong>
     </dt>
     <dd>
-    Play a song to a specific player.
+    Opens this inventory for a player.
 
 
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">player</span>
-         player to play the song to
-        </li>
-        <li><span class="parameter">song</span>
-         path of the .nbs song file, relative to the script directory
+         player
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
 
-        true if the song was started, false if not (due to missing NoteBlockAPI plugin)
-    </ol>
+
+
+
+</dd>
+    <dt>
+    <a name = "Inventory:close"></a>
+    <strong>Inventory:close ()</strong>
+    </dt>
+    <dd>
+    Closes this inventory for all viewers.
+
+
+
 
 
 
