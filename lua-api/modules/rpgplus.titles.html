@@ -39,7 +39,7 @@
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../modules/rpgplus.actionbar.html">rpgplus.actionbar</a></li>
-  <li><strong>rpgplus.image</strong></li>
+  <li><a href="../modules/rpgplus.image.html">rpgplus.image</a></li>
   <li><a href="../modules/rpgplus.inventory.html">rpgplus.inventory</a></li>
   <li><a href="../modules/rpgplus.types.html">rpgplus.types</a></li>
   <li><a href="../modules/rpgplus.html">rpgplus</a></li>
@@ -47,7 +47,7 @@
   <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
   <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
   <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
-  <li><a href="../modules/rpgplus.titles.html">rpgplus.titles</a></li>
+  <li><strong>rpgplus.titles</strong></li>
   <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
 </ul>
 <h2>Classes</h2>
@@ -61,8 +61,8 @@
 
 <div id="content">
 
-<h1>Module <code>rpgplus.image</code></h1>
-<p>Provides image functions.</p>
+<h1>Module <code>rpgplus.titles</code></h1>
+<p>Provides functions to set titles and tab titles.</p>
 <p>
 
 </p>
@@ -71,8 +71,8 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#create">create (path[, width=1[, height=1]])</a></td>
-	<td class="summary">Creates a new poster.</td>
+	<td class="name" nowrap><a href="#setTabTitles">setTabTitles ([player], header, footer)</a></td>
+	<td class="summary">Sets the tab titles for the given player or for all players, if none is specified.</td>
 	</tr>
 </table>
 
@@ -84,34 +84,27 @@
 
     <dl class="function">
     <dt>
-    <a name = "create"></a>
-    <strong>create (path[, width=1[, height=1]])</strong>
+    <a name = "setTabTitles"></a>
+    <strong>setTabTitles ([player], header, footer)</strong>
     </dt>
     <dd>
-    Creates a new poster.  This rescales the original image to fit the specified dimensions.
+    Sets the tab titles for the given player or for all players, if none is specified.
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">path</span>
-         path of the poster, relativ to the script directory
+        <li><span class="parameter">player</span>
+         player
+         (<em>optional</em>)
         </li>
-        <li><span class="parameter">width</span>
-         width of the poster, in blocks
-         (<em>default</em> 1)
+        <li><span class="parameter">header</span>
+         header title (displayed above the player list)
         </li>
-        <li><span class="parameter">height</span>
-         height of the poster, in blocks
-         (<em>default</em> 1)
+        <li><span class="parameter">footer</span>
+         footer title (displayed below the player list)
         </li>
     </ul>
 
-    <h3>Returns:</h3>
-    <ol>
-
-           <span class="types"><a class="type" href="../classes/Poster.html#">Poster</a></span>
-        the new poster
-    </ol>
 
 
 
