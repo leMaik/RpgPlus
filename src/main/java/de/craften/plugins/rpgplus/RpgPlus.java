@@ -19,6 +19,7 @@ import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
 import de.craften.plugins.rpgplus.scripting.api.inventory.InventoryModule;
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
+import de.craften.plugins.rpgplus.scripting.api.title.TitlesModule;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -129,6 +130,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.storage", new StorageModule(storage.getStorage()));
         scriptingManager.registerModule("rpgplus.inventory", new InventoryModule());
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
+        scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
 
         try {
             scriptingManager.executeScript(new File(scriptingManager.getScriptDirectory(), "main.lua"));
