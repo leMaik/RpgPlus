@@ -17,6 +17,7 @@ import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
+import de.craften.plugins.rpgplus.scripting.api.inventory.InventoryModule;
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import org.bukkit.ChatColor;
