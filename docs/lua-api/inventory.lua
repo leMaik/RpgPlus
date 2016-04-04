@@ -27,6 +27,6 @@ function takeItems(player, ...) end
 -- @param size size of the inventory (rows of 9)
 -- @param title title of the inventory
 -- @param items table of items in the inventory, with slots as keys
--- @return Inventory inventory
+-- @treturn Inventory inventory
 --
 function openChest(player, size, title, items) end
