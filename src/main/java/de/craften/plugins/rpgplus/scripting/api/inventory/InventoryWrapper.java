@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import java.util.ArrayList;
+
 /**
  * A Lua wrapper for inventories.
  */
@@ -32,7 +34,7 @@ public class InventoryWrapper extends LuaTable {
         }
 
         //re-open inventory to update it
-        for (HumanEntity viewer : inventory.getViewers()) {
+        for (HumanEntity viewer : new ArrayList<>(inventory.getViewers())) {
             viewer.openInventory(inventory);
         }
     }
@@ -42,7 +44,7 @@ public class InventoryWrapper extends LuaTable {
         inventory.setItem(slot.checkint(), ScriptUtil.createItemMatcher(item).getItemStack());
 
         //re-open inventory to update it
-        for (HumanEntity viewer : inventory.getViewers()) {
+        for (HumanEntity viewer : new ArrayList<>(inventory.getViewers())) {
             viewer.openInventory(inventory);
         }
     }
@@ -53,8 +55,8 @@ public class InventoryWrapper extends LuaTable {
     }
 
     @LuaFunction("close")
-    public void close() {
-        for (HumanEntity viewer : inventory.getViewers()) {
+    public void close(LuaValue inv) {
+        for (HumanEntity viewer : new ArrayList<>(inventory.getViewers())) {
             viewer.closeInventory();
         }
     }
