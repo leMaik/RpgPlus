@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 public final class TitleApi {
     private TitleApi() {
@@ -16,7 +17,7 @@ public final class TitleApi {
             Object handle = player.getClass().getMethod("getHandle").invoke(player);
             Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
             playerConnection.getClass().getMethod("sendPacket", NmsUtil.getNmsClass("Packet")).invoke(playerConnection, packet);
-        } catch (Exception e) {
+        } catch (InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -42,7 +43,7 @@ public final class TitleApi {
                 Object subtitlePacket = subtitleConstructor.newInstance(enumSubtitle, chatSubtitle, fadeIn, stay, fadeOut);
                 sendPacket(player, subtitlePacket);
             }
-        } catch (Exception e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchFieldException e) {
             e.printStackTrace();
         }
     }
@@ -52,10 +53,16 @@ public final class TitleApi {
     }
 
     public static void sendTabTitle(Player player, String header, String footer) {
-        if (header == null) header = "";
+        if (header == null) {
+            //There is no other way to reset tab titles, they can only be set to empty
+            header = "";
+        }
         header = ChatColor.translateAlternateColorCodes('&', header);
 
-        if (footer == null) footer = "";
+        if (footer == null) {
+            //There is no other way to reset tab titles, they can only be set to empty
+            footer = "";
+        }
         footer = ChatColor.translateAlternateColorCodes('&', footer);
 
         header = header.replaceAll("%player%", player.getDisplayName());
@@ -87,11 +94,10 @@ public final class TitleApi {
 
             packet = packetTitle.getConstructor(packetActions, chatBaseComponent).newInstance(actions[4], null);
             sendPacket(player, packet);
-        } catch (Exception e) {
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
 
-        //There is no other way to reset tab titles, they can only be set to empty
-        sendTabTitle(player, "", "");
+        sendTabTitle(player, null, null);
     }
 }
