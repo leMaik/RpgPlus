@@ -18,6 +18,7 @@ import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManag
 import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
 import de.craften.plugins.rpgplus.scripting.api.inventory.InventoryModule;
+import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventManager;
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.api.title.TitlesModule;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
@@ -49,6 +50,7 @@ public class RpgPlus extends JavaPlugin {
     private final ImagesComponent images;
     private final ScriptEventManager scriptEventManager;
     private final EntityEventManager entityEventManager;
+    private final InventoryEventManager inventoryEventManager;
 
     public RpgPlus() {
         weakPlayerMaps = new WeakPlayerMaps();
@@ -100,6 +102,7 @@ public class RpgPlus extends JavaPlugin {
 
         scriptEventManager = new ScriptEventManager(scriptingManager);
         entityEventManager = new EntityEventManager(scriptingManager);
+        inventoryEventManager = new InventoryEventManager(scriptingManager);
     }
 
     @Override
@@ -112,6 +115,8 @@ public class RpgPlus extends JavaPlugin {
         getServer().getPluginManager().registerEvents(entityEventManager, this);
         EntitySpawner entitySpawner = new EntitySpawner(entityEventManager);
         entitySpawner.installOn(rpgPlusObject);
+
+        getServer().getPluginManager().registerEvents(inventoryEventManager, this);
 
         weakPlayerMaps.activateFor(this);
         commandManager.activateFor(this);
@@ -128,7 +133,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.timer", new ScriptTimedEventManager(this));
         scriptingManager.registerModule("rpgplus.sound", new Sound(this));
         scriptingManager.registerModule("rpgplus.storage", new StorageModule(storage.getStorage()));
-        scriptingManager.registerModule("rpgplus.inventory", new InventoryModule());
+        scriptingManager.registerModule("rpgplus.inventory", new InventoryModule(inventoryEventManager));
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
         scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
 
@@ -144,6 +149,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.reset();
         scriptEventManager.reset();
         entityEventManager.reset();
+        inventoryEventManager.reset();
         entityManager.removeAll();
         commandManager.removeAll();
         timerManager.removeAll();

@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.scripting.api.inventory;
 
+import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.ThreeArgFunction;
 
 import java.util.ArrayList;
 
@@ -16,10 +18,33 @@ import java.util.ArrayList;
  */
 public class InventoryWrapper extends LuaTable {
     private final Inventory inventory;
+    private final InventoryEventManager entityEventManager;
 
-    public InventoryWrapper(Inventory inventory) {
+    public InventoryWrapper(Inventory inventory, InventoryEventManager entityEventManager) {
         this.inventory = inventory;
+        this.entityEventManager = entityEventManager;
         Luaify.convertInPlace(this);
+
+        set("on", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
+                return InventoryWrapper.this.entityEventManager.on(entity, eventName, callback);
+            }
+        });
+
+        set("once", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
+                return InventoryWrapper.this.entityEventManager.once(entity, eventName, callback);
+            }
+        });
+
+        set("off", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue entity, LuaValue eventName, LuaValue callback) {
+                return InventoryWrapper.this.entityEventManager.off(entity, eventName, callback);
+            }
+        });
     }
 
     @LuaFunction("setItems")
@@ -59,5 +84,14 @@ public class InventoryWrapper extends LuaTable {
         for (HumanEntity viewer : new ArrayList<>(inventory.getViewers())) {
             viewer.closeInventory();
         }
+    }
+
+    /**
+     * Gets the wrapped inventory.
+     *
+     * @return the wrapped inventory
+     */
+    public Inventory getInventory() {
+        return inventory;
     }
 }

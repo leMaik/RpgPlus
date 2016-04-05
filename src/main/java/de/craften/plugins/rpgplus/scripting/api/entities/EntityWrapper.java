@@ -275,6 +275,11 @@ public class EntityWrapper extends LuaTable {
         }
     }
 
+    /**
+     * Gets the wrapped entity.
+     *
+     * @return the wrapped entity
+     */
     public RpgPlusEntity getEntity() {
         return entity;
     }

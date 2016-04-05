@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.inventory;
 
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
+import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
@@ -14,7 +15,10 @@ import org.luaj.vm2.*;
  * Lua API for the player's inventory.
  */
 public class InventoryModule extends LuaTable implements ScriptingModule {
-    public InventoryModule() {
+    private final InventoryEventManager inventoryEventManager;
+
+    public InventoryModule(InventoryEventManager inventoryEventManager) {
+        this.inventoryEventManager = inventoryEventManager;
         Luaify.convertInPlace(this);
     }
 
@@ -58,7 +62,7 @@ public class InventoryModule extends LuaTable implements ScriptingModule {
         String title = ChatColor.translateAlternateColorCodes('&', args.arg(3).optjstring(""));
         Inventory inv = Bukkit.createInventory(null, args.arg(2).optint(1) * 9, title);
 
-        InventoryWrapper inventoryWrapper = new InventoryWrapper(inv);
+        InventoryWrapper inventoryWrapper = new InventoryWrapper(inv, inventoryEventManager);
         inventoryWrapper.setItems(inventoryWrapper, args.arg(4).checktable(), LuaValue.FALSE);
         inventoryWrapper.open(inventoryWrapper, args.arg(1));
 
