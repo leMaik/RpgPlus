@@ -137,15 +137,17 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
         scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
 
-        try {
-            scriptingManager.executeScript(new File(scriptingManager.getScriptDirectory(), "main.lua"));
-        } catch (ScriptErrorException e) {
-            getLogger().log(Level.WARNING, "Could not run main script", e);
-        }
+        executeMainScript();
     }
 
-    public void reload() {
+    private void reload() {
         getLogger().info("Reloading...");
+        reset();
+        executeMainScript();
+        getLogger().info("Reloaded");
+    }
+
+    private void reset() {
         scriptingManager.reset();
         scriptEventManager.reset();
         entityEventManager.reset();
@@ -155,23 +157,43 @@ public class RpgPlus extends JavaPlugin {
         timerManager.removeAll();
         dialogs.reset();
         weakPlayerMaps.reset();
+    }
 
-        try {
-            scriptingManager.executeScript(new File(scriptingManager.getScriptDirectory(), "main.lua"));
-        } catch (ScriptErrorException e) {
-            getLogger().log(Level.WARNING, "Could not run main script", e);
+    private void executeMainScript() {
+        if (getConfig().getBoolean("enabled", true)) {
+            try {
+                scriptingManager.executeScript(new File(scriptingManager.getScriptDirectory(), "main.lua"));
+            } catch (ScriptErrorException e) {
+                getLogger().log(Level.WARNING, "Could not run main script", e);
+            }
+        } else {
+            getLogger().warning("Scripts are currently disabled, use /rpgplus enable to enable them");
         }
-        getLogger().info("Reloaded");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equals("rpgplus")) {
-            if (args.length == 1 && args[0].equals("reload")) {
-                reloadConfig();
-                reload();
-                sender.sendMessage("RpgPlus reloaded.");
-                return true;
+            if (args.length == 1) {
+                switch (args[0]) {
+                    case "reload":
+                        reloadConfig();
+                        reload();
+                        sender.sendMessage("RpgPlus reloaded.");
+                        return true;
+                    case "disable":
+                        getConfig().set("enabled", false);
+                        saveConfig();
+                        reset();
+                        sender.sendMessage("Scripts disabled.");
+                        return true;
+                    case "enable":
+                        getConfig().set("enabled", true);
+                        saveConfig();
+                        reload();
+                        sender.sendMessage("Scripts enabled and reloaded");
+                        return true;
+                }
             }
         }
         return false;

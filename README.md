@@ -12,5 +12,17 @@ and simple to use (and thus makes coding the game logic much more fun). You can 
 [lua]:http://www.lua.org/start.html
 [luadoc]:http://lemaik.github.io/RpgPlus/lua-api
 
+## Commands
+The permission `rpgplus.manage` is required to use the following commands. By default, only operators have this permission.
+
+| command              | Description                   |
+|----------------------|-------------------------------|
+| `/rpgplus reload`    | Reload scripts.               |
+| `/rpgplus disable`   | Disable scripts¹.             |
+| `/rpgplus enable`    | Enable and reload scripts.    |
+
+¹Note that the scripts are still disabled after you restart/reload the server, until they are explicitly
+enabled again.
+
 ## License
 RpgPlus is licensed under the MIT license.
