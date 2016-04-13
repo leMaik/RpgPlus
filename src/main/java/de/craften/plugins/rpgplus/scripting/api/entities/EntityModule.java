@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.managedentities.EntityManager;
+import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
@@ -15,6 +16,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A lua module for entities.
@@ -83,7 +87,16 @@ public class EntityModule extends LuaTable implements ScriptingModule {
     }
 
     @LuaFunction("getNearby")
-    public void getNearbyEntities(LuaValue locationParam) {
+    public LuaTable getNearbyEntities(LuaValue locationParam, LuaValue radius) {
         Location location = ScriptUtil.getLocation(locationParam);
+        List<EntityWrapper> entities = new ArrayList<>();
+
+        for (ManagedEntityBase entity : entityManager.getEntitiesNear(location, radius.checkdouble())) {
+            if (entity instanceof RpgPlusEntity) {
+                entities.add(new EntityWrapper((RpgPlusEntity) entity, entityEventManager));
+            }
+        }
+
+        return ScriptUtil.tableOf(entities);
     }
 }

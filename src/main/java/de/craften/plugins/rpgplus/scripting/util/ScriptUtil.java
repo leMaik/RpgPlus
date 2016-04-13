@@ -191,6 +191,12 @@ public class ScriptUtil {
         return builder.build();
     }
 
+    /**
+     * Creates an {@link ItemMatcher} for the given item stack.
+     *
+     * @param itemstack item stack
+     * @return item matcher for the given item stack
+     */
     public static ItemMatcher createItemMatcher(LuaValue itemstack) {
         if (itemstack.isstring()) {
             return ItemMatcher.fromString(itemstack.checkjstring());
@@ -199,5 +205,20 @@ public class ScriptUtil {
         } else {
             throw new LuaError("Expected string or table to represent an itemstack.");
         }
+    }
+
+    /**
+     * Creates a table from the given list, just as {@link LuaValue#listOf(LuaValue[])} does for arrays.
+     *
+     * @param list a list
+     * @return the given list as Lua table
+     */
+    public static LuaTable tableOf(List<? extends LuaValue> list) {
+        LuaTable table = new LuaTable();
+        table.presize(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            table.rawset(i + 1, list.get(i));
+        }
+        return table;
     }
 }

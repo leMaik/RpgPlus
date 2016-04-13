@@ -7,7 +7,9 @@
 --
 function log(level, message) end
 
---- Registers and creates a managed villager.
+--- **Deprecated**, use @{rpgplus.entities.spawn} instead.
+--
+-- Registers and creates a managed entity.
 -- @param type the type of the entity to spawn
 -- @param options a table with options for the entity
 -- @treturn Entity the spawned entity
