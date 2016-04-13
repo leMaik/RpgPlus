@@ -34,6 +34,10 @@ public class ScriptingManager implements SafeInvoker {
         modules.put(name, module);
     }
 
+    public ScriptingModule getModule(String name) {
+        return modules.get(name);
+    }
+
     private Globals createGlobals() {
         Globals globals = JsePlatform.standardGlobals();
 
@@ -56,7 +60,7 @@ public class ScriptingManager implements SafeInvoker {
         globals.set("require", new VarArgFunction() {
             @Override
             public Varargs invoke(Varargs args) {
-                ScriptingModule module = modules.get(args.checkjstring(1));
+                ScriptingModule module = getModule(args.checkjstring(1));
                 if (module != null) {
                     return module.getModule();
                 }
@@ -174,7 +178,7 @@ public class ScriptingManager implements SafeInvoker {
      *
      * @param warning warning
      */
-    protected void reportScriptWarning(final String warning) {
+    public void reportScriptWarning(final String warning) {
         System.out.println(warning);
     }
 

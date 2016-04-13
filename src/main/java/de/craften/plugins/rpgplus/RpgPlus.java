@@ -13,7 +13,7 @@ import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.*;
 import de.craften.plugins.rpgplus.scripting.api.actionbar.ActionBarModule;
-import de.craften.plugins.rpgplus.scripting.api.entities.EntitySpawner;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntityModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
@@ -25,6 +25,7 @@ import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -94,9 +95,15 @@ public class RpgPlus extends JavaPlugin {
             }
 
             @Override
-            protected void reportScriptWarning(String warning) {
-                getServer().broadcast("[RpgPlus] " + ChatColor.GOLD + warning, "rpgplus.scripting.notifyerrors");
+            public void reportScriptWarning(String warning) {
                 getLogger().warning(warning);
+                
+                //manually broadcast so that the message is not displayed twice in the console
+                for (Player player : getServer().getOnlinePlayers()) {
+                    if (player.hasPermission("rpgplus.scripting.notifyerrors")) {
+                        player.sendMessage("[RpgPlus] " + ChatColor.GOLD + warning);
+                    }
+                }
             }
         };
 
@@ -113,8 +120,6 @@ public class RpgPlus extends JavaPlugin {
         getServer().getPluginManager().registerEvents(scriptEventManager, this);
 
         getServer().getPluginManager().registerEvents(entityEventManager, this);
-        EntitySpawner entitySpawner = new EntitySpawner(entityEventManager);
-        entitySpawner.installOn(rpgPlusObject);
 
         getServer().getPluginManager().registerEvents(inventoryEventManager, this);
 
@@ -136,6 +141,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.inventory", new InventoryModule(inventoryEventManager));
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
         scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
+        scriptingManager.registerModule("rpgplus.entities", new EntityModule(entityManager, entityEventManager));
 
         executeMainScript();
     }

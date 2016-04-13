@@ -59,7 +59,7 @@ public class ScriptingManagerTest {
         final AtomicBoolean warned = new AtomicBoolean(false);
         scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.WARN) {
             @Override
-            protected void reportScriptWarning(String warning) {
+            public void reportScriptWarning(String warning) {
                 warned.set(true);
             }
         };
@@ -73,7 +73,7 @@ public class ScriptingManagerTest {
         warned.set(false);
         scriptingManager = new ScriptingManager(testFolder.getRoot(), ScriptingManager.StrictModeOption.DISABLED) {
             @Override
-            protected void reportScriptWarning(String warning) {
+            public void reportScriptWarning(String warning) {
                 warned.set(true);
             }
         };

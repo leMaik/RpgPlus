@@ -127,6 +127,13 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
         }
     }
 
+    @LuaFunction("spawn")
+    public Varargs spawn(Varargs args) {
+        //TODO remove this function
+        plugin.getScriptingManager().reportScriptWarning("rpgplus.spawn() is deprecated. Use the spawn() function from the rpgplus.entities module instead.");
+        return plugin.getScriptingManager().getModule("rpgplus.entities").getModule().get("spawn").checkfunction().invoke(args);
+    }
+
     @Override
     public LuaValue getModule() {
         return this;
