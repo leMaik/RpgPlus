@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.managedentities.ManagedEntityBase;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedHorse;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
@@ -13,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Villager;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -51,6 +53,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         RpgPlusEntity entity;
         if (type == EntityType.VILLAGER) {
             entity = new ManagedVillager(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.HORSE) {
+            entity = new ManagedHorse(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
                 @Override
@@ -76,8 +80,29 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         }
 
         if (entity instanceof ManagedVillager) {
+            ManagedVillager villager = (ManagedVillager) entity;
             if (!options.get("profession").isnil()) {
-                ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(options.get("profession").checkjstring().toUpperCase()));
+                villager.setProfession(ScriptUtil.enumValue(options.get("profession"), Villager.Profession.class));
+            }
+        } else if (entity instanceof ManagedHorse) {
+            ManagedHorse horse = (ManagedHorse) entity;
+            if (!options.get("style").isnil()) {
+                horse.setStyle(ScriptUtil.enumValue(options.get("style"), Horse.Style.class));
+            }
+            if (!options.get("variant").isnil()) {
+                horse.setVariant(ScriptUtil.enumValue(options.get("variant"), Horse.Variant.class));
+            }
+            if (!options.get("color").isnil()) {
+                horse.setColor(ScriptUtil.enumValue(options.get("color"), Horse.Color.class));
+            }
+            if (!options.get("jumpStrength").isnil()) {
+                horse.setJumpStrength(options.get("jumpStrength").checkdouble());
+            }
+            if (!options.get("domestication").isnil()) {
+                horse.setDomestication(options.get("domestication").checkint());
+            }
+            if (!options.get("maxDomestication").isnil()) {
+                horse.setMaxDomestication(options.get("maxDomestication").checkint());
             }
         }
 

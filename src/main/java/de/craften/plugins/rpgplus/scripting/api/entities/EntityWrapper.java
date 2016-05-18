@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedHorse;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
@@ -13,9 +14,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
-import org.luaj.vm2.*;
+import org.luaj.vm2.LuaFunction;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
@@ -214,6 +219,36 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
                     }
                     return LuaValue.NIL;
+                case "style":
+                    if (entity instanceof ManagedHorse) {
+                        return LuaValue.valueOf(((ManagedHorse) entity).getStyle().toString());
+                    }
+                    return LuaValue.NIL;
+                case "variant":
+                    if (entity instanceof ManagedHorse) {
+                        return LuaValue.valueOf(((ManagedHorse) entity).getVariant().toString());
+                    }
+                    return LuaValue.NIL;
+                case "color":
+                    if (entity instanceof ManagedHorse) {
+                        return LuaValue.valueOf(((ManagedHorse) entity).getColor().toString());
+                    }
+                    return LuaValue.NIL;
+                case "jumpStrength":
+                    if (entity instanceof ManagedHorse) {
+                        return LuaValue.valueOf(((ManagedHorse) entity).getJumpStrength());
+                    }
+                    return LuaValue.NIL;
+                case "domestication":
+                    if (entity instanceof ManagedHorse) {
+                        return LuaValue.valueOf(((ManagedHorse) entity).getDomestication());
+                    }
+                    return LuaValue.NIL;
+                case "maxDomestication":
+                    if (entity instanceof ManagedHorse) {
+                        return LuaValue.valueOf(((ManagedHorse) entity).getMaxDomestication());
+                    }
+                    return LuaValue.NIL;
                 case "location":
                     return ScriptUtil.getLocation(entity.getLocation());
                 case "worldName":
@@ -255,13 +290,42 @@ public class EntityWrapper extends LuaTable {
                     break;
                 case "profession":
                     if (entity instanceof ManagedVillager) {
-                        ((ManagedVillager) entity).setProfession(Villager.Profession.valueOf(value.checkjstring().toUpperCase()));
-                    } else {
-                        throw new LuaError("Entity is not a villager.");
+                        ((ManagedVillager) entity).setProfession(ScriptUtil.enumValue(value, Villager.Profession.class));
+                    }
+                    break;
+                case "style":
+                    if (entity instanceof ManagedHorse) {
+                        ((ManagedHorse) entity).setStyle(ScriptUtil.enumValue(value, Horse.Style.class));
+                    }
+                    break;
+                case "variant":
+                    if (entity instanceof ManagedHorse) {
+                        ((ManagedHorse) entity).setVariant(ScriptUtil.enumValue(value, Horse.Variant.class));
+                    }
+                    break;
+                case "color":
+                    if (entity instanceof ManagedHorse) {
+                        ((ManagedHorse) entity).setColor(ScriptUtil.enumValue(value, Horse.Color.class));
+                    }
+                    break;
+                case "jumpStrength":
+                    if (entity instanceof ManagedHorse) {
+                        ((ManagedHorse) entity).setJumpStrength(value.checkdouble());
+                    }
+                    break;
+                case "domestication":
+                    if (entity instanceof ManagedHorse) {
+                        ((ManagedHorse) entity).setDomestication(value.checkint());
+                    }
+                    break;
+                case "maxDomestication":
+                    if (entity instanceof ManagedHorse) {
+                        ((ManagedHorse) entity).setMaxDomestication(value.checkint());
                     }
                     break;
                 case "target":
                     entity.setTarget(value == LuaValue.NIL ? null : ScriptUtil.getPlayer(value));
+                    break;
             }
         }
         super.rawset(key, value);

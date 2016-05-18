@@ -221,4 +221,16 @@ public class ScriptUtil {
         }
         return table;
     }
+
+    /**
+     * Gets the enum value of the given enum type that matches the given lua value.
+     *
+     * @param value     lua value
+     * @param enumClass enum class
+     * @param <T>       type of the enum
+     * @return enum value that matches the given lua value
+     */
+    public static <T extends Enum<T>> T enumValue(LuaValue value, Class<T> enumClass) {
+        return Enum.valueOf(enumClass, value.checkjstring().toUpperCase());
+    }
 }
