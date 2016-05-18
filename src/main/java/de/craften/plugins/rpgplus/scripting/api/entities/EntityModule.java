@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedHorse;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
@@ -12,10 +13,7 @@ import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -55,6 +53,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedVillager(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.HORSE) {
             entity = new ManagedHorse(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.RABBIT) {
+            entity = new ManagedRabbit(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
                 @Override
@@ -103,6 +103,11 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             }
             if (!options.get("maxDomestication").isnil()) {
                 horse.setMaxDomestication(options.get("maxDomestication").checkint());
+            }
+        } else if (entity instanceof ManagedRabbit) {
+            ManagedRabbit rabbit = (ManagedRabbit) entity;
+            if (!options.get("type").isnil()) {
+                rabbit.setType(ScriptUtil.enumValue(options.get("type"), Rabbit.Type.class));
             }
         }
 

@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedHorse;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
@@ -13,10 +14,7 @@ import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -255,6 +253,11 @@ public class EntityWrapper extends LuaTable {
                     return LuaValue.valueOf(entity.getEntity().getWorld().getName());
                 case "target":
                     return ScriptUtil.getTarget(entity);
+                case "type":
+                    if (entity instanceof ManagedRabbit) {
+                        return LuaValue.valueOf(((ManagedRabbit) entity).getType().toString());
+                    }
+                    return LuaValue.NIL;
                 case "bukkitEntity":
                     return CoerceJavaToLua.coerce(entity.getEntity());
             }
@@ -325,6 +328,11 @@ public class EntityWrapper extends LuaTable {
                     break;
                 case "target":
                     entity.setTarget(value == LuaValue.NIL ? null : ScriptUtil.getPlayer(value));
+                    break;
+                case "type":
+                    if (entity instanceof ManagedRabbit) {
+                        ((ManagedRabbit) entity).setType(ScriptUtil.enumValue(value, Rabbit.Type.class));
+                    }
                     break;
             }
         }
