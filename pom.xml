@@ -25,6 +25,11 @@
             <url>http://repo.wertarbyte.com/</url>
         </repository>
         <repository>
+            <id>mojang</id>
+            <name>Mojang Libraries</name>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
+        <repository>
             <id>revonline-repository</id>
             <name>Revonline Maven Repository</name>
             <url>http://revonline.comuf.com/maven3/</url>
@@ -68,6 +73,12 @@
             <groupId>de.craften.plugins.managedentities</groupId>
             <artifactId>ManagedEntities</artifactId>
             <version>1.0.8-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.16</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

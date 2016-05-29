@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.components.inventory;
 
+import de.craften.plugins.rpgplus.util.CustomSkull;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +19,7 @@ public class ItemMatcher {
     private String name;
     private List<String> lore;
     private boolean unbreakable;
+    private String skullTexture;
 
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
         return typeMatches(itemStack)
@@ -25,7 +27,8 @@ public class ItemMatcher {
                 && (ignoreAmount || amountMatches(itemStack))
                 && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable
                 && nameMatches(itemStack)
-                && loreMatches(itemStack);
+                && loreMatches(itemStack)
+                && skullTextureMatches(itemStack);
         //TODO check for more properties, i.e. book content
     }
 
@@ -60,8 +63,12 @@ public class ItemMatcher {
         if (unbreakable) {
             meta.spigot().setUnbreakable(true);
         }
+        if (skullTexture != null) {
+            CustomSkull.setTexture(meta, skullTexture);
+        }
 
         itemStack.setItemMeta(meta);
+
         return itemStack;
     }
 
@@ -119,6 +126,10 @@ public class ItemMatcher {
             }
         }
         return true;
+    }
+
+    private boolean skullTextureMatches(ItemStack itemStack) {
+        return skullTexture == null || skullTexture.equalsIgnoreCase(CustomSkull.getTexture(itemStack));
     }
 
     public static Builder builder() {
@@ -187,6 +198,11 @@ public class ItemMatcher {
 
         public Builder unbreakable(boolean unbreakable) {
             matcher.unbreakable = unbreakable;
+            return this;
+        }
+
+        public Builder skullTexture(String skullTexture) {
+            matcher.skullTexture = skullTexture;
             return this;
         }
 

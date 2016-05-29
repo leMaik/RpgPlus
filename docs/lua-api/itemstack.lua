@@ -9,4 +9,5 @@
 -- @field[opt] name item name
 -- @field[opt] lore list of lines for the lore of this item
 -- @field[opt=false] unbreakable whether the item should be unbreakable
+-- @field[opt] texture base64-encoded texture for skull items (only works with type=skull_item, data=3)
 itemstack = _

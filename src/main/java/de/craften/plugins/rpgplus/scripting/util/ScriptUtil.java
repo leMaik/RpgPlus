@@ -185,6 +185,9 @@ public class ScriptUtil {
             }
             builder.lore(lore);
         }
+        if (!itemstack.get("texture").isnil()) {
+            builder.skullTexture(itemstack.get("texture").checkjstring());
+        }
         if (itemstack.get("unbreakable").optboolean(false)) {
             builder.unbreakable(true);
         }
