@@ -38,7 +38,11 @@ public class MemoryStorage implements Storage {
 
     @Override
     public void set(String key, String value) {
-        storage.put(key, value);
+        if (value == null) {
+            storage.remove(key);
+        } else {
+            storage.put(key, value);
+        }
     }
 
     @Override
@@ -78,7 +82,11 @@ public class MemoryStorage implements Storage {
             playerStorage = new HashMap<>();
             playerStorages.put(player.getUniqueId(), playerStorage);
         }
-        playerStorage.put(key, value);
+        if (value == null) {
+            playerStorage.remove(key);
+        } else {
+            playerStorage.put(key, value);
+        }
     }
 
     @Override

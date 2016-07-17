@@ -62,7 +62,9 @@ public class LuaValueConverter {
     }
 
     public static String convert(LuaValue value) {
-        if (value.isboolean()) {
+        if (value.isnil()) {
+            return null;
+        } else if (value.isboolean()) {
             return value.checkboolean() ? "true" : "false";
         } else if (value.isnumber()) {
             return Double.toString(value.checknumber().checkdouble());

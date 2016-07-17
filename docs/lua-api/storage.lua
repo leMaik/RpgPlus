@@ -9,7 +9,7 @@
 function get(key, defaultValue) end
 
 --- Set the value of the given key. If the value is a table, subkeys will be set based on the keys of the table,
--- recursively.
+-- recursively. Set value to `nil` to remove the key. This will also remove subkeys.
 -- @param key key
 -- @param value value
 --
