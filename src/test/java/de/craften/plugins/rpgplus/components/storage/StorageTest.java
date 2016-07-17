@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +27,14 @@ public abstract class StorageTest {
         storage.set("foo", "bar");
         assertEquals("bar", storage.get("foo", ""));
         assertEquals("default", storage.get("other", "default"));
+
+        Map<String, String> test = storage.getAll("notexisting");
+        assertTrue(test.isEmpty());
+
+        storage.set("deep.nested.test", "works");
+        Map<String, String> deep = storage.getAll("deep");
+        assertEquals(1, deep.size());
+        assertEquals("works", deep.get("nested.test"));
     }
 
     @Test
@@ -41,7 +50,13 @@ public abstract class StorageTest {
         assertEquals("bar", storage.get(mockPlayer, "foo", ""));
         assertEquals("default", storage.get(mockPlayer, "other", "default"));
 
-        assertEquals("default", storage.get(mockPlayer2, "foo", "default"));
+        Map<String, String> test = storage.getAll(mockPlayer, "notexisting");
+        assertTrue(test.isEmpty());
+
+        storage.set(mockPlayer, "deep.nested.test", "works");
+        Map<String, String> deep = storage.getAll(mockPlayer, "deep");
+        assertEquals(1, deep.size());
+        assertEquals("works", deep.get("nested.test"));
     }
 
     @Test

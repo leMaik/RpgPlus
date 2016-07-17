@@ -113,7 +113,7 @@ public class YamlStorage implements Storage {
     public Map<String, String> getAll(OfflinePlayer player, String key) throws StorageException {
         try {
             ConfigurationSection playerStorage = playerStorages.get(player.getUniqueId());
-            return ConfigurationSectionUtil.flatten(playerStorage);
+            return ConfigurationSectionUtil.flatten(playerStorage.getConfigurationSection(key));
         } catch (ExecutionException e) {
             throw new StorageException(e);
         }

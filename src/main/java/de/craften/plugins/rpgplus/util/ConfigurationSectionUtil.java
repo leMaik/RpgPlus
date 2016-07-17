@@ -22,6 +22,9 @@ public class ConfigurationSectionUtil {
     }
 
     private static void flattenInto(ConfigurationSection section, Map<String, String> map, String parentKey) {
+        if (section == null) {
+            return;
+        }
         for (String key : section.getKeys(false)) {
             if (section.isConfigurationSection(key)) {
                 flattenInto(section.getConfigurationSection(key), map, parentKey == null ? key : (parentKey + "." + key));
