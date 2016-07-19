@@ -89,16 +89,40 @@
 	<td class="summary">Second name of the entity.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Entity.nameVisible">Entity.nameVisible</a></td>
-	<td class="summary">Specifies whether the name of the entity is displayed above it.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#Entity.invulnerable">Entity.invulnerable</a></td>
 	<td class="summary">Specifies whether the entity is invulnerable.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Entity.nameVisible">Entity.nameVisible</a></td>
+	<td class="summary">Specifies whether the name of the entity is displayed above it.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Entity.profession">Entity.profession</a></td>
 	<td class="summary">Only for villagers: The profession of this villager.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.style">Entity.style</a></td>
+	<td class="summary">Only for horses: The <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Style.html">style</a> of this horse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.variant">Entity.variant</a></td>
+	<td class="summary">Only for horses: The <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Variant.html">variant</a> of this horse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.color">Entity.color</a></td>
+	<td class="summary">Only for horses: The <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Color.html">color</a> of this horse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.jumpStrength">Entity.jumpStrength</a></td>
+	<td class="summary">Only for horses: The jump strength of this horse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.domestication">Entity.domestication</a></td>
+	<td class="summary">Only for horses: The domestication of this horse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Entity.maxDomestication">Entity.maxDomestication</a></td>
+	<td class="summary">Only for horses: The maximum domestication of this horse.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Entity.location">Entity.location</a></td>
@@ -173,7 +197,7 @@
     <strong>Entity.health</strong>
     </dt>
     <dd>
-    Health of the entity.  This field is writable.
+    Health of the entity.
 
 
 
@@ -187,7 +211,7 @@
     <strong>Entity.maxHealth</strong>
     </dt>
     <dd>
-    Maximum health of the entity.  This field is writable.
+    Maximum health of the entity.
 
 
 
@@ -201,7 +225,7 @@
     <strong>Entity.name</strong>
     </dt>
     <dd>
-    Name of the entity.  This field is writable.
+    Name of the entity.
 
 
 
@@ -215,21 +239,7 @@
     <strong>Entity.secondName</strong>
     </dt>
     <dd>
-    Second name of the entity.  This field is writable.
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "Entity.nameVisible"></a>
-    <strong>Entity.nameVisible</strong>
-    </dt>
-    <dd>
-    Specifies whether the name of the entity is displayed above it.  This field is writable.
+    Second name of the entity.
 
 
 
@@ -243,7 +253,21 @@
     <strong>Entity.invulnerable</strong>
     </dt>
     <dd>
-    Specifies whether the entity is invulnerable.  This field is writable.
+    Specifies whether the entity is invulnerable.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.nameVisible"></a>
+    <strong>Entity.nameVisible</strong>
+    </dt>
+    <dd>
+    Specifies whether the name of the entity is displayed above it.
 
 
 
@@ -257,7 +281,91 @@
     <strong>Entity.profession</strong>
     </dt>
     <dd>
-    Only for villagers: The profession of this villager.  This field is writable.
+    Only for villagers: The profession of this villager.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.style"></a>
+    <strong>Entity.style</strong>
+    </dt>
+    <dd>
+    Only for horses: The <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Style.html">style</a> of this horse.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.variant"></a>
+    <strong>Entity.variant</strong>
+    </dt>
+    <dd>
+    Only for horses: The <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Variant.html">variant</a> of this horse.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.color"></a>
+    <strong>Entity.color</strong>
+    </dt>
+    <dd>
+    Only for horses: The <a href="https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Color.html">color</a> of this horse.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.jumpStrength"></a>
+    <strong>Entity.jumpStrength</strong>
+    </dt>
+    <dd>
+    Only for horses: The jump strength of this horse.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.domestication"></a>
+    <strong>Entity.domestication</strong>
+    </dt>
+    <dd>
+    Only for horses: The domestication of this horse.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Entity.maxDomestication"></a>
+    <strong>Entity.maxDomestication</strong>
+    </dt>
+    <dd>
+    Only for horses: The maximum domestication of this horse.
 
 
 
@@ -271,7 +379,7 @@
     <strong>Entity.location</strong>
     </dt>
     <dd>
-    Location of the entity.  This field is only readable, use <a href="../classes/Entity.html#Entity:teleportTo">teleportTo</a> to teleport the entity.
+    Location of the entity.  This field is read-only, use <a href="../classes/Entity.html#Entity:teleportTo">teleportTo</a> to teleport the entity.
 
 
 
@@ -285,7 +393,7 @@
     <strong>Entity.worldName</strong>
     </dt>
     <dd>
-    Name of the world of the entity.  This field is only readable.
+    Name of the world of the entity.  This field is read-only, use <a href="../classes/Entity.html#Entity:teleportTo">teleportTo</a> to teleport the entity.
 
 
 
@@ -299,7 +407,7 @@
     <strong>Entity.target</strong>
     </dt>
     <dd>
-    Target of the entity.  This field is writable.
+    Target of the entity.
 
 
 
@@ -612,7 +720,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
-<i style="float:right;">Last updated 2016-04-14 00:06:41 </i>
+<i style="float:right;">Last updated 2016-07-19 20:51:59 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
