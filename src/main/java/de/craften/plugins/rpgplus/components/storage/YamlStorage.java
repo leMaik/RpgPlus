@@ -141,4 +141,17 @@ public class YamlStorage implements Storage {
             throw new StorageException(e);
         }
     }
+
+    @Override
+    public void reload() throws StorageException {
+        playerStorages.invalidateAll();
+
+        if (storageFile.exists()) {
+            try {
+                storage.load(storageFile);
+            } catch (IOException | InvalidConfigurationException e) {
+                throw new StorageException("Global storage corrupted", e);
+            }
+        }
+    }
 }

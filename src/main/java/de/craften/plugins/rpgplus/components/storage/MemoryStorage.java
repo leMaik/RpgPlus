@@ -94,4 +94,13 @@ public class MemoryStorage implements Storage {
         Map<String, String> playerStorage = playerStorages.get(player.getUniqueId());
         return playerStorage != null && playerStorage.containsKey(key);
     }
+
+    /**
+     * Clears the memory storage.
+     */
+    @Override
+    public void reload() {
+        storage.clear();
+        playerStorages.clear();
+    }
 }

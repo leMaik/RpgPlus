@@ -8,6 +8,7 @@ import de.craften.plugins.rpgplus.components.images.ImagesComponent;
 import de.craften.plugins.rpgplus.components.pathfinding.PathfindingComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageComponent;
+import de.craften.plugins.rpgplus.components.storage.StorageException;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
@@ -97,7 +98,7 @@ public class RpgPlus extends JavaPlugin {
             @Override
             public void reportScriptWarning(String warning) {
                 getLogger().warning(warning);
-                
+
                 //manually broadcast so that the message is not displayed twice in the console
                 for (Player player : getServer().getOnlinePlayers()) {
                     if (player.hasPermission("rpgplus.scripting.notifyerrors")) {
@@ -163,6 +164,11 @@ public class RpgPlus extends JavaPlugin {
         timerManager.removeAll();
         dialogs.reset();
         weakPlayerMaps.reset();
+        try {
+            storage.getStorage().reload();
+        } catch (StorageException e) {
+            getLogger().log(Level.SEVERE, "Reloading the storage failed", e);
+        }
     }
 
     private void executeMainScript() {

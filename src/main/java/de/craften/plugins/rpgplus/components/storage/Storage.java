@@ -87,4 +87,11 @@ public interface Storage {
      * @throws StorageException if checking if the value exists fails
      */
     boolean contains(OfflinePlayer player, String key) throws StorageException;
+
+    /**
+     * Clears any cached storage values and reloads the storage.
+     *
+     * @throws StorageException if reloading the storage doesn't succeed
+     */
+    void reload() throws StorageException;
 }
