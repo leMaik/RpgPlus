@@ -1,35 +1,55 @@
 --- An entity.
 -- @classmod Entity
 
---- Health of the entity. This field is writable.
+--- Health of the entity.
 health = _
 
---- Maximum health of the entity. This field is writable.
+--- Maximum health of the entity.
 maxHealth = _
 
---- Name of the entity. This field is writable.
+--- Name of the entity.
 name = _
 
---- Second name of the entity. This field is writable.
+--- Second name of the entity.
 secondName = _
 
---- Specifies whether the name of the entity is displayed above it. This field is writable.
-nameVisible = _
-
---- Specifies whether the entity is invulnerable. This field is writable.
+--- Specifies whether the entity is invulnerable.
 invulnerable = _
 
---- Only for villagers: The profession of this villager. This field is writable.
+--- Specifies whether the name of the entity is displayed above it.
+nameVisible = _
+
+--- Only for villagers: The profession of this villager.
 profession = _
 
---- Location of the entity. This field is only readable, use `teleportTo` to teleport the entity.
+--- Only for horses: The [style](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Style.html) of this horse.
+style = _
+
+--- Only for horses: The [variant](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Variant.html) of this horse.
+variant = _
+
+--- Only for horses: The [color](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Horse.Color.html) of this horse.
+color = _
+
+--- Only for horses: The jump strength of this horse.
+jumpStrength = _
+
+--- Only for horses: The domestication of this horse.
+domestication = _
+
+--- Only for horses: The maximum domestication of this horse.
+maxDomestication = _
+
+--- Location of the entity. This field is read-only, use `teleportTo` to teleport the entity.
 location = _
 
---- Name of the world of the entity. This field is only readable.
+--- Name of the world of the entity. This field is read-only, use `teleportTo` to teleport the entity.
 worldName = _
 
---- Target of the entity. This field is writable.
+--- Target of the entity.
 target = _
+
+--- Only for rabbits and ocelots: The [rabbit type](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Rabbit.Type.html) or [ocelot type](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Ocelot.Type.html).
 
 --- The Bukkit entity that is wrapped by this entity. Note that this may be `nil` if the entity is not spawned. This field is read-only.
 bukkitEntity = _
