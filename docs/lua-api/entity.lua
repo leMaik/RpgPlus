@@ -50,6 +50,7 @@ worldName = _
 target = _
 
 --- Only for rabbits and ocelots: The [rabbit type](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Rabbit.Type.html) or [ocelot type](https://hub.spigotmc.org/javadocs/bukkit/index.html?org/bukkit/entity/Ocelot.Type.html).
+type = _
 
 --- The Bukkit entity that is wrapped by this entity. Note that this may be `nil` if the entity is not spawned. This field is read-only.
 bukkitEntity = _
