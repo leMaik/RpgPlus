@@ -2,10 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.managedentities.ManagedEntityBase;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedHorse;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
-import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.*;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -55,6 +52,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedHorse(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.RABBIT) {
             entity = new ManagedRabbit(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.OCELOT) {
+            entity = new ManagedOcelot(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
                 @Override

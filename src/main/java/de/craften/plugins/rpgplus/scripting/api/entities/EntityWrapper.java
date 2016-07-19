@@ -2,10 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedHorse;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
-import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.components.entitymanager.*;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
@@ -256,6 +253,8 @@ public class EntityWrapper extends LuaTable {
                 case "type":
                     if (entity instanceof ManagedRabbit) {
                         return LuaValue.valueOf(((ManagedRabbit) entity).getType().toString());
+                    } else if (entity instanceof ManagedOcelot) {
+                        return LuaValue.valueOf(((ManagedOcelot) entity).getType().toString());
                     }
                     return LuaValue.NIL;
                 case "bukkitEntity":
@@ -332,6 +331,8 @@ public class EntityWrapper extends LuaTable {
                 case "type":
                     if (entity instanceof ManagedRabbit) {
                         ((ManagedRabbit) entity).setType(ScriptUtil.enumValue(value, Rabbit.Type.class));
+                    } else if (entity instanceof ManagedOcelot) {
+                        ((ManagedOcelot) entity).setType(ScriptUtil.enumValue(value, Ocelot.Type.class));
                     }
                     break;
             }
