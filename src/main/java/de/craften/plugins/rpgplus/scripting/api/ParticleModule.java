@@ -25,20 +25,24 @@ public class ParticleModule extends LuaTable implements ScriptingModule {
 
 		Effect effect = Effect
 				.valueOf(varargs.arg(2).tojstring().toUpperCase());
+		
+		LuaTable options = varargs.checktable(3);
+		
+		int id = options.get("id").optint(0);
 
-		int id = varargs.toint(3);
+		int data = options.get("data").optint(0);
+		
+		LuaTable offset = options.get("offset").checktable();
+		
+		float offsetX = (float) offset.get("x").optdouble(0);
+		float offsetY = (float) offset.get("y").optdouble(0);
+		float offsetZ = (float) offset.get("z").optdouble(0);
 
-		int data = varargs.toint(4);
+		float speed = (float) options.get("speed").optdouble(0);
 
-		float offsetX = (float) varargs.optdouble(5, 0);
-		float offsetY = (float) varargs.optdouble(6, 0);
-		float offsetZ = (float) varargs.optdouble(7, 0);
+		int particleCount = options.get("count").optint(1);
 
-		float speed = (float) varargs.optdouble(8, 0);
-
-		int particleCount = varargs.optint(9, 1);
-
-		int radius = varargs.optint(10, 100);
+		int radius = options.get("radius").optint(1);
 
 		loc.getWorld()
 				.spigot()
