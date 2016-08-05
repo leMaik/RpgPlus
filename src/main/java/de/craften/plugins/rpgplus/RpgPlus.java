@@ -23,6 +23,7 @@ import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventM
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.api.title.TitlesModule;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -143,7 +144,8 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
         scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
         scriptingManager.registerModule("rpgplus.entities", new EntityModule(entityManager, entityEventManager));
-
+        scriptingManager.registerModule("rpgplus.particle", new ParticleModule(this));
+        
         executeMainScript();
     }
 
