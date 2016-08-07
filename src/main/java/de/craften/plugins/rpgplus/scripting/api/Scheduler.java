@@ -85,10 +85,10 @@ public class Scheduler extends LuaTable implements ScriptingModule {
         };
     }
 
-    @LuaFunction("repeat")
-    public LuaValue repeat(final Varargs varargs) {
+    @LuaFunction("repeating")
+    public LuaValue repeating(final Varargs varargs) {
         if (varargs.narg() == 2) {
-            int task = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            final int task = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                 @Override
                 public void run() {
                     RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(varargs.checkfunction(2));
@@ -103,6 +103,31 @@ public class Scheduler extends LuaTable implements ScriptingModule {
                     RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(varargs.checkfunction(3));
                 }
             }, varargs.checklong(1), varargs.checklong(2));
+            repeatingTasks.add(task);
+            return LuaValue.valueOf(task);
+        } else {
+            throw new LuaError("Invalid number of arguments, expected 2 or 3.");
+        }
+    }
+
+    @LuaFunction("repeatingAsync")
+    public LuaValue repeatAsync(final Varargs varargs) {
+        if (varargs.narg() == 2) {
+            int task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(varargs.checkfunction(2));
+                }
+            }, 0, varargs.checklong(1)).getTaskId();
+            repeatingTasks.add(task);
+            return LuaValue.valueOf(task);
+        } else if (varargs.narg() == 3) {
+            int task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(varargs.checkfunction(3));
+                }
+            }, varargs.checklong(1), varargs.checklong(2)).getTaskId();
             repeatingTasks.add(task);
             return LuaValue.valueOf(task);
         } else {

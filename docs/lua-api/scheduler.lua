@@ -27,13 +27,21 @@ function delay(delay, fn) end
 --
 function delayed(delay, fn) end
 
---- Starts to periodically call the given function after the given delay with the given period.
+--- Starts to periodically call the given function in the Bukkit main thread after the given delay with the given period.
 -- @param[opt=0] delay delay before first execution in ticks
 -- @param period period in ticks
 -- @param fn function to call periodically
 -- @return a task ID that can be used by @{cancel} to cancel the calls
 --
 function repeating(delay, period, fn) end
+
+--- Starts to periodically call the given function asynchronously after the given delay with the given period.
+-- @param[opt=0] delay delay before first execution in ticks
+-- @param period period in ticks
+-- @param fn function to call periodically
+-- @return a task ID that can be used by @{cancel} to cancel the calls
+--
+function repeatingAsync(delay, period, fn) end
 
 --- Cancels the task with the given ID.
 -- @param taskId task ID
