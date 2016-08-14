@@ -82,7 +82,7 @@ function tell(player, message, ...) end
 --
 function ask(player, question, callback) end
 
---- Ask a player something. The player needs to send the answer using the chat.
+--- Ask a player a multiple choice question. The player can answer by either clicking on a choice or by writing the index of the choice in the chat.
 -- @param player player to ask
 -- @param question question, either a string or a list of alternative string to randomly choose from
 -- @param choices choices that the user can select, each choice may be a string or a list of alternative strings to randomly choose from

@@ -63,7 +63,7 @@ public class DialogComponent extends PluginComponentBase implements Listener {
     }
 
     /**
-     * Ask a player a choice question. The player can answer by either clicking on a choice or by answering the index of the choice.
+     * Ask a player a choice question. The player can answer by either clicking on a choice or by writing the index of the choice into the chat.
      *
      * @param name     name of the character that asks
      * @param player   player to ask
