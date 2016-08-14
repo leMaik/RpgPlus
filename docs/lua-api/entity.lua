@@ -77,10 +77,19 @@ function tell(player, message, ...) end
 --- Ask a player something. The player needs to send the answer using the chat.
 -- @param player player to ask
 -- @param question question, either a string or a list of alternative string to randomly choose from
--- @param callback callback that gets invoked with the response and a function to respond easily, `respond(message)`.
+-- @param callback callback that gets invoked with the response and a function to respond easily, `respond(message)`
 -- If the callback returns `false`, the question will be posed again
 --
 function ask(player, question, callback) end
+
+--- Ask a player something. The player needs to send the answer using the chat.
+-- @param player player to ask
+-- @param question question, either a string or a list of alternative string to randomly choose from
+-- @param choices choices that the user can select, each choice may be a string or a list of alternative strings to randomly choose from
+-- @param callback callback that gets invoked with the response, the one-based response index and a function to respond easily, `respond(message)`
+-- If the callback returns `false`, the question will be posed again
+--
+function askChoices(player, question, choices, callback) end
 
 --- Despawn this entity.
 function despawn() end

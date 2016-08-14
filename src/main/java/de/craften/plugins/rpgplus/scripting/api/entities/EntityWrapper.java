@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
+import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.*;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
 import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
@@ -107,7 +108,7 @@ public class EntityWrapper extends LuaTable {
                     public void run() {
                         RpgPlus.getPlugin(RpgPlus.class).getDialogs().ask(entity.getName(), player, messageAlternatives(varargs.arg(3)), new AnswerHandler() {
                             @Override
-                            public void handleAnswer(final Player player, String answer) {
+                            public boolean handleAnswer(final Player player, String answer) {
                                 Varargs handled = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(
                                         callback, LuaValue.valueOf(answer), new OneArgFunction() {
                                             @Override
@@ -119,6 +120,44 @@ public class EntityWrapper extends LuaTable {
                                 if (!handled.optboolean(1, true)) {
                                     ask.get().run();
                                 }
+                                return true;
+                            }
+                        });
+                    }
+                });
+                ask.get().run();
+                return LuaValue.NIL;
+            }
+        });
+
+        set("askChoices", new VarArgFunction() {
+            @Override
+            public Varargs invoke(final Varargs varargs) {
+                final Player player = ScriptUtil.getPlayer(varargs.arg(2));
+                final LuaFunction callback = varargs.checkfunction(5);
+                final AtomicReference<Runnable> ask = new AtomicReference<Runnable>();
+                ask.set(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] choices = new String[varargs.checktable(4).length()];
+                        for (int i = 1; i <= varargs.checktable(4).length(); i++) {
+                            choices[i - 1] = messageAlternatives(varargs.checktable(4).get(i));
+                        }
+                        RpgPlus.getPlugin(RpgPlus.class).getDialogs().askChoices(entity.getName(), player, messageAlternatives(varargs.arg(3)), choices, new ChoiceAnswerHandler() {
+                            @Override
+                            public boolean handleAnswer(final Player player, int i, String answer) {
+                                Varargs handled = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(
+                                        callback, LuaValue.valueOf(answer), LuaValue.valueOf(i + 1), new OneArgFunction() {
+                                            @Override
+                                            public LuaValue call(LuaValue message) {
+                                                RpgPlus.getPlugin(RpgPlus.class).getDialogs().tell(entity.getName(), player, messageAlternatives(message));
+                                                return LuaValue.NIL;
+                                            }
+                                        });
+                                if (!handled.optboolean(1, true)) {
+                                    ask.get().run();
+                                }
+                                return true;
                             }
                         });
                     }
