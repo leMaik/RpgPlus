@@ -43,12 +43,12 @@
   <li><a href="../modules/rpgplus.image.html">rpgplus.image</a></li>
   <li><a href="../modules/rpgplus.inventory.html">rpgplus.inventory</a></li>
   <li><a href="../modules/rpgplus.types.html">rpgplus.types</a></li>
-  <li><a href="../modules/rpgplus.particle.html">rpgplus.particle</a></li>
+  <li><strong>rpgplus.particle</strong></li>
   <li><a href="../modules/rpgplus.html">rpgplus</a></li>
   <li><a href="../modules/rpgplus.scheduler.html">rpgplus.scheduler</a></li>
   <li><a href="../modules/rpgplus.sound.html">rpgplus.sound</a></li>
   <li><a href="../modules/rpgplus.storage.html">rpgplus.storage</a></li>
-  <li><strong>rpgplus.timer</strong></li>
+  <li><a href="../modules/rpgplus.timer.html">rpgplus.timer</a></li>
   <li><a href="../modules/rpgplus.titles.html">rpgplus.titles</a></li>
   <li><a href="../modules/rpgplus.trading.html">rpgplus.trading</a></li>
 </ul>
@@ -63,8 +63,8 @@
 
 <div id="content">
 
-<h1>Module <code>rpgplus.timer</code></h1>
-<p>Provides timer functions.</p>
+<h1>Module <code>rpgplus.particle</code></h1>
+<p>Provides functions to spawn particles.</p>
 <p>
 
 </p>
@@ -73,12 +73,8 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#at">at (world, time, fn)</a></td>
-	<td class="summary">Registers a callback that will be called whenever the time of the given world equals the given time.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#off">off (id)</a></td>
-	<td class="summary">Unregisters a callback that was previously registered with <a href="../modules/rpgplus.timer.html#at">at</a>.</td>
+	<td class="name" nowrap><a href="#spawn">spawn (location, effect, options)</a></td>
+	<td class="summary">Spawns particles at the given location</td>
 	</tr>
 </table>
 
@@ -90,61 +86,23 @@
 
     <dl class="function">
     <dt>
-    <a name = "at"></a>
-    <strong>at (world, time, fn)</strong>
+    <a name = "spawn"></a>
+    <strong>spawn (location, effect, options)</strong>
     </dt>
     <dd>
-    Registers a callback that will be called whenever the time of the given world equals the given time.  If the server skips
- this exact time (due to lag or manual time change), the callback is still called.
+    Spawns particles at the given location
 
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">world</span>
-         world to watch for the time
+        <li><span class="parameter">location</span>
+         location
         </li>
-        <li><span class="parameter">time</span>
-
-<p> when to call the callback, can be a time string (hh:mm), a time in ticks (0..23,999) or one of the following shorthands:</p>
-
-<ul>
-    <li><code>&quot;morning&quot;</code> - 6:00, 0 ticks</li>
-    <li><code>&quot;day&quot;</code> - 7:00, 1,000 ticks (same as <code>/time set day</code>)</li>
-    <li><code>&quot;noon&quot;</code> - 12:00, 6,000 ticks</li>
-    <li><code>&quot;evening&quot;</code> - 17:37, 11,615 ticks</li>
-    <li><code>&quot;night&quot;</code> - 19:00, 13,000 ticks (same as <code>/time set night</code>)</li>
-    <li><code>&quot;midnight&quot;</code> - 0:00, 18,000 ticks</li>
-</ul>
-
-
+        <li><span class="parameter">effect</span>
+         the <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html">effect</a> as string
         </li>
-        <li><span class="parameter">fn</span>
-         function to call whenever the time in the given world equals the given time
-        </li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-        ID of this callback, can be used with <a href="../modules/rpgplus.timer.html#off">off</a> to unregister this callback
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "off"></a>
-    <strong>off (id)</strong>
-    </dt>
-    <dd>
-    Unregisters a callback that was previously registered with <a href="../modules/rpgplus.timer.html#at">at</a>.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">id</span>
-         ID of a callback
+        <li><span class="parameter">options</span>
+         options table with the fields count, speed, etc.
         </li>
     </ul>
 
