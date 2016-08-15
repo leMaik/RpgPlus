@@ -25,7 +25,7 @@ public class ItemMatcher {
         return typeMatches(itemStack)
                 && dataMatches(itemStack)
                 && (ignoreAmount || amountMatches(itemStack))
-                && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable
+                && !unbreakable || (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable)
                 && nameMatches(itemStack)
                 && loreMatches(itemStack)
                 && skullTextureMatches(itemStack);
@@ -107,7 +107,7 @@ public class ItemMatcher {
     }
 
     private boolean nameMatches(ItemStack itemStack) {
-        return name == null || itemStack.getItemMeta().getDisplayName().equals(name);
+        return name == null || (itemStack.hasItemMeta() && itemStack.getItemMeta().getDisplayName().equals(name));
     }
 
     private boolean loreMatches(ItemStack itemStack) {
