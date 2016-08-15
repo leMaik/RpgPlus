@@ -14,9 +14,10 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Utility methods for implementing the Lua API.
@@ -179,17 +180,29 @@ public class ScriptUtil {
         }
         if (!itemstack.get("lore").isnil()) {
             LuaTable luaLore = itemstack.get("lore").checktable();
-            List<String> lore = new ArrayList<>(luaLore.length());
-            for (int i = 1; i <= luaLore.length(); i++) {
-                lore.add(ChatColor.translateAlternateColorCodes('&', luaLore.get(i).checkjstring()));
-            }
-            builder.lore(lore);
+            builder.lore(IntStream.range(1, luaLore.length() + 1)
+                    .mapToObj((i) -> ChatColor.translateAlternateColorCodes('&', luaLore.get(i).checkjstring()))
+                    .collect(Collectors.toList()));
         }
         if (!itemstack.get("texture").isnil()) {
             builder.skullTexture(itemstack.get("texture").checkjstring());
         }
         if (itemstack.get("unbreakable").optboolean(false)) {
             builder.unbreakable(true);
+        }
+        if (itemstack.get("bookData").istable()) {
+            LuaTable luaBook = itemstack.get("bookData").checktable();
+            if (luaBook.get("title").isstring()) {
+                builder.bookTitle(luaBook.get("title").checkjstring());
+            }
+            if (luaBook.get("author").isstring()) {
+                builder.bookTitle(luaBook.get("author").checkjstring());
+            }
+            if (luaBook.get("pages").istable()) {
+                builder.bookPages(IntStream.range(1, luaBook.get("pages").length() + 1)
+                        .mapToObj((i) -> luaBook.get("pages").get(i).checkjstring())
+                        .collect(Collectors.toList()));
+            }
         }
         return builder.build();
     }

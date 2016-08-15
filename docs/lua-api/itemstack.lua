@@ -10,4 +10,5 @@
 -- @field[opt] lore list of lines for the lore of this item
 -- @field[opt=false] unbreakable whether the item should be unbreakable
 -- @field[opt] texture base64-encoded texture for skull items (only works with type=skull_item, data=3)
+-- @field[opt] bookData table with the author, title und pages of a book item (only works with type=book_and_quill and type=written_book)
 itemstack = _

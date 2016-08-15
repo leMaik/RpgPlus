@@ -4,6 +4,7 @@ import de.craften.plugins.rpgplus.util.CustomSkull;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class ItemMatcher {
     private List<String> lore;
     private boolean unbreakable;
     private String skullTexture;
+    private String bookTitle;
+    private String bookAuthor;
+    private List<String> bookPages;
 
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
         return typeMatches(itemStack)
@@ -28,8 +32,8 @@ public class ItemMatcher {
                 && !unbreakable || (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable)
                 && nameMatches(itemStack)
                 && loreMatches(itemStack)
-                && skullTextureMatches(itemStack);
-        //TODO check for more properties, i.e. book content
+                && skullTextureMatches(itemStack)
+                && bookPropertiesMatch(itemStack);
     }
 
     public boolean matches(Inventory inventory) {
@@ -65,6 +69,19 @@ public class ItemMatcher {
         }
         if (skullTexture != null) {
             CustomSkull.setTexture(meta, skullTexture);
+        }
+
+        if (meta instanceof BookMeta) {
+            BookMeta book = (BookMeta) meta;
+            if (bookTitle != null) {
+                book.setTitle(bookTitle);
+            }
+            if (bookAuthor != null) {
+                book.setAuthor(bookAuthor);
+            }
+            if (bookPages != null) {
+                book.setPages(bookPages);
+            }
         }
 
         itemStack.setItemMeta(meta);
@@ -130,6 +147,25 @@ public class ItemMatcher {
 
     private boolean skullTextureMatches(ItemStack itemStack) {
         return skullTexture == null || skullTexture.equalsIgnoreCase(CustomSkull.getTexture(itemStack));
+    }
+
+    private boolean bookPropertiesMatch(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta instanceof BookMeta) {
+            BookMeta book = (BookMeta) meta;
+            if (bookTitle != null && !bookTitle.equals(book.getTitle())) {
+                return false;
+            }
+            if (bookAuthor != null && !bookAuthor.equals(book.getAuthor())) {
+                return false;
+            }
+            if (bookPages != null && !bookPages.equals(book.getPages())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static Builder builder() {
@@ -203,6 +239,21 @@ public class ItemMatcher {
 
         public Builder skullTexture(String skullTexture) {
             matcher.skullTexture = skullTexture;
+            return this;
+        }
+
+        public Builder bookTitle(String title) {
+            matcher.bookTitle = title;
+            return this;
+        }
+
+        public Builder bookPages(List<String> pages) {
+            matcher.bookPages = pages;
+            return this;
+        }
+
+        public Builder bookAuthor(String author) {
+            matcher.bookAuthor = author;
             return this;
         }
 
