@@ -68,6 +68,7 @@ public class DialogComponent extends PluginComponentBase implements Listener {
      * @param name     name of the character that asks
      * @param player   player to ask
      * @param question question to ask
+     * @param choices  possible answers
      * @param callback callback to call when the player answered the question
      */
     public void askChoices(String name, Player player, String question, final String[] choices, final ChoiceAnswerHandler callback) {

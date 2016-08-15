@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Luaify is a converter that takes {@link org.luaj.vm2.LuaTable}s with methods annotated with {@link @LuaMethod} and
+ * Luaify is a converter that takes {@link org.luaj.vm2.LuaTable}s with methods annotated with {@link LuaFunction} and
  * wraps them so that they can be used in lua.
  */
 public class Luaify {

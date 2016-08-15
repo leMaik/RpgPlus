@@ -302,9 +302,6 @@ public class ReflectionUtils {
         }
     }
 
-    /**
-     * Return: GameProfile
-     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static Object searchUUID(String playerName) {
         Class serverClass = getClassByName(getNMSPackageName() + ".MinecraftServer");

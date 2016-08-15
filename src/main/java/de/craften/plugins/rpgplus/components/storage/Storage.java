@@ -20,7 +20,7 @@ public interface Storage {
 
     /**
      * Get all subkeys and values for the given key.
-     * I.e. returns <code>bar => value</code> if <code>foo.bar => value</code> and the given key if <code>foo</code>.
+     * I.e. returns <code>bar =&gt; value</code> if <code>foo.bar =&gt; value</code> and the given key if <code>foo</code>.
      *
      * @param key key to get all subkeys for
      * @return all subkeys and values for the given key
@@ -59,7 +59,7 @@ public interface Storage {
 
     /**
      * Get all subkeys and values for the given key and player.
-     * I.e. returns <code>bar => value</code> if <code>foo.bar => value</code> and the given key if <code>foo</code>.
+     * I.e. returns <code>bar =&gt; value</code> if <code>foo.bar =&gt; value</code> and the given key if <code>foo</code>.
      *
      * @param player player
      * @param key    key to get all subkeys for

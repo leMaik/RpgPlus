@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 /**
  * A base for plugin components that makes many things easier.
- * <p/>
  * If the extending class implements {@link org.bukkit.event.Listener}, it is automatically registered.
  */
 public abstract class PluginComponentBase implements PluginComponent {
