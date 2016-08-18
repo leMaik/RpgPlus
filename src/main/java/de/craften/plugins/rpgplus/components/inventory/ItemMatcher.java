@@ -1,12 +1,14 @@
 package de.craften.plugins.rpgplus.components.inventory;
 
 import de.craften.plugins.rpgplus.util.CustomSkull;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +58,7 @@ public class ItemMatcher {
 
     public ItemStack getItemStack() {
         ItemStack itemStack = new ItemStack(type, amount != null ? amount : 1, data != null ? data.shortValue() : 0);
-        ItemMeta meta = itemStack.getItemMeta();
+        ItemMeta meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
 
         if (name != null) {
             meta.setDisplayName(name);
@@ -132,7 +134,7 @@ public class ItemMatcher {
             return true;
         }
 
-        List<String> actualLore = itemStack.getItemMeta().getLore();
+        List<String> actualLore = itemStack.hasItemMeta() ? itemStack.getItemMeta().getLore() : Collections.emptyList();
         if (actualLore.size() != lore.size()) {
             return false;
         }
