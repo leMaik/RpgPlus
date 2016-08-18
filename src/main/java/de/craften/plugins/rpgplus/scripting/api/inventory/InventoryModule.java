@@ -8,7 +8,9 @@ import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.luaj.vm2.*;
 
 /**
@@ -40,6 +42,24 @@ public class InventoryModule extends LuaTable implements ScriptingModule {
         LuaValue[] notFittingAmounts = new LuaValue[args.narg() - 1];
         for (int i = 2; i <= args.narg(); i++) {
             notFittingAmounts[i - 2] = giveItem(player, args.arg(i));
+        }
+
+        return LuaValue.varargsOf(notFittingAmounts);
+    }
+
+    @LuaFunction("giveOrDropItems")
+    public Varargs giveOrDropItems(Varargs args) {
+        LuaValue player = args.arg(1);
+
+        LuaValue[] notFittingAmounts = new LuaValue[args.narg() - 1];
+        for (int i = 2; i <= args.narg(); i++) {
+            int remaining = (notFittingAmounts[i - 2] = giveItem(player, args.arg(i))).checkint();
+            if (remaining > 0) {
+                ItemStack dropItems = ScriptUtil.createItemMatcher(args.arg(i)).getItemStack();
+                dropItems.setAmount(remaining);
+                Location location = ScriptUtil.getPlayer(player).getLocation();
+                location.getWorld().dropItemNaturally(location, dropItems);
+            }
         }
 
         return LuaValue.varargsOf(notFittingAmounts);

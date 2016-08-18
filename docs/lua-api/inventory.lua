@@ -15,6 +15,13 @@ function hasItems(player, ...) end
 --
 function giveItems(player, ...) end
 
+--- Gives items to a player. Items that didn't fit into the inventory are dropped at the player's location.
+-- @param player player
+-- @param ... items to give to the player (each as an @{rpgplus.types.itemstack} or a string of the form `id:data:amount`)
+-- @return amount of each specified item that didn't fit into the inventory, as multiple return values
+--
+function giveOrDropItems(player, ...) end
+
 --- Takes items from a player. The items are taken even if they are not enough.
 -- @param player player
 -- @param ... items to take from the player (each as an @{rpgplus.types.itemstack} or a string of the form `id:data:amount`)
