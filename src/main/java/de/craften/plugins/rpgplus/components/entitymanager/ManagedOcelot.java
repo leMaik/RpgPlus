@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
 
 /**
@@ -10,7 +11,7 @@ public class ManagedOcelot extends RpgPlusEntity<Ocelot> {
     private Ocelot.Type type;
 
     public ManagedOcelot(Location location) {
-        super(location);
+        super(location, EntityType.OCELOT);
     }
 
     public Ocelot.Type getType() {
@@ -21,6 +22,7 @@ public class ManagedOcelot extends RpgPlusEntity<Ocelot> {
         this.type = type;
     }
 
+    /*
     @Override
     protected Ocelot spawnEntity(Location location) {
         Ocelot ocelot = location.getWorld().spawn(location, Ocelot.class);
@@ -31,4 +33,7 @@ public class ManagedOcelot extends RpgPlusEntity<Ocelot> {
         }
         return ocelot;
     }
+    */
+
+    // TODO add OcelotTrait
 }

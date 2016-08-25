@@ -1,8 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
-import de.craften.plugins.managedentities.EntityManager;
-import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.rpgplus.components.entitymanager.*;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.HorseTrait;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -10,7 +9,10 @@ import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Villager;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -21,11 +23,9 @@ import java.util.List;
  * A lua module for entities.
  */
 public class EntityModule extends LuaTable implements ScriptingModule {
-    private final EntityManager entityManager;
     private final EntityEventManager entityEventManager;
 
-    public EntityModule(EntityManager entityManager, EntityEventManager entityEventManager) {
-        this.entityManager = entityManager;
+    public EntityModule(EntityEventManager entityEventManager) {
         this.entityEventManager = entityEventManager;
         Luaify.convertInPlace(this);
     }
@@ -55,12 +55,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         } else if (type == EntityType.OCELOT) {
             entity = new ManagedOcelot(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
-            entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
-                @Override
-                protected Entity spawnEntity(Location location) {
-                    return location.getWorld().spawn(location, type.getEntityClass());
-                }
-            };
+            entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable()), type);
         }
 
         entity.setName(ChatColor.translateAlternateColorCodes('&', options.get("name").optjstring("")));
@@ -68,6 +63,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
         entity.setNameVisible(options.get("nameVisible").optboolean(true));
 
+        // TODO add corresponding traits to the entities
+        /*
         switch (options.get("movementType").optjstring("local")) {
             case "normal":
                 entity.setFrozen(false);
@@ -77,6 +74,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 entity.setFrozen(true);
                 break;
         }
+        */
 
         if (entity instanceof ManagedVillager) {
             ManagedVillager villager = (ManagedVillager) entity;
@@ -84,7 +82,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 villager.setProfession(ScriptUtil.enumValue(options.get("profession"), Villager.Profession.class));
             }
         } else if (entity instanceof ManagedHorse) {
-            ManagedHorse horse = (ManagedHorse) entity;
+            HorseTrait horse = entity.getNpc().getTrait(HorseTrait.class);
             if (!options.get("style").isnil()) {
                 horse.setStyle(ScriptUtil.enumValue(options.get("style"), Horse.Style.class));
             }
@@ -110,9 +108,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             }
         }
 
-        entityManager.addEntity(entity);
         entity.spawn();
-        return new EntityWrapper(entity, entityEventManager);
+        return EntityWrapper.create(entity, entityEventManager);
     }
 
     @LuaFunction("getNearby")
@@ -120,11 +117,14 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         Location location = ScriptUtil.getLocation(locationParam);
         List<EntityWrapper> entities = new ArrayList<>();
 
+        /*
         for (ManagedEntityBase entity : entityManager.getEntitiesNear(location, radius.checkdouble())) {
             if (entity instanceof RpgPlusEntity) {
-                entities.add(new EntityWrapper((RpgPlusEntity) entity, entityEventManager));
+                entities.add(EntityWrapper.create((RpgPlusEntity) entity, entityEventManager));
             }
         }
+        */
+        // TODO get nearby entities
 
         return ScriptUtil.tableOf(entities);
     }

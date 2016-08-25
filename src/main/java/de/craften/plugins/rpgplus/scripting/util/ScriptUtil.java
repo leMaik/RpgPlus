@@ -1,7 +1,5 @@
 package de.craften.plugins.rpgplus.scripting.util;
 
-import de.craften.plugins.managedentities.ManagedEntity;
-import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityWrapper;
@@ -104,10 +102,13 @@ public class ScriptUtil {
      */
     public static RpgPlusEntity getManagedEntity(LuaValue entity, boolean strict) {
         if (entity.isuserdata(Entity.class)) {
+            // TODO get managed entity
+            /*
             ManagedEntity managedEntity = RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity((Entity) CoerceLuaToJava.coerce(entity, Entity.class));
             if (managedEntity instanceof RpgPlusEntity) {
                 return (RpgPlusEntity) managedEntity;
             }
+            */
         } else if (entity.isuserdata(RpgPlusEntity.class)) {
             return (RpgPlusEntity) CoerceLuaToJava.coerce(entity, RpgPlusEntity.class);
         } else if (entity instanceof EntityWrapper) {

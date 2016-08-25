@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
 /**
@@ -10,7 +11,7 @@ public class ManagedVillager extends RpgPlusEntity<Villager> {
     private Villager.Profession profession;
 
     public ManagedVillager(Location location) {
-        super(location);
+        super(location, EntityType.VILLAGER);
     }
 
     public Villager.Profession getProfession() {
@@ -24,6 +25,7 @@ public class ManagedVillager extends RpgPlusEntity<Villager> {
         }
     }
 
+    /*
     @Override
     protected Villager spawnEntity(Location location) {
         Villager villager = location.getWorld().spawn(location, Villager.class);
@@ -34,4 +36,7 @@ public class ManagedVillager extends RpgPlusEntity<Villager> {
         }
         return villager;
     }
+    */
+
+    // TODO add villager trait
 }

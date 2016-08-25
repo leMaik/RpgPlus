@@ -1,52 +1,57 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
-import de.craften.plugins.managedentities.ManagedEntityBase;
-import de.craften.plugins.managedentities.behavior.Behavior;
-import de.craften.plugins.managedentities.behavior.SecondNameBehavior;
-import de.craften.plugins.managedentities.behavior.VisibleNameBehavior;
-import de.craften.plugins.managedentities.util.nms.NmsEntityUtil;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * A basic managed entity without any special logic.
  */
-public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<T> {
+public class RpgPlusEntity<T extends Entity> {
+    private final NPC npc;
+    private Location location;
     private boolean isTakingDamage = true;
-    private boolean nameVisible = true;
 
-    public RpgPlusEntity(Location location) {
-        super(location);
-
-        addBehavior(new VisibleNameBehavior());
-        addBehavior(new SecondNameBehavior());
+    public RpgPlusEntity(Location location, EntityType type) {
+        this.location = location;
+        npc = CitizensAPI.getNPCRegistry().createNPC(type, "");
+        npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, true);
     }
 
-    @Override
-    public void spawn() {
-        super.spawn();
+    public T spawn() {
+        npc.spawn(location);
 
-        if (getEntity() instanceof LivingEntity && !isTakingDamage) {
-            NmsEntityUtil.setInvulnerable((LivingEntity) getEntity(), true);
+        if (npc.getEntity() instanceof LivingEntity && !isTakingDamage) {
+            npc.setProtected(true);
         }
+
+        return (T) npc.getEntity();
+    }
+
+    public NPC getNpc() {
+        return npc;
     }
 
     public String getName() {
-        return getProperty(VisibleNameBehavior.NAME_PROPERTY_KEY);
+        return npc.getName();
     }
 
     public void setName(String name) {
-        setProperty(VisibleNameBehavior.NAME_PROPERTY_KEY, name);
+        npc.setName(name);
     }
 
     public String getSecondName() {
-        return getProperty(SecondNameBehavior.NAME_PROPERTY_KEY);
+        // TODO
+        return "";
     }
 
     public void setSecondName(String secondName) {
-        setProperty(SecondNameBehavior.NAME_PROPERTY_KEY, secondName);
+        // TODO
     }
 
     public boolean isTakingDamage() {
@@ -54,28 +59,16 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
     }
 
     public void setTakingDamage(boolean isTakingDamage) {
+        npc.setProtected(!isTakingDamage);
         this.isTakingDamage = isTakingDamage;
-
-        if (getEntity() instanceof LivingEntity) {
-            NmsEntityUtil.setInvulnerable((LivingEntity) getEntity(), !isTakingDamage);
-        }
     }
 
     public boolean isNameVisible() {
-        return nameVisible;
+        return npc.data().get(NPC.NAMEPLATE_VISIBLE_METADATA);
     }
 
     public void setNameVisible(boolean nameVisible) {
-        if (nameVisible != this.nameVisible) {
-            this.nameVisible = nameVisible;
-            if (nameVisible) {
-                addBehavior(new VisibleNameBehavior());
-            } else {
-                for (Behavior behavior : getBehaviors(VisibleNameBehavior.class)) {
-                    removeBehavior(behavior);
-                }
-            }
-        }
+        npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, nameVisible);
     }
 
     /**
@@ -84,9 +77,11 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
      * @return the target of this entity or null if this entity has no target
      */
     public LivingEntity getTarget() {
-        Entity entity = getEntity();
-        if (entity instanceof Creature) {
-            return ((Creature) entity).getTarget();
+        if (npc.isSpawned()) {
+            Entity entity = npc.getEntity();
+            if (entity instanceof Creature) {
+                return ((Creature) entity).getTarget();
+            }
         }
         return null;
     }
@@ -97,25 +92,24 @@ public abstract class RpgPlusEntity<T extends Entity> extends ManagedEntityBase<
      * @param target target of this entity
      */
     public void setTarget(LivingEntity target) {
-        Entity entity = getEntity();
-        if (entity instanceof Creature) {
-            ((Creature) entity).setTarget(target);
+        if (npc.isSpawned()) {
+            Entity entity = npc.getEntity();
+            if (entity instanceof Creature) {
+                ((Creature) entity).setTarget(target);
+            }
         }
         //TODO remember the target if the entity is not spawned yet
     }
 
-    @Override
     public void teleport(Location location) {
-        Location old = getLocation();
-        if (old != null) {
-            Location target = location.clone().setDirection(location.toVector().subtract(old.toVector()));
-            super.teleport(target);
+        npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        this.location = location;
+    }
 
-            if (getEntity() instanceof LivingEntity) {
-                NmsEntityUtil.setHeadRotation((LivingEntity) getEntity(), target.getYaw(), target.getPitch());
-            }
-        } else {
-            super.teleport(location);
+    public T getEntity() {
+        if (npc.isSpawned()) {
+            return (T) npc.getEntity();
         }
+        return null;
     }
 }

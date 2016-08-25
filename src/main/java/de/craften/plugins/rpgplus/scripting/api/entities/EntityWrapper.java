@@ -3,12 +3,14 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
 import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
-import de.craften.plugins.rpgplus.components.entitymanager.*;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.AStar;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingBehaviours;
-import de.craften.plugins.rpgplus.components.pathfinding.pathing.PathingResult;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedOcelot;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
+import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
+import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import net.citizensnpcs.api.event.DespawnReason;
+import net.citizensnpcs.npc.ai.CitizensNavigator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,12 +28,12 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * A lua wrapper for a {@link RpgPlusEntity}.
  */
-public class EntityWrapper extends LuaTable {
+public class EntityWrapper<T extends Entity> extends LuaTable {
     private static final Random random = new Random();
-    private final RpgPlusEntity entity;
+    protected final RpgPlusEntity<T> entity;
     private final EntityEventManager entityEventManager;
 
-    public EntityWrapper(final RpgPlusEntity entity, EntityEventManager entityEventManager) {
+    protected EntityWrapper(final RpgPlusEntity<T> entity, EntityEventManager entityEventManager) {
         this.entity = entity;
         this.entityEventManager = entityEventManager;
 
@@ -62,24 +64,23 @@ public class EntityWrapper extends LuaTable {
                         options = varargs.arg(3).opttable(new LuaTable());
                     }
                 }
-                try {
-                    PathingResult result = RpgPlus.getPlugin(RpgPlus.class).getPathfinding().navigate(
-                            entity,
-                            new Location(entity.getEntity().getWorld(),
-                                    destination.get("x").checkdouble(),
-                                    destination.get("y").checkdouble(),
-                                    destination.get("z").checkdouble()
-                            ),
-                            options.get("speed").optint(10),
-                            PathingBehaviours.builder()
-                                    .openDoors(options.get("openDoors").optboolean(false))
-                                    .openFenceGates(options.get("openFenceGates").optboolean(false))
-                                    .build(),
-                            callback);
-                    return result == PathingResult.SUCCESS ? LuaValue.TRUE : LuaValue.FALSE;
-                } catch (AStar.InvalidPathException e) {
-                    return LuaValue.FALSE;
+
+                entity.getNpc().getNavigator()
+                        .setTarget(new Location(entity.getEntity().getWorld(),
+                                destination.get("x").checkdouble(),
+                                destination.get("y").checkdouble(),
+                                destination.get("z").checkdouble()
+                        ));
+
+                if (options.get("speed").isint()) {
+                    entity.getNpc().getNavigator().getLocalParameters().baseSpeed(options.get("speed").checkint());
                 }
+                if (options.get("openDoors").isboolean() && options.get("openDoors").checkboolean()) {
+                    // TODO implement our own door examiner to open fence gates or doors only (add support for openFenceGates)
+                    entity.getNpc().getNavigator().getLocalParameters().examiner(new CitizensNavigator.DoorExaminer());
+                }
+                // TODO call the callback after navigation (and include the success there!)
+                return LuaValue.valueOf(entity.getNpc().getNavigator().isNavigating());
             }
         });
 
@@ -88,7 +89,7 @@ public class EntityWrapper extends LuaTable {
             public LuaValue call(LuaValue entityArg, LuaValue destinationArg) {
                 LuaTable destination = destinationArg.checktable();
                 entity.teleport(new Location(
-                        Bukkit.getWorld(destination.get("world").optjstring(entity.getLocation().getWorld().getName())),
+                        Bukkit.getWorld(destination.get("world").optjstring(entity.getNpc().getStoredLocation().getWorld().getName())),
                         destination.get("x").checkdouble(),
                         destination.get("y").checkdouble(),
                         destination.get("z").checkdouble()
@@ -203,7 +204,7 @@ public class EntityWrapper extends LuaTable {
         set("despawn", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
-                entity.remove();
+                entity.getNpc().despawn(DespawnReason.REMOVAL);
                 return LuaValue.NIL;
             }
         });
@@ -219,7 +220,11 @@ public class EntityWrapper extends LuaTable {
         set("kill", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
-                entity.kill();
+                if (entity.getNpc().isSpawned() && entity.getEntity() instanceof Damageable) {
+                    ((Damageable) entity.getEntity()).damage(((Damageable) entity.getEntity()).getHealth());
+                } else {
+                    entity.getNpc().despawn(DespawnReason.REMOVAL);
+                }
                 return LuaValue.NIL;
             }
         });
@@ -253,38 +258,8 @@ public class EntityWrapper extends LuaTable {
                         return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
                     }
                     return LuaValue.NIL;
-                case "style":
-                    if (entity instanceof ManagedHorse) {
-                        return LuaValue.valueOf(((ManagedHorse) entity).getStyle().toString());
-                    }
-                    return LuaValue.NIL;
-                case "variant":
-                    if (entity instanceof ManagedHorse) {
-                        return LuaValue.valueOf(((ManagedHorse) entity).getVariant().toString());
-                    }
-                    return LuaValue.NIL;
-                case "color":
-                    if (entity instanceof ManagedHorse) {
-                        return LuaValue.valueOf(((ManagedHorse) entity).getColor().toString());
-                    }
-                    return LuaValue.NIL;
-                case "jumpStrength":
-                    if (entity instanceof ManagedHorse) {
-                        return LuaValue.valueOf(((ManagedHorse) entity).getJumpStrength());
-                    }
-                    return LuaValue.NIL;
-                case "domestication":
-                    if (entity instanceof ManagedHorse) {
-                        return LuaValue.valueOf(((ManagedHorse) entity).getDomestication());
-                    }
-                    return LuaValue.NIL;
-                case "maxDomestication":
-                    if (entity instanceof ManagedHorse) {
-                        return LuaValue.valueOf(((ManagedHorse) entity).getMaxDomestication());
-                    }
-                    return LuaValue.NIL;
                 case "location":
-                    return ScriptUtil.getLocation(entity.getLocation());
+                    return ScriptUtil.getLocation(entity.getNpc().getStoredLocation());
                 case "worldName":
                     return LuaValue.valueOf(entity.getEntity().getWorld().getName());
                 case "target":
@@ -334,36 +309,6 @@ public class EntityWrapper extends LuaTable {
                         ((ManagedVillager) entity).setProfession(ScriptUtil.enumValue(value, Villager.Profession.class));
                     }
                     break;
-                case "style":
-                    if (entity instanceof ManagedHorse) {
-                        ((ManagedHorse) entity).setStyle(ScriptUtil.enumValue(value, Horse.Style.class));
-                    }
-                    break;
-                case "variant":
-                    if (entity instanceof ManagedHorse) {
-                        ((ManagedHorse) entity).setVariant(ScriptUtil.enumValue(value, Horse.Variant.class));
-                    }
-                    break;
-                case "color":
-                    if (entity instanceof ManagedHorse) {
-                        ((ManagedHorse) entity).setColor(ScriptUtil.enumValue(value, Horse.Color.class));
-                    }
-                    break;
-                case "jumpStrength":
-                    if (entity instanceof ManagedHorse) {
-                        ((ManagedHorse) entity).setJumpStrength(value.checkdouble());
-                    }
-                    break;
-                case "domestication":
-                    if (entity instanceof ManagedHorse) {
-                        ((ManagedHorse) entity).setDomestication(value.checkint());
-                    }
-                    break;
-                case "maxDomestication":
-                    if (entity instanceof ManagedHorse) {
-                        ((ManagedHorse) entity).setMaxDomestication(value.checkint());
-                    }
-                    break;
                 case "target":
                     entity.setTarget(value == LuaValue.NIL ? null : ScriptUtil.getPlayer(value));
                     break;
@@ -394,5 +339,20 @@ public class EntityWrapper extends LuaTable {
      */
     public RpgPlusEntity getEntity() {
         return entity;
+    }
+
+    /**
+     * Gets an entity wrapper for the given entity.
+     *
+     * @param entity  entity to wrap
+     * @param manager entity event manager
+     * @return wrapper for the entity
+     */
+    public static EntityWrapper create(RpgPlusEntity entity, EntityEventManager manager) {
+        if (entity.getEntity().getType() == EntityType.HORSE) {
+            return new HorseEntityWrapper(entity, manager);
+        } else {
+            return new EntityWrapper(entity, manager);
+        }
     }
 }

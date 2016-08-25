@@ -32,8 +32,12 @@ abstract class EntityEventManagerImpl {
     }
 
     private Multimap<String, LuaFunction> getHandlers(Entity entity) {
+        return null;
+        // TODO get handlers for the given entity
+        /*
         RpgPlusEntity managedEntity = (RpgPlusEntity) RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
         return managedEntity != null ? eventHandlers.get(managedEntity) : null;
+        */
     }
 
     protected void callHandlers(String eventName, EntityEvent event) {
