@@ -5,7 +5,6 @@ import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
 import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedOcelot;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedVillager;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -253,11 +252,6 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                     return LuaValue.valueOf(!entity.isTakingDamage());
                 case "nameVisible":
                     return LuaValue.valueOf(entity.isNameVisible());
-                case "profession":
-                    if (entity instanceof ManagedVillager) {
-                        return LuaValue.valueOf(((ManagedVillager) entity).getProfession().toString());
-                    }
-                    return LuaValue.NIL;
                 case "location":
                     return ScriptUtil.getLocation(entity.getNpc().getStoredLocation());
                 case "worldName":
@@ -304,11 +298,6 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 case "nameVisible":
                     entity.setNameVisible(value.checkboolean());
                     break;
-                case "profession":
-                    if (entity instanceof ManagedVillager) {
-                        ((ManagedVillager) entity).setProfession(ScriptUtil.enumValue(value, Villager.Profession.class));
-                    }
-                    break;
                 case "target":
                     entity.setTarget(value == LuaValue.NIL ? null : ScriptUtil.getPlayer(value));
                     break;
@@ -351,6 +340,8 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
     public static EntityWrapper create(RpgPlusEntity entity, EntityEventManager manager) {
         if (entity.getEntity().getType() == EntityType.HORSE) {
             return new HorseEntityWrapper(entity, manager);
+        } else if (entity.getEntity().getType() == EntityType.VILLAGER) {
+            return new VillagerEntityWrapper(entity, manager);
         } else {
             return new EntityWrapper(entity, manager);
         }
