@@ -1,14 +1,14 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
-import de.craften.plugins.rpgplus.components.entitymanager.traits.OcelotTrait;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.RabbitTrait;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Rabbit;
 import org.luaj.vm2.LuaValue;
 
-class OcelotEntityWrapper extends EntityWrapper<Ocelot> {
-    OcelotEntityWrapper(RpgPlusEntity<Ocelot> entity, EntityEventManager entityEventManager) {
+class RabbitEntityWrapper extends EntityWrapper<Rabbit> {
+    RabbitEntityWrapper(RpgPlusEntity<Rabbit> entity, EntityEventManager entityEventManager) {
         super(entity, entityEventManager);
     }
 
@@ -17,7 +17,7 @@ class OcelotEntityWrapper extends EntityWrapper<Ocelot> {
         if (key.isstring()) {
             switch (key.checkjstring()) {
                 case "type":
-                    return LuaValue.valueOf(entity.getEntity().getCatType().toString());
+                    return LuaValue.valueOf(entity.getEntity().getRabbitType().toString());
             }
         }
         return super.rawget(key);
@@ -29,14 +29,14 @@ class OcelotEntityWrapper extends EntityWrapper<Ocelot> {
         if (key.isstring()) {
             switch (key.checkjstring()) {
                 case "type":
-                    getOcelotTrait().setCatType(ScriptUtil.enumValue(value, Ocelot.Type.class));
+                    getRabbitTrait().setRabbitType(ScriptUtil.enumValue(value, Rabbit.Type.class));
                     break;
             }
         }
         super.rawset(key, value);
     }
 
-    private OcelotTrait getOcelotTrait() {
-        return entity.getNpc().getTrait(OcelotTrait.class);
+    private RabbitTrait getRabbitTrait() {
+        return entity.getNpc().getTrait(RabbitTrait.class);
     }
 }
