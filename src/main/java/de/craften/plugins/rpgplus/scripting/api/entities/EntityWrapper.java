@@ -3,7 +3,6 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
 import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
-import de.craften.plugins.rpgplus.components.entitymanager.ManagedOcelot;
 import de.craften.plugins.rpgplus.components.entitymanager.ManagedRabbit;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
@@ -261,8 +260,6 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 case "type":
                     if (entity instanceof ManagedRabbit) {
                         return LuaValue.valueOf(((ManagedRabbit) entity).getType().toString());
-                    } else if (entity instanceof ManagedOcelot) {
-                        return LuaValue.valueOf(((ManagedOcelot) entity).getType().toString());
                     }
                     return LuaValue.NIL;
                 case "bukkitEntity":
@@ -304,8 +301,6 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 case "type":
                     if (entity instanceof ManagedRabbit) {
                         ((ManagedRabbit) entity).setType(ScriptUtil.enumValue(value, Rabbit.Type.class));
-                    } else if (entity instanceof ManagedOcelot) {
-                        ((ManagedOcelot) entity).setType(ScriptUtil.enumValue(value, Ocelot.Type.class));
                     }
                     break;
             }
@@ -342,6 +337,8 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
             return new HorseEntityWrapper(entity, manager);
         } else if (entity.getEntity().getType() == EntityType.VILLAGER) {
             return new VillagerEntityWrapper(entity, manager);
+        } else if (entity.getEntity().getType() == EntityType.OCELOT) {
+            return new OcelotEntityWrapper(entity, manager);
         } else {
             return new EntityWrapper(entity, manager);
         }
