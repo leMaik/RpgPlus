@@ -2,8 +2,8 @@ package de.craften.plugins.rpgplus.scripting.api.entities.events;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.scripting.api.entities.EntityModule;
 import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import org.bukkit.entity.Entity;
@@ -26,18 +26,15 @@ import java.util.Map;
 abstract class EntityEventManagerImpl {
     private final Map<RpgPlusEntity, Multimap<String, LuaFunction>> eventHandlers = new HashMap<>();
     private final SafeInvoker invoker;
+    private EntityModule entityModule;
 
     public EntityEventManagerImpl(SafeInvoker invoker) {
         this.invoker = invoker;
     }
 
     private Multimap<String, LuaFunction> getHandlers(Entity entity) {
-        return null;
-        // TODO get handlers for the given entity
-        /*
-        RpgPlusEntity managedEntity = (RpgPlusEntity) RpgPlus.getPlugin(RpgPlus.class).getEntityManager().getEntity(entity);
+        RpgPlusEntity managedEntity = getEntityModule().getEntity(entity);
         return managedEntity != null ? eventHandlers.get(managedEntity) : null;
-        */
     }
 
     protected void callHandlers(String eventName, EntityEvent event) {
@@ -98,6 +95,14 @@ abstract class EntityEventManagerImpl {
      */
     public void reset() {
         eventHandlers.clear();
+    }
+
+    public void setEntityModule(EntityModule entityModule) {
+        this.entityModule = entityModule;
+    }
+
+    public EntityModule getEntityModule() {
+        return entityModule;
     }
 
     /*

@@ -28,6 +28,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
 
     public EntityModule(EntityEventManager entityEventManager) {
         this.entityEventManager = entityEventManager;
+        entityEventManager.setEntityModule(this);
         Luaify.convertInPlace(this);
     }
 
@@ -42,6 +43,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity.getNpc().despawn();
             entity.getNpc().destroy();
         });
+        entities.clear();
     }
 
     @LuaFunction("spawn")
@@ -132,5 +134,14 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                         entity.getEntity().getLocation().distanceSquared(location) <= radiusSquared)
                 .map((entity) -> EntityWrapper.create(entity, entityEventManager))
                 .collect(ScriptUtil.asListTable());
+    }
+
+    public RpgPlusEntity getEntity(Entity entity) {
+        for (RpgPlusEntity rpgPlusEntity : entities) {
+            if (rpgPlusEntity.getEntity() == entity) {
+                return rpgPlusEntity;
+            }
+        }
+        return null;
     }
 }
