@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class EntityModule extends LuaTable implements ScriptingModule {
     private final EntityEventManager entityEventManager;
+    private final List<RpgPlusEntity> entities = new ArrayList<>();
 
     public EntityModule(EntityEventManager entityEventManager) {
         this.entityEventManager = entityEventManager;
@@ -37,7 +38,10 @@ public class EntityModule extends LuaTable implements ScriptingModule {
 
     @Override
     public void reset() {
-        //nothing to reset
+        entities.forEach((entity) -> {
+            entity.getNpc().despawn();
+            entity.getNpc().destroy();
+        });
     }
 
     @LuaFunction("spawn")
@@ -113,24 +117,20 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             }
         }
 
+        entities.add(entity);
         entity.spawn();
         return EntityWrapper.create(entity, entityEventManager);
     }
 
     @LuaFunction("getNearby")
     public LuaTable getNearbyEntities(LuaValue locationParam, LuaValue radius) {
+        final double radiusSquared = radius.checkdouble() * radius.checkdouble();
         Location location = ScriptUtil.getLocation(locationParam);
-        List<EntityWrapper> entities = new ArrayList<>();
 
-        /*
-        for (ManagedEntityBase entity : entityManager.getEntitiesNear(location, radius.checkdouble())) {
-            if (entity instanceof RpgPlusEntity) {
-                entities.add(EntityWrapper.create((RpgPlusEntity) entity, entityEventManager));
-            }
-        }
-        */
-        // TODO get nearby entities
-
-        return ScriptUtil.tableOf(entities);
+        return entities.stream()
+                .filter((entity) -> entity.getNpc().isSpawned() &&
+                        entity.getEntity().getLocation().distanceSquared(location) <= radiusSquared)
+                .map((entity) -> EntityWrapper.create(entity, entityEventManager))
+                .collect(ScriptUtil.asListTable());
     }
 }
