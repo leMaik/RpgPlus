@@ -249,4 +249,13 @@ public class ScriptUtil {
     public static <T extends Enum<T>> T enumValue(LuaValue value, Class<T> enumClass) {
         return Enum.valueOf(enumClass, value.checkjstring().toUpperCase());
     }
+
+    /**
+     * Creates a new {@link TableListCollector} and returns it.
+     *
+     * @return a new {@link TableListCollector}
+     */
+    public static TableListCollector<LuaValue> asListTable() {
+        return new TableListCollector<>();
+    }
 }
