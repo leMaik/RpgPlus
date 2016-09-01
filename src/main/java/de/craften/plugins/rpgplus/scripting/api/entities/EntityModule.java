@@ -2,6 +2,9 @@ package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.components.entitymanager.*;
 import de.craften.plugins.rpgplus.components.entitymanager.traits.HorseTrait;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.OcelotTrait;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.RabbitTrait;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.VillagerTrait;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -9,10 +12,7 @@ import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Rabbit;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -77,7 +77,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         */
 
         if (entity instanceof ManagedVillager) {
-            ManagedVillager villager = (ManagedVillager) entity;
+            VillagerTrait villager = entity.getNpc().getTrait(VillagerTrait.class);
             if (!options.get("profession").isnil()) {
                 villager.setProfession(ScriptUtil.enumValue(options.get("profession"), Villager.Profession.class));
             }
@@ -102,9 +102,14 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 horse.setMaxDomestication(options.get("maxDomestication").checkint());
             }
         } else if (entity instanceof ManagedRabbit) {
-            ManagedRabbit rabbit = (ManagedRabbit) entity;
+            RabbitTrait rabbit = entity.getNpc().getTrait(RabbitTrait.class);
             if (!options.get("type").isnil()) {
-                rabbit.setType(ScriptUtil.enumValue(options.get("type"), Rabbit.Type.class));
+                rabbit.setRabbitType(ScriptUtil.enumValue(options.get("type"), Rabbit.Type.class));
+            }
+        } else if (entity instanceof ManagedOcelot) {
+            OcelotTrait ocelot = entity.getNpc().getTrait(OcelotTrait.class);
+            if (!options.get("type").isnil()) {
+                ocelot.setCatType(ScriptUtil.enumValue(options.get("type"), Ocelot.Type.class));
             }
         }
 
