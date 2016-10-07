@@ -24,6 +24,9 @@ public class RpgPlusEntity<T extends Entity> {
     }
 
     public T spawn() {
+        // TODO support custom skins
+        // npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, "leMaik");
+
         npc.spawn(location);
 
         if (npc.getEntity() instanceof LivingEntity && !isTakingDamage) {
