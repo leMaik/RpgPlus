@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus;
 
 import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.rpgplus.components.WeakPlayerMaps;
+import de.craften.plugins.rpgplus.components.cinematic.TrackingShotComponent;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
@@ -14,6 +15,7 @@ import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.api.*;
 import de.craften.plugins.rpgplus.scripting.api.actionbar.ActionBarModule;
+import de.craften.plugins.rpgplus.scripting.api.cinematic.CinematicModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.EntityModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
@@ -51,6 +53,7 @@ public class RpgPlus extends JavaPlugin {
     private final PathfindingComponent pathfinding;
     private final DialogComponent dialogs;
     private final ImagesComponent images;
+    private final TrackingShotComponent trackingShots;
     private final ScriptEventManager scriptEventManager;
     private final EntityEventManager entityEventManager;
     private final InventoryEventManager inventoryEventManager;
@@ -63,6 +66,7 @@ public class RpgPlus extends JavaPlugin {
         pathfinding = new PathfindingComponent();
         dialogs = new DialogComponent();
         images = new ImagesComponent();
+        trackingShots = new TrackingShotComponent();
 
         Path scriptDirectory = Paths.get(getDataFolder().getAbsolutePath()).resolve(getConfig().getString("scriptDirectory", ""));
         ScriptingManager.StrictModeOption strictMode;
@@ -132,6 +136,7 @@ public class RpgPlus extends JavaPlugin {
         pathfinding.activateFor(this);
         dialogs.activateFor(this);
         images.activateFor(this);
+        trackingShots.activateFor(this);
 
         scriptingManager.registerModule("rpgplus", rpgPlusObject);
         scriptingManager.registerModule("rpgplus.image", new ImageModule(this));
@@ -145,7 +150,8 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
         scriptingManager.registerModule("rpgplus.entities", new EntityModule(entityManager, entityEventManager));
         scriptingManager.registerModule("rpgplus.particle", new ParticleModule(this));
-        
+        scriptingManager.registerModule("rpgplus.cinematic", new CinematicModule(this));
+
         executeMainScript();
     }
 
@@ -165,6 +171,7 @@ public class RpgPlus extends JavaPlugin {
         commandManager.removeAll();
         timerManager.removeAll();
         dialogs.reset();
+        trackingShots.reset();
         weakPlayerMaps.reset();
         try {
             storage.getStorage().reload();
@@ -287,5 +294,14 @@ public class RpgPlus extends JavaPlugin {
      */
     public ImagesComponent getImages() {
         return images;
+    }
+
+    /**
+     * Gets the tracking shots component.
+     *
+     * @return the tracking shots component
+     */
+    public TrackingShotComponent getTrackingShots() {
+        return trackingShots;
     }
 }
