@@ -1,8 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.inventory;
 
-import net.md_5.bungee.api.ChatColor;
-
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -85,15 +84,14 @@ public class InventoryModule extends LuaTable implements ScriptingModule {
     }
 
     @LuaFunction("setItem")
-    public Varargs setItem(Varargs args) {
+    public void setItem(Varargs args) {
         Player player = ScriptUtil.getPlayer(args.arg(1));
         ItemMatcher matcher = ScriptUtil.createItemMatcher(args.arg(3));
         if (args.isnumber(2)) {
             int slot = args.toint(2);
             player.getInventory().setItem(slot, matcher.getItemStack());
         } else {
-        	String s = args.tojstring(2);
-        	switch (s) {
+        	switch (args.tojstring(2)) {
 			case "chestplate":
 	            player.getInventory().setChestplate(matcher.getItemStack());
 				break;
@@ -106,12 +104,14 @@ public class InventoryModule extends LuaTable implements ScriptingModule {
 			case "helmet":
 	            player.getInventory().setHelmet(matcher.getItemStack());
 				break;
+			case "hand":
+	            player.getInventory().setItemInHand(matcher.getItemStack());
+				break;
 
 			default:
 				break;
 			}
         }
-        return LuaValue.NIL;
     }
     
     @LuaFunction("openChest")
