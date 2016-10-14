@@ -1,17 +1,23 @@
 package de.craften.plugins.rpgplus.scripting.api.inventory;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.luaj.vm2.LuaBoolean;
+import org.luaj.vm2.LuaInteger;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
+
 import de.craften.plugins.rpgplus.components.inventory.ItemMatcher;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.luaj.vm2.*;
 
 /**
  * Lua API for the player's inventory.
@@ -77,6 +83,37 @@ public class InventoryModule extends LuaTable implements ScriptingModule {
         return LuaValue.varargsOf(missingAmounts);
     }
 
+    @LuaFunction("setItem")
+    public void setItem(Varargs args) {
+        Player player = ScriptUtil.getPlayer(args.arg(1));
+        ItemMatcher matcher = ScriptUtil.createItemMatcher(args.arg(3));
+        if (args.isnumber(2)) {
+            int slot = args.toint(2);
+            player.getInventory().setItem(slot, matcher.getItemStack());
+        } else {
+        	switch (args.tojstring(2)) {
+			case "chestplate":
+	            player.getInventory().setChestplate(matcher.getItemStack());
+				break;
+			case "leggings":
+	            player.getInventory().setLeggings(matcher.getItemStack());
+				break;
+			case "boots":
+	            player.getInventory().setBoots(matcher.getItemStack());
+				break;
+			case "helmet":
+	            player.getInventory().setHelmet(matcher.getItemStack());
+				break;
+			case "hand":
+	            player.getInventory().setItemInHand(matcher.getItemStack());
+				break;
+
+			default:
+				break;
+			}
+        }
+    }
+    
     @LuaFunction("openChest")
     public Varargs openChest(Varargs args) {
         String title = ChatColor.translateAlternateColorCodes('&', args.arg(3).optjstring(""));
