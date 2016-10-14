@@ -29,6 +29,14 @@ function giveOrDropItems(player, ...) end
 --
 function takeItems(player, ...) end
 
+--- Set an item in the player inventory.
+-- @param player player
+-- @param slot slot of the inventory
+-- @param Item to set (each as an @{rpgplus.types.itemstack} or a string of the form `id:data:amount`)
+-- @return nil
+--
+function setItem(player, slot, item) end
+
 --- Opens an inventory.
 -- @param player player
 -- @param size size of the inventory (rows of 9)
