@@ -1,10 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
 import de.craften.plugins.rpgplus.components.entitymanager.*;
-import de.craften.plugins.rpgplus.components.entitymanager.traits.HorseTrait;
-import de.craften.plugins.rpgplus.components.entitymanager.traits.OcelotTrait;
-import de.craften.plugins.rpgplus.components.entitymanager.traits.RabbitTrait;
-import de.craften.plugins.rpgplus.components.entitymanager.traits.VillagerTrait;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.*;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -60,6 +57,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedRabbit(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.OCELOT) {
             entity = new ManagedOcelot(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.BAT) {
+            entity = new ManagedBat(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable()), type);
         }
@@ -116,6 +115,11 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             OcelotTrait ocelot = entity.getNpc().getTrait(OcelotTrait.class);
             if (!options.get("type").isnil()) {
                 ocelot.setCatType(ScriptUtil.enumValue(options.get("type"), Ocelot.Type.class));
+            }
+        } else if (entity instanceof ManagedBat) {
+            BatTrait bat = entity.getNpc().getTrait(BatTrait.class);
+            if (!options.get("awake").isnil()) {
+                bat.setAwake(options.get("awake").checkboolean());
             }
         }
 
