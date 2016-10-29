@@ -6,8 +6,11 @@ import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import net.citizensnpcs.api.ai.tree.Behavior;
+import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.npc.ai.CitizensNavigator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -228,7 +231,45 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 return LuaValue.NIL;
             }
         });
-
+        
+        set("addBehavior", new VarArgFunction() {
+        	@Override
+            public Varargs invoke(Varargs varargs) {
+                
+        		int priority = varargs.checkint(2);
+        		
+        		LuaValue shouldExecute = varargs.checkfunction(3);
+        		LuaValue run = varargs.checkfunction(4);
+        		LuaValue reset = varargs.checkfunction(5);
+        		
+        		Behavior behavior = new Behavior() {
+					
+					@Override
+					public boolean shouldExecute() {
+						return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(shouldExecute).optboolean(1, false);
+					}
+					
+					@Override
+					public BehaviorStatus run() {
+						String result = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run).optjstring(1, "FAILURE").toUpperCase();
+						if (BehaviorStatus.valueOf(result) != null) {
+							return BehaviorStatus.valueOf(result);
+						}
+						return null;
+					}
+					
+					@Override
+					public void reset() {
+						RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(reset);
+					}
+				};
+        		
+				entity.getNpc().getDefaultGoalController().addBehavior(behavior, priority);
+				
+                return LuaValue.NIL;
+            }
+		});
+        
     }
 
     @Override
