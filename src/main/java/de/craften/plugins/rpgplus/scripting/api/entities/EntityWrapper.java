@@ -232,42 +232,55 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
             }
         });
         
-        set("addBehavior", new VarArgFunction() {
-        	@Override
-            public Varargs invoke(Varargs varargs) {
-                
-        		int priority = varargs.checkint(2);
-        		
-        		LuaValue shouldExecute = varargs.checkfunction(3);
-        		LuaValue run = varargs.checkfunction(4);
-        		LuaValue reset = varargs.checkfunction(5);
-        		
-        		Behavior behavior = new Behavior() {
-					
-					@Override
-					public boolean shouldExecute() {
-						return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(shouldExecute).optboolean(1, false);
-					}
-					
-					@Override
-					public BehaviorStatus run() {
-						String result = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run).optjstring(1, "FAILURE").toUpperCase();
-						if (BehaviorStatus.valueOf(result) != null) {
-							return BehaviorStatus.valueOf(result);
-						}
-						return null;
-					}
-					
-					@Override
-					public void reset() {
-						RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(reset);
-					}
-				};
-        		
-				entity.getNpc().getDefaultGoalController().addBehavior(behavior, priority);
+        set("addBehavior", new TwoArgFunction() {
+			
+			@Override
+			public LuaValue call(LuaValue arg1, LuaValue arg) {
 				
-                return LuaValue.NIL;
-            }
+				if (arg.istable()) {
+										
+					int priority = arg.get("priority").optint(1);
+					
+					LuaValue shouldExecute = arg.get("shouldExecute").optfunction(null);
+		    		LuaValue run = arg.get("run").optfunction(null);
+		    		LuaValue reset = arg.get("reset").optfunction(null);
+		    				    		
+		    		Behavior behavior = new Behavior() {
+						
+						@Override
+						public boolean shouldExecute() {
+							if (shouldExecute != null)
+								return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(shouldExecute).optboolean(1, false);
+							else
+								return false;
+						}
+						
+						@Override
+						public BehaviorStatus run() {
+							if (run != null) {
+								String result = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run).optjstring(1, "FAILURE").toUpperCase();
+								if (BehaviorStatus.valueOf(result) != null) {
+									return BehaviorStatus.valueOf(result);
+								}
+							}
+							
+							return null;
+						}
+						
+						@Override
+						public void reset() {
+							if (reset != null) {
+								RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(reset);
+							}
+						}
+					};
+		    		
+					entity.getNpc().getDefaultGoalController().addBehavior(behavior, priority);
+					
+				}
+				
+	            return LuaValue.NIL;
+			}
 		});
         
     }
