@@ -23,16 +23,15 @@ public class ParticleModule extends LuaTable implements ScriptingModule {
 
 		Location loc = ScriptUtil.getLocation(varargs.arg(1));
 
-		Effect effect = Effect
-				.valueOf(varargs.arg(2).tojstring().toUpperCase());
+		Effect effect = Effect.valueOf(varargs.arg(2).tojstring().toUpperCase());
 		
-		LuaTable options = varargs.checktable(3);
+		LuaTable options = varargs.opttable(3, new LuaTable());
 		
 		int id = options.get("id").optint(0);
 
 		int data = options.get("data").optint(0);
 		
-		LuaTable offset = options.get("offset").checktable();
+		LuaTable offset = options.get("offset").opttable(new LuaTable());
 		
 		float offsetX = (float) offset.get("x").optdouble(0);
 		float offsetY = (float) offset.get("y").optdouble(0);
