@@ -149,7 +149,7 @@ public class RpgPlus extends JavaPlugin {
         executeMainScript();
     }
 
-    private void reload() {
+    public void reload() {
         getLogger().info("Reloading...");
         reset();
         executeMainScript();
