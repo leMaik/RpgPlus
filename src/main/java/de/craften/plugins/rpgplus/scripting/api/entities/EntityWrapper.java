@@ -6,8 +6,11 @@ import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import net.citizensnpcs.api.ai.tree.Behavior;
+import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.npc.ai.CitizensNavigator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -228,7 +231,58 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 return LuaValue.NIL;
             }
         });
-
+        
+        set("addBehavior", new TwoArgFunction() {
+			
+			@Override
+			public LuaValue call(LuaValue arg1, LuaValue arg) {
+				
+				if (arg.istable()) {
+										
+					int priority = arg.get("priority").optint(1);
+					
+					LuaValue shouldExecute = arg.get("shouldExecute").optfunction(null);
+		    		LuaValue run = arg.get("run").optfunction(null);
+		    		LuaValue reset = arg.get("reset").optfunction(null);
+		    				    		
+		    		Behavior behavior = new Behavior() {
+						
+						@Override
+						public boolean shouldExecute() {
+							if (shouldExecute != null)
+								return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(shouldExecute).optboolean(1, false);
+							else
+								return false;
+						}
+						
+						@Override
+						public BehaviorStatus run() {
+							if (run != null) {
+								String result = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run).optjstring(1, "FAILURE").toUpperCase();
+								if (BehaviorStatus.valueOf(result) != null) {
+									return BehaviorStatus.valueOf(result);
+								}
+							}
+							
+							return null;
+						}
+						
+						@Override
+						public void reset() {
+							if (reset != null) {
+								RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(reset);
+							}
+						}
+					};
+		    		
+					entity.getNpc().getDefaultGoalController().addBehavior(behavior, priority);
+					
+				}
+				
+	            return LuaValue.NIL;
+			}
+		});
+        
     }
 
     @Override
