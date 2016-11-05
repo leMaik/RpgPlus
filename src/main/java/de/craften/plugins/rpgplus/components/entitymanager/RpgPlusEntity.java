@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.components.entitymanager;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Location;
@@ -82,12 +83,11 @@ public class RpgPlusEntity<T extends Entity> {
      */
     public LivingEntity getTarget() {
         if (npc.isSpawned()) {
-            Entity entity = npc.getEntity();
-            if (entity instanceof Creature) {
-                return ((Creature) entity).getTarget();
-            }
+        	if (npc.getNavigator().getTargetType() == TargetType.ENTITY) {
+        		return npc.getNavigator().getEntityTarget().getTarget();
+        	}
         }
-        return null;
+    	return null;
     }
 
     /**
@@ -97,10 +97,7 @@ public class RpgPlusEntity<T extends Entity> {
      */
     public void setTarget(LivingEntity target) {
         if (npc.isSpawned()) {
-            Entity entity = npc.getEntity();
-            if (entity instanceof Creature) {
-                ((Creature) entity).setTarget(target);
-            }
+        	npc.getNavigator().setTarget(target, true);
         }
         //TODO remember the target if the entity is not spawned yet
     }
