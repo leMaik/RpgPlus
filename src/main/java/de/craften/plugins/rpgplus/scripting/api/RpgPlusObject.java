@@ -6,6 +6,7 @@ import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,7 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -133,7 +135,22 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
         plugin.getScriptingManager().reportScriptWarning("rpgplus.spawn() is deprecated. Use the spawn() function from the rpgplus.entities module instead.");
         return plugin.getScriptingManager().getModule("rpgplus.entities").getModule().get("spawn").checkfunction().invoke(args);
     }
-
+    
+    @LuaFunction("teleport")
+    public void teleport(LuaValue player, LuaValue location) {
+    	ScriptUtil.getPlayer(player).teleport(ScriptUtil.getLocation(location));
+    }
+    
+    @LuaFunction("getOnlinePlayers")
+    public LuaTable getOnlinePlayers() {
+    	return plugin.getServer().getOnlinePlayers().stream().map(CoerceJavaToLua::coerce).collect(ScriptUtil.asListTable());
+    }
+    
+    @LuaFunction("getPlayer")
+    public LuaValue getPlayer(LuaValue player) {
+    	return CoerceJavaToLua.coerce(ScriptUtil.getPlayer(player));
+    }
+    
     @Override
     public LuaValue getModule() {
         return this;
