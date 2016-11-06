@@ -138,24 +138,17 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
     
     @LuaFunction("teleport")
     public void teleport(LuaValue player, LuaValue location) {
-    	Player p = ScriptUtil.getPlayer(player);
-    	p.teleport(ScriptUtil.getLocation(location));
+    	ScriptUtil.getPlayer(player).teleport(ScriptUtil.getLocation(location));
     }
     
     @LuaFunction("getOnlinePlayers")
     public LuaTable getOnlinePlayers() {
-    	List<Player> players = new ArrayList<Player>(plugin.getServer().getOnlinePlayers());
-    	List<LuaValue> luaArgs = new ArrayList<LuaValue>();
-        for (int i = 0; i < players.size(); i++) {
-            luaArgs.add(CoerceJavaToLua.coerce(players.get(i)));
-        }
-        return ScriptUtil.tableOf(luaArgs);
+    	return plugin.getServer().getOnlinePlayers().stream().map(CoerceJavaToLua::coerce).collect(ScriptUtil.asListTable());
     }
     
     @LuaFunction("getPlayer")
     public LuaValue getPlayer(LuaValue player) {
-    	Player p = ScriptUtil.getPlayer(player);
-    	return CoerceJavaToLua.coerce(p);
+    	return CoerceJavaToLua.coerce(ScriptUtil.getPlayer(player));
     }
     
     @Override
