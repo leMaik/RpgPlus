@@ -215,3 +215,20 @@ function once(event, handler) end
 -- @return `true` if any event handler was removed, `false` if not
 --
 function off(event, handler) end
+
+--- Teleports a player to a location.
+-- @param player player to teleport
+-- @param teleport location
+--
+function teleport(player, location) end
+
+--- Returns a list of all online players.
+-- @return a table of all online players
+--
+function getOnlinePlayers() end
+
+--- Get an online player.
+-- @param the name of the player
+-- @return the player
+--
+function getPlayer(playername) end
