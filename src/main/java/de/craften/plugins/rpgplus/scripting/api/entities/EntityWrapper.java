@@ -10,7 +10,6 @@ import net.citizensnpcs.api.ai.tree.Behavior;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.npc.ai.CitizensNavigator;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,7 +42,8 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
         set("navigateTo", new VarArgFunction() {
             @Override
             public Varargs invoke(final Varargs varargs) {
-                final LuaTable destination = varargs.arg(2).checktable();
+                final Location destination = ScriptUtil.getLocation(varargs.arg(2));
+                destination.setWorld(entity.getEntity().getWorld());
                 final LuaTable options;
                 Runnable callback = null;
                 if (varargs.narg() == 4) {
@@ -51,7 +51,7 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                     callback = new Runnable() {
                         @Override
                         public void run() {
-                            varargs.arg(4).invoke(destination);
+                            varargs.arg(4).invoke(ScriptUtil.getLocation(destination));
                         }
                     };
                 } else {
@@ -60,7 +60,7 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                         callback = new Runnable() {
                             @Override
                             public void run() {
-                                varargs.arg(3).invoke(destination);
+                                varargs.arg(3).invoke(ScriptUtil.getLocation(destination));
                             }
                         };
                     } else {
@@ -69,11 +69,7 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 }
 
                 entity.getNpc().getNavigator()
-                        .setTarget(new Location(entity.getEntity().getWorld(),
-                                destination.get("x").checkdouble(),
-                                destination.get("y").checkdouble(),
-                                destination.get("z").checkdouble()
-                        ));
+                        .setTarget(destination);
 
                 if (options.get("speed").isint()) {
                     entity.getNpc().getNavigator().getLocalParameters().baseSpeed(options.get("speed").checkint());
@@ -231,58 +227,58 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 return LuaValue.NIL;
             }
         });
-        
+
         set("addBehavior", new TwoArgFunction() {
-			
-			@Override
-			public LuaValue call(LuaValue arg1, LuaValue arg) {
-				
-				if (arg.istable()) {
-										
-					int priority = arg.get("priority").optint(1);
-					
-					LuaValue shouldExecute = arg.get("shouldExecute").optfunction(null);
-		    		LuaValue run = arg.get("run").optfunction(null);
-		    		LuaValue reset = arg.get("reset").optfunction(null);
-		    				    		
-		    		Behavior behavior = new Behavior() {
-						
-						@Override
-						public boolean shouldExecute() {
-							if (shouldExecute != null)
-								return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(shouldExecute).optboolean(1, false);
-							else
-								return false;
-						}
-						
-						@Override
-						public BehaviorStatus run() {
-							if (run != null) {
-								String result = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run).optjstring(1, "FAILURE").toUpperCase();
-								if (BehaviorStatus.valueOf(result) != null) {
-									return BehaviorStatus.valueOf(result);
-								}
-							}
-							
-							return null;
-						}
-						
-						@Override
-						public void reset() {
-							if (reset != null) {
-								RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(reset);
-							}
-						}
-					};
-		    		
-					entity.getNpc().getDefaultGoalController().addBehavior(behavior, priority);
-					
-				}
-				
-	            return LuaValue.NIL;
-			}
-		});
-        
+
+            @Override
+            public LuaValue call(LuaValue arg1, LuaValue arg) {
+
+                if (arg.istable()) {
+
+                    int priority = arg.get("priority").optint(1);
+
+                    LuaValue shouldExecute = arg.get("shouldExecute").optfunction(null);
+                    LuaValue run = arg.get("run").optfunction(null);
+                    LuaValue reset = arg.get("reset").optfunction(null);
+
+                    Behavior behavior = new Behavior() {
+
+                        @Override
+                        public boolean shouldExecute() {
+                            if (shouldExecute != null)
+                                return RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(shouldExecute).optboolean(1, false);
+                            else
+                                return false;
+                        }
+
+                        @Override
+                        public BehaviorStatus run() {
+                            if (run != null) {
+                                String result = RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run).optjstring(1, "FAILURE").toUpperCase();
+                                if (BehaviorStatus.valueOf(result) != null) {
+                                    return BehaviorStatus.valueOf(result);
+                                }
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        public void reset() {
+                            if (reset != null) {
+                                RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(reset);
+                            }
+                        }
+                    };
+
+                    entity.getNpc().getDefaultGoalController().addBehavior(behavior, priority);
+
+                }
+
+                return LuaValue.NIL;
+            }
+        });
+
     }
 
     @Override
