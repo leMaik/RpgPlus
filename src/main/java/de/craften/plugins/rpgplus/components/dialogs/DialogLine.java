@@ -10,9 +10,9 @@ public abstract class DialogLine {
     private final String line;
     private final int delay;
 
-    public DialogLine(String line) {
+    public DialogLine(String line, int delay) {
         this.line = line;
-        this.delay = 0;
+        this.delay = delay;
     }
 
     public String getLine() {
@@ -26,8 +26,8 @@ public abstract class DialogLine {
     public static class Question extends DialogLine {
         public List<String> answers;
 
-        public Question(String question, List<String> answers) {
-            super(question);
+        public Question(String question, List<String> answers, int delay) {
+            super(question,delay);
             this.answers = answers;
         }
 
@@ -39,8 +39,8 @@ public abstract class DialogLine {
     public static class Statement extends DialogLine {
         public String nextState;
 
-        public Statement(String line, String nextState) {
-            super(line);
+        public Statement(String line, String nextState, int delay) {
+            super(line,delay);
             this.nextState = nextState;
         }
 
@@ -56,8 +56,8 @@ public abstract class DialogLine {
     public static class CustomCode extends DialogLine {
         private final Consumer<Consumer<String>> customFunction;
 
-        public CustomCode(Consumer<Consumer<String>> customFunction) {
-            super("");
+        public CustomCode(Consumer<Consumer<String>> customFunction, int delay) {
+            super("",delay);
             this.customFunction = customFunction;
         }
 

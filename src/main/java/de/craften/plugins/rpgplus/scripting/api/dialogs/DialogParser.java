@@ -32,7 +32,8 @@ public class DialogParser {
                                         return LuaValue.NIL;
                                     }
                                 }
-                        ).optjstring(1, null)
+                        ).optjstring(1, null),
+                        line.get(4).opttable(LuaValue.tableOf()).get("delay").optint(0)
                 ));
             } else if (line.get(3).istable()) {
                 // question
@@ -40,12 +41,14 @@ public class DialogParser {
                         line.get(2).checkjstring(),
                         ScriptUtil.toListTableStream(line.get(3).checktable())
                                 .map(LuaValue::checkjstring)
-                                .collect(Collectors.toList())
+                                .collect(Collectors.toList()),
+                        line.get(4).opttable(LuaValue.tableOf()).get("delay").optint(0)
                 ));
             } else {
                 lines.put(line.get(1).checkjstring(), new DialogLine.Statement(
                         line.get(2).checkjstring(),
-                        line.get(3).optjstring(null)
+                        line.get(3).optjstring(null),
+                        line.get(4).opttable(LuaValue.tableOf()).get("delay").optint(0)
                 ));
             }
         }
