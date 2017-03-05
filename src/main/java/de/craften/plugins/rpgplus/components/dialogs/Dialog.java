@@ -49,7 +49,8 @@ public class Dialog {
             dialogComponent.askChoices(name, player, dialogLine.getLine(),
                     ((DialogLine.Question) dialogLine).getAnswers().stream().map(this::getLine).map(DialogLine::getLine).toArray(String[]::new),
                     ((player1, index, answer) -> {
-                        callNext.accept(((DialogLine.Question) dialogLine).getAnswers().get(index));
+                        DialogLine.Statement selectedAnswer = (DialogLine.Statement) getLine(((DialogLine.Question) dialogLine).getAnswers().get(index));
+                        callNext.accept(selectedAnswer.getNextState());
                         return true;
                     }));
         } else if (dialogLine instanceof DialogLine.Statement) {
