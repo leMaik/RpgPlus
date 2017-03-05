@@ -4,6 +4,7 @@ import de.craften.plugins.rpgplus.RpgPlus;
 import de.craften.plugins.rpgplus.components.dialogs.AnswerHandler;
 import de.craften.plugins.rpgplus.components.dialogs.ChoiceAnswerHandler;
 import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
+import de.craften.plugins.rpgplus.scripting.api.dialogs.DialogParser;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import net.citizensnpcs.api.ai.tree.Behavior;
@@ -175,6 +176,19 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                     RpgPlus.getPlugin(RpgPlus.class).getDialogs().tell(entity.getName(), player, messageAlternatives(varargs.arg(i)));
                 }
 
+                return LuaValue.NIL;
+            }
+        });
+
+        set("startDialog", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue player, LuaValue dialogDefinition) {
+                RpgPlus.getPlugin(RpgPlus.class).getDialogs()
+                        .startDialog(
+                                DialogParser.parseDialog(dialogDefinition.checktable()),
+                                entity.getName(),
+                                ScriptUtil.getPlayer(player)
+                        );
                 return LuaValue.NIL;
             }
         });

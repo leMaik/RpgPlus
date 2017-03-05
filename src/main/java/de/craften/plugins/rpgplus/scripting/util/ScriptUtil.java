@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Utility methods for implementing the Lua API.
@@ -258,5 +259,15 @@ public class ScriptUtil {
      */
     public static TableListCollector<LuaValue> asListTable() {
         return new TableListCollector<>();
+    }
+
+    /**
+     * Creates a {@link Stream} of a list table's values.
+     *
+     * @param table a list table
+     * @return a stream of the list table's values
+     */
+    public static Stream<LuaValue> toListTableStream(LuaTable table) {
+        return IntStream.rangeClosed(1, table.length()).mapToObj(table::get);
     }
 }
