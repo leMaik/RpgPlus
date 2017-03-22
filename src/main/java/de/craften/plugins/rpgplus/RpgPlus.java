@@ -1,12 +1,10 @@
 package de.craften.plugins.rpgplus;
 
-import de.craften.plugins.managedentities.EntityManager;
 import de.craften.plugins.rpgplus.components.WeakPlayerMaps;
 import de.craften.plugins.rpgplus.components.cinematic.TrackingShotComponent;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
-import de.craften.plugins.rpgplus.components.pathfinding.PathfindingComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.storage.StorageException;
@@ -25,7 +23,8 @@ import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventM
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.api.title.TitlesModule;
 import de.craften.plugins.rpgplus.scripting.util.Pastebin;
-
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.DespawnReason;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,11 +45,9 @@ import java.util.logging.Level;
 public class RpgPlus extends JavaPlugin {
     private final ScriptingManager scriptingManager;
     private final WeakPlayerMaps weakPlayerMaps;
-    private EntityManager entityManager;
     private final CustomCommands commandManager;
     private final TimerComponent timerManager;
     private final StorageComponent storage;
-    private final PathfindingComponent pathfinding;
     private final DialogComponent dialogs;
     private final ImagesComponent images;
     private final TrackingShotComponent trackingShots;
@@ -63,7 +60,6 @@ public class RpgPlus extends JavaPlugin {
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         storage = new StorageComponent(new File(getDataFolder(), "storage"));
-        pathfinding = new PathfindingComponent();
         dialogs = new DialogComponent();
         images = new ImagesComponent();
         trackingShots = new TrackingShotComponent();
@@ -120,7 +116,6 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        entityManager = new EntityManager(this);
         RpgPlusObject rpgPlusObject = new RpgPlusObject(this);
         scriptEventManager.installOn(rpgPlusObject);
         getServer().getPluginManager().registerEvents(scriptEventManager, this);
@@ -133,7 +128,6 @@ public class RpgPlus extends JavaPlugin {
         commandManager.activateFor(this);
         timerManager.activateFor(this);
         storage.activateFor(this);
-        pathfinding.activateFor(this);
         dialogs.activateFor(this);
         images.activateFor(this);
         trackingShots.activateFor(this);
@@ -148,14 +142,14 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.inventory", new InventoryModule(inventoryEventManager));
         scriptingManager.registerModule("rpgplus.actionbar", new ActionBarModule(this));
         scriptingManager.registerModule("rpgplus.titles", new TitlesModule());
-        scriptingManager.registerModule("rpgplus.entities", new EntityModule(entityManager, entityEventManager));
+        scriptingManager.registerModule("rpgplus.entities", new EntityModule(entityEventManager));
         scriptingManager.registerModule("rpgplus.particle", new ParticleModule(this));
         scriptingManager.registerModule("rpgplus.cinematic", new CinematicModule(this));
 
         executeMainScript();
     }
 
-    private void reload() {
+    public void reload() {
         getLogger().info("Reloading...");
         reset();
         executeMainScript();
@@ -167,7 +161,7 @@ public class RpgPlus extends JavaPlugin {
         scriptEventManager.reset();
         entityEventManager.reset();
         inventoryEventManager.reset();
-        entityManager.removeAll();
+        CitizensAPI.getNPCRegistry().forEach((npc) -> npc.despawn(DespawnReason.PLUGIN));
         commandManager.removeAll();
         timerManager.removeAll();
         dialogs.reset();
@@ -222,7 +216,7 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        entityManager.removeAll();
+        CitizensAPI.getNPCRegistry().forEach((npc) -> npc.despawn(DespawnReason.PLUGIN));
     }
 
     public ScriptingManager getScriptingManager() {
@@ -231,15 +225,6 @@ public class RpgPlus extends JavaPlugin {
 
     public WeakPlayerMaps getWeakPlayerMaps() {
         return weakPlayerMaps;
-    }
-
-    /**
-     * Get the entity manager.
-     *
-     * @return the entity manager
-     */
-    public EntityManager getEntityManager() {
-        return entityManager;
     }
 
     /**
@@ -267,15 +252,6 @@ public class RpgPlus extends JavaPlugin {
      */
     public Storage getStorage() {
         return storage.getStorage();
-    }
-
-    /**
-     * Gets the pathfinding component.
-     *
-     * @return the pathfinding component
-     */
-    public PathfindingComponent getPathfinding() {
-        return pathfinding;
     }
 
     /**

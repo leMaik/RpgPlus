@@ -104,6 +104,14 @@ public class DialogComponent extends PluginComponentBase implements Listener {
         });
     }
 
+    public void startDialog(Dialog dialog, String name, Player player) {
+        continueDialog(dialog, name, player, dialog.getInitialState());
+    }
+
+    private void continueDialog(Dialog dialog, String name, Player player, String state) {
+        dialog.performInteraction(this, name, player, state, (nextState) -> continueDialog(dialog, name, player, nextState));
+    }
+
     @EventHandler
     public void onChatMessage(AsyncPlayerChatEvent event) {
         AnswerHandler handler = waitForChatAnswer.get(event.getPlayer());

@@ -91,6 +91,12 @@ function ask(player, question, callback) end
 --
 function askChoices(player, question, choices, callback) end
 
+--- Start a dialog with the given player.
+-- @param player player
+-- @param dialogDefinition a dialog definition
+--
+function startDialog(player, dialogDefinition) end
+
 --- Despawn this entity.
 function despawn() end
 

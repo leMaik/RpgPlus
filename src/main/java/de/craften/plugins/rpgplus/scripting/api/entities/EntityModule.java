@@ -1,8 +1,7 @@
 package de.craften.plugins.rpgplus.scripting.api.entities;
 
-import de.craften.plugins.managedentities.EntityManager;
-import de.craften.plugins.managedentities.ManagedEntityBase;
 import de.craften.plugins.rpgplus.components.entitymanager.*;
+import de.craften.plugins.rpgplus.components.entitymanager.traits.*;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
@@ -21,12 +20,12 @@ import java.util.List;
  * A lua module for entities.
  */
 public class EntityModule extends LuaTable implements ScriptingModule {
-    private final EntityManager entityManager;
     private final EntityEventManager entityEventManager;
+    private final List<RpgPlusEntity> entities = new ArrayList<>();
 
-    public EntityModule(EntityManager entityManager, EntityEventManager entityEventManager) {
-        this.entityManager = entityManager;
+    public EntityModule(EntityEventManager entityEventManager) {
         this.entityEventManager = entityEventManager;
+        entityEventManager.setEntityModule(this);
         Luaify.convertInPlace(this);
     }
 
@@ -37,7 +36,11 @@ public class EntityModule extends LuaTable implements ScriptingModule {
 
     @Override
     public void reset() {
-        //nothing to reset
+        entities.forEach((entity) -> {
+            entity.getNpc().despawn();
+            entity.getNpc().destroy();
+        });
+        entities.clear();
     }
 
     @LuaFunction("spawn")
@@ -54,13 +57,10 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedRabbit(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.OCELOT) {
             entity = new ManagedOcelot(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.BAT) {
+            entity = new ManagedBat(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
-            entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable())) {
-                @Override
-                protected Entity spawnEntity(Location location) {
-                    return location.getWorld().spawn(location, type.getEntityClass());
-                }
-            };
+            entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable()), type);
         }
 
         entity.setName(ChatColor.translateAlternateColorCodes('&', options.get("name").optjstring("")));
@@ -68,6 +68,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
         entity.setNameVisible(options.get("nameVisible").optboolean(true));
 
+        // TODO add corresponding traits to the entities
+        /*
         switch (options.get("movementType").optjstring("local")) {
             case "normal":
                 entity.setFrozen(false);
@@ -77,14 +79,15 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 entity.setFrozen(true);
                 break;
         }
+        */
 
         if (entity instanceof ManagedVillager) {
-            ManagedVillager villager = (ManagedVillager) entity;
+            VillagerTrait villager = entity.getNpc().getTrait(VillagerTrait.class);
             if (!options.get("profession").isnil()) {
                 villager.setProfession(ScriptUtil.enumValue(options.get("profession"), Villager.Profession.class));
             }
         } else if (entity instanceof ManagedHorse) {
-            ManagedHorse horse = (ManagedHorse) entity;
+            HorseTrait horse = entity.getNpc().getTrait(HorseTrait.class);
             if (!options.get("style").isnil()) {
                 horse.setStyle(ScriptUtil.enumValue(options.get("style"), Horse.Style.class));
             }
@@ -104,28 +107,45 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 horse.setMaxDomestication(options.get("maxDomestication").checkint());
             }
         } else if (entity instanceof ManagedRabbit) {
-            ManagedRabbit rabbit = (ManagedRabbit) entity;
+            RabbitTrait rabbit = entity.getNpc().getTrait(RabbitTrait.class);
             if (!options.get("type").isnil()) {
-                rabbit.setType(ScriptUtil.enumValue(options.get("type"), Rabbit.Type.class));
+                rabbit.setRabbitType(ScriptUtil.enumValue(options.get("type"), Rabbit.Type.class));
+            }
+        } else if (entity instanceof ManagedOcelot) {
+            OcelotTrait ocelot = entity.getNpc().getTrait(OcelotTrait.class);
+            if (!options.get("type").isnil()) {
+                ocelot.setCatType(ScriptUtil.enumValue(options.get("type"), Ocelot.Type.class));
+            }
+        } else if (entity instanceof ManagedBat) {
+            BatTrait bat = entity.getNpc().getTrait(BatTrait.class);
+            if (!options.get("awake").isnil()) {
+                bat.setAwake(options.get("awake").checkboolean());
             }
         }
 
-        entityManager.addEntity(entity);
+        entities.add(entity);
         entity.spawn();
-        return new EntityWrapper(entity, entityEventManager);
+        return EntityWrapper.create(entity, entityEventManager);
     }
 
     @LuaFunction("getNearby")
     public LuaTable getNearbyEntities(LuaValue locationParam, LuaValue radius) {
+        final double radiusSquared = radius.checkdouble() * radius.checkdouble();
         Location location = ScriptUtil.getLocation(locationParam);
-        List<EntityWrapper> entities = new ArrayList<>();
 
-        for (ManagedEntityBase entity : entityManager.getEntitiesNear(location, radius.checkdouble())) {
-            if (entity instanceof RpgPlusEntity) {
-                entities.add(new EntityWrapper((RpgPlusEntity) entity, entityEventManager));
+        return entities.stream()
+                .filter((entity) -> entity.getNpc().isSpawned() &&
+                        entity.getEntity().getLocation().distanceSquared(location) <= radiusSquared)
+                .map((entity) -> EntityWrapper.create(entity, entityEventManager))
+                .collect(ScriptUtil.asListTable());
+    }
+
+    public RpgPlusEntity getEntity(Entity entity) {
+        for (RpgPlusEntity rpgPlusEntity : entities) {
+            if (rpgPlusEntity.getEntity() == entity) {
+                return rpgPlusEntity;
             }
         }
-
-        return ScriptUtil.tableOf(entities);
+        return null;
     }
 }
