@@ -2,14 +2,20 @@ package de.craften.plugins.rpgplus.components.entitymanager;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.TargetType;
+import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.Trait;
 
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import de.craften.plugins.rpgplus.util.EntityUtil;
 
 /**
  * A basic managed entity without any special logic.
@@ -18,23 +24,121 @@ public class RpgPlusEntity<T extends Entity> {
     private final NPC npc;
     private Location location;
     private boolean isTakingDamage = true;
-
+    
+    private EntityType type;
+    
+    private boolean isNameVisible;
+    private String name;
+    private String secondName;
+    private ArmorStand nametag;
+    private ArmorStand secondNameTag;
+    
     public RpgPlusEntity(Location location, EntityType type) {
         this.location = location;
+        this.type = type;
         npc = CitizensAPI.getNPCRegistry().createNPC(type, "");
-        npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, true);
+        
+        if (type == EntityType.PLAYER) {
+        	npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, true);
+        } else {
+        	npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
+        }
+        
     }
 
     public T spawn() {
         // TODO support custom skins
         // npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, "leMaik");
 
+        npc.addTrait(new Trait("NameTagTrait") {
+        	@Override
+        	public void run() {
+        		if (nametag != null) {
+                   
+        			nametag.teleport(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0));
+        		}
+        		if (secondNameTag != null) {
+
+                    secondNameTag.teleport(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0));
+        		}
+        	}
+        	
+        	@Override
+        	public void onRemove() {
+                if (nametag != null) {
+                    nametag.remove();
+                }
+                if (secondNameTag != null) {
+                    secondNameTag.remove();
+                }
+        	}
+        	
+        	@Override
+        	public void onDespawn() {
+                if (nametag != null) {
+                    nametag.remove();
+                }
+                if (secondNameTag != null) {
+                    secondNameTag.remove();
+                }
+        	}
+        	
+        	@EventHandler
+        	public void onDeath(NPCDeathEvent event) {
+        		if (event.getNPC().getUniqueId().equals(npc.getUniqueId())) {
+        			if (nametag != null) {
+                        nametag.remove();
+                    }
+                    if (secondNameTag != null) {
+                        secondNameTag.remove();
+                    }
+        		}
+        	}
+        });
+        
         npc.spawn(location);
 
         if (npc.getEntity() instanceof LivingEntity && !isTakingDamage) {
             npc.setProtected(true);
         }
+        
 
+        if (type != EntityType.PLAYER) {
+        	if (npc.getEntity() instanceof LivingEntity && !name.isEmpty() && isNameVisible) {
+        		Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0);
+        		System.out.println("NameTag 1");
+            	if (nametag == null) {
+            		nametag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
+            	}
+            	
+            	nametag.teleport(nameTagLocation);
+            	nametag.setCustomName(name);
+            	nametag.setCustomNameVisible(true);
+            	nametag.setVisible(false);
+            	nametag.setMarker(true);
+            	nametag.setCanPickupItems(false);
+            	nametag.setGravity(false);
+            	
+        	}
+        }
+        
+        if (npc.getEntity() != null && npc.getEntity() instanceof LivingEntity && !secondName.isEmpty() && isNameVisible) {
+            Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
+            System.out.println("NameTag 2");
+            if (secondNameTag == null) {
+                secondNameTag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
+            }
+
+            secondNameTag.teleport(nameTagLocation);
+            secondNameTag.setCustomName(secondName);
+            secondNameTag.setCustomNameVisible(true);
+            secondNameTag.setVisible(false);
+            secondNameTag.setMarker(true);
+            secondNameTag.setCanPickupItems(false);
+            secondNameTag.setGravity(false);
+
+        }
+        
         return (T) npc.getEntity();
     }
 
@@ -43,22 +147,31 @@ public class RpgPlusEntity<T extends Entity> {
     }
 
     public String getName() {
-        return npc.getName();
+        return name;
     }
 
     public void setName(String name) {
-        npc.setName(name);
+    	this.name = name;
+    	if (type == EntityType.PLAYER) {
+    	   npc.setName(name);
+       } else {
+    	   if (nametag != null) {
+    		   nametag.setCustomName(name);
+    	   }
+       }
     }
 
     public String getSecondName() {
-        // TODO
-        return "";
+        return secondName;
     }
 
     public void setSecondName(String secondName) {
-        // TODO
+        this.secondName = secondName;
+        if (secondNameTag != null) {
+        	secondNameTag.setCustomName(name);
+ 	   	}
     }
-
+    
     public boolean isTakingDamage() {
         return isTakingDamage;
     }
@@ -69,11 +182,11 @@ public class RpgPlusEntity<T extends Entity> {
     }
 
     public boolean isNameVisible() {
-        return npc.data().get(NPC.NAMEPLATE_VISIBLE_METADATA);
+        return isNameVisible;
     }
 
     public void setNameVisible(boolean nameVisible) {
-        npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, nameVisible);
+       this.isNameVisible = nameVisible;
     }
 
     /**
