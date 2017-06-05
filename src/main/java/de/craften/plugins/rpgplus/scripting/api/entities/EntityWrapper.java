@@ -325,6 +325,8 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                     return ScriptUtil.getTarget(entity);
                 case "bukkitEntity":
                     return CoerceJavaToLua.coerce(entity.getEntity());
+                case "npc":
+                    return CoerceJavaToLua.coerce(entity.getNpc());
             }
         }
         return super.rawget(key);

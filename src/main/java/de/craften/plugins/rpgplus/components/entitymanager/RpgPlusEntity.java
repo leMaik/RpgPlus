@@ -5,11 +5,12 @@ import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import de.craften.plugins.rpgplus.components.entitymanager.traits.NameTagTrait;
 
 /**
  * A basic managed entity without any special logic.
@@ -18,23 +19,34 @@ public class RpgPlusEntity<T extends Entity> {
     private final NPC npc;
     private Location location;
     private boolean isTakingDamage = true;
-
+    
+    private EntityType type;
+    
     public RpgPlusEntity(Location location, EntityType type) {
         this.location = location;
+        this.type = type;
         npc = CitizensAPI.getNPCRegistry().createNPC(type, "");
-        npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, true);
+
+        npc.addTrait(new NameTagTrait(type));
+        
+        if (type == EntityType.PLAYER) {
+        	npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, true);
+        } else {
+        	npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, false);
+        }
+        
     }
 
     public T spawn() {
         // TODO support custom skins
         // npc.data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, "leMaik");
-
+    	
         npc.spawn(location);
-
+        
         if (npc.getEntity() instanceof LivingEntity && !isTakingDamage) {
             npc.setProtected(true);
         }
-
+        
         return (T) npc.getEntity();
     }
 
@@ -43,22 +55,24 @@ public class RpgPlusEntity<T extends Entity> {
     }
 
     public String getName() {
-        return npc.getName();
+        return getNameTagTrait().getFirstName();
     }
 
     public void setName(String name) {
-        npc.setName(name);
+    	getNameTagTrait().setFirstName(name);
+    	if (type == EntityType.PLAYER) {
+    	   npc.setName(name);
+    	}
     }
 
     public String getSecondName() {
-        // TODO
-        return "";
+        return getNameTagTrait().getSecondName();
     }
 
     public void setSecondName(String secondName) {
-        // TODO
+    	getNameTagTrait().setSecondName(secondName);
     }
-
+    
     public boolean isTakingDamage() {
         return isTakingDamage;
     }
@@ -69,11 +83,11 @@ public class RpgPlusEntity<T extends Entity> {
     }
 
     public boolean isNameVisible() {
-        return npc.data().get(NPC.NAMEPLATE_VISIBLE_METADATA);
+        return getNameTagTrait().isVisible();
     }
 
     public void setNameVisible(boolean nameVisible) {
-        npc.data().set(NPC.NAMEPLATE_VISIBLE_METADATA, nameVisible);
+      	getNameTagTrait().setVisible(nameVisible);
     }
 
     /**
@@ -112,5 +126,9 @@ public class RpgPlusEntity<T extends Entity> {
             return (T) npc.getEntity();
         }
         return null;
+    }
+    
+    public NameTagTrait getNameTagTrait() {
+        return npc.getTrait(NameTagTrait.class);
     }
 }

@@ -216,7 +216,7 @@ public class RpgPlus extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        CitizensAPI.getNPCRegistry().forEach((npc) -> npc.despawn(DespawnReason.PLUGIN));
+        CitizensAPI.getNPCRegistry().deregisterAll();
     }
 
     public ScriptingManager getScriptingManager() {
