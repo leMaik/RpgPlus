@@ -128,7 +128,7 @@ public class RpgPlusEntity<T extends Entity> {
         return null;
     }
     
-    public NameTagTrait getNameTagTrait() {
+    private NameTagTrait getNameTagTrait() {
         return npc.getTrait(NameTagTrait.class);
     }
 }
