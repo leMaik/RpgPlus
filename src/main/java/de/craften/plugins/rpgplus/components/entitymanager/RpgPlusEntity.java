@@ -106,7 +106,7 @@ public class RpgPlusEntity<T extends Entity> {
         if (type != EntityType.PLAYER) {
         	if (npc.getEntity() instanceof LivingEntity && !name.isEmpty() && isNameVisible) {
         		Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0);
-        		System.out.println("NameTag 1");
+        		
             	if (nametag == null) {
             		nametag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
             	}
@@ -124,7 +124,7 @@ public class RpgPlusEntity<T extends Entity> {
         
         if (npc.getEntity() != null && npc.getEntity() instanceof LivingEntity && !secondName.isEmpty() && isNameVisible) {
             Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
-            System.out.println("NameTag 2");
+            
             if (secondNameTag == null) {
                 secondNameTag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
             }
