@@ -128,13 +128,10 @@ public class NameTagTrait extends Trait{
 	
 	public void setSecondName(String name) {
 		this.secondName = name;
-		if (type != EntityType.PLAYER) {
-			
-			if (secondNameTag != null) {
-				secondNameTag.setCustomName(name);
-			}
-	    	
+		if (secondNameTag != null) {
+			secondNameTag.setCustomName(name);
 		}
+	    
 	}
 	
 	public boolean isVisible() {
