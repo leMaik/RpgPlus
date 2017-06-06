@@ -22,7 +22,6 @@ import de.craften.plugins.rpgplus.scripting.api.inventory.InventoryModule;
 import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventManager;
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.api.title.TitlesModule;
-import de.craften.plugins.rpgplus.scripting.util.Pastebin;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import org.bukkit.ChatColor;
@@ -32,11 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 
 /**
@@ -79,21 +75,6 @@ public class RpgPlus extends JavaPlugin {
                     getServer().broadcast("[RpgPlus] " + stackTraceElement.toString(), "rpgplus.scripting.notifyerrors");
                 }
                 getLogger().severe("An error occurred while executing the script: " + exception.getMessage());
-
-                final String devKey = getConfig().getString("pastebinDevKey");
-                if (devKey != null) {
-                    getServer().getScheduler().runTaskAsynchronously(RpgPlus.this, new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String pasteUrl = Pastebin.createStacktracePaste(devKey, "RpgPlus Error - " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()), exception);
-                                getServer().broadcast("The full stacktrace is available at: " + pasteUrl, "rpgplus.scripting.notifyerrors");
-                            } catch (IOException e) {
-                                getLogger().severe("Posting the stack trace of a script error to Pastebin failed");
-                            }
-                        }
-                    });
-                }
             }
 
             @Override
