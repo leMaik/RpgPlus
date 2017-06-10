@@ -20,10 +20,12 @@ import de.craften.plugins.rpgplus.scripting.api.events.ScriptEventManager;
 import de.craften.plugins.rpgplus.scripting.api.images.ImageModule;
 import de.craften.plugins.rpgplus.scripting.api.inventory.InventoryModule;
 import de.craften.plugins.rpgplus.scripting.api.inventory.events.InventoryEventManager;
+import de.craften.plugins.rpgplus.scripting.api.regions.RegionModule;
 import de.craften.plugins.rpgplus.scripting.api.storage.StorageModule;
 import de.craften.plugins.rpgplus.scripting.api.title.TitlesModule;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -126,6 +128,7 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.entities", new EntityModule(entityEventManager));
         scriptingManager.registerModule("rpgplus.particle", new ParticleModule(this));
         scriptingManager.registerModule("rpgplus.cinematic", new CinematicModule(this));
+        scriptingManager.registerModule("rpgplus.regions", new RegionModule(this));
 
         executeMainScript();
     }
