@@ -1,7 +1,7 @@
 --- Provides functions to set regions.
 -- @module rpgplus.regions
 
---- Sets the given message as action bar for the given player.
+--- Adds a new region.
 -- @param regionID id of the region
 -- @param region region table with a 'pos1' and a 'pos2'
 -- @param[opt] enterHandler handler that will be executed when a player enters the region
