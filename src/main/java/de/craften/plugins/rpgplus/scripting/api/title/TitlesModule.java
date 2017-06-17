@@ -33,9 +33,22 @@ public class TitlesModule extends LuaTable implements ScriptingModule {
             }
         }
     }
-
-    //TODO add functions to send titles
-
+    
+    @LuaFunction("setTitle")
+    public void setTitle(Varargs args) {
+        LuaTable options = args.checktable(2);
+        
+        String title = ChatColor.translateAlternateColorCodes('&', options.get("title").checkjstring());
+        String subtitle = ChatColor.translateAlternateColorCodes('&', options.get("subtitle").optjstring(null));
+        
+        int fadeIn = options.get("fadeIn").optint(0);
+        int fadeOut = options.get("fadeOut").optint(2);
+        int stay = options.get("stay").optint(8);
+        
+        TitleApi.sendTitle(ScriptUtil.getPlayer(args.arg(1)), fadeIn, stay, fadeOut, title, subtitle);
+        
+    }
+    
     @Override
     public LuaValue getModule() {
         return this;
