@@ -11,6 +11,7 @@ import net.citizensnpcs.api.ai.tree.Behavior;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.npc.ai.CitizensNavigator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,6 +19,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -68,19 +70,36 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                         options = varargs.arg(3).opttable(new LuaTable());
                     }
                 }
-
+                
                 entity.getNpc().getNavigator()
                         .setTarget(destination);
-
-                if (options.get("speed").isint()) {
+                
+                boolean hasPath = entity.getNpc().getNavigator().isNavigating();
+                final Runnable finishCallback = callback;
+                BukkitRunnable finishCheck = new BukkitRunnable() {
+					
+					@Override
+					public void run() {
+						if (hasPath) {
+							if (!entity.getNpc().getNavigator().isNavigating()) {
+								this.cancel();
+								finishCallback.run();
+							}
+						}
+					}
+				};
+				
+				finishCheck.runTaskTimer(RpgPlus.getPlugin(RpgPlus.class), 10, 10);
+                
+				if (options.get("speed").isint()) {
                     entity.getNpc().getNavigator().getLocalParameters().baseSpeed(options.get("speed").checkint());
                 }
                 if (options.get("openDoors").isboolean() && options.get("openDoors").checkboolean()) {
                     // TODO implement our own door examiner to open fence gates or doors only (add support for openFenceGates)
                     entity.getNpc().getNavigator().getLocalParameters().examiner(new CitizensNavigator.DoorExaminer());
                 }
-                // TODO call the callback after navigation (and include the success there!)
-                return LuaValue.valueOf(entity.getNpc().getNavigator().isNavigating());
+                
+                return LuaValue.valueOf(hasPath);
             }
         });
 
