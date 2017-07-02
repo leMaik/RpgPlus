@@ -7,9 +7,12 @@ import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.dialogs.DialogParser;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.ai.StuckAction;
 import net.citizensnpcs.api.ai.tree.Behavior;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.event.DespawnReason;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.ai.CitizensNavigator;
 
 import org.bukkit.Bukkit;
@@ -91,8 +94,18 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
 				
 				finishCheck.runTaskTimer(RpgPlus.getPlugin(RpgPlus.class), 10, 10);
                 
-				if (options.get("speed").isint()) {
-                    entity.getNpc().getNavigator().getLocalParameters().baseSpeed(options.get("speed").checkint());
+				entity.getNpc().getNavigator().getLocalParameters().stuckAction(new StuckAction() {
+					
+					@Override
+					public boolean run(NPC npc, Navigator navi) {
+						finishCallback.run();
+						finishCheck.cancel();
+						return false;
+					}
+				});
+				
+				if (options.get("speed").isnumber()) {
+                    entity.getNpc().getNavigator().getLocalParameters().baseSpeed((float)options.get("speed").checkdouble());
                 }
                 if (options.get("openDoors").isboolean() && options.get("openDoors").checkboolean()) {
                     // TODO implement our own door examiner to open fence gates or doors only (add support for openFenceGates)
@@ -418,6 +431,8 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
             return new OcelotEntityWrapper(entity, manager);
         } else if (entity.getEntity().getType() == EntityType.RABBIT) {
             return new RabbitEntityWrapper(entity, manager);
+        } else if (entity.getEntity().getType() == EntityType.ARMOR_STAND) {
+            return new ArmorStandEntityWrapper(entity, manager);
         } else {
             return new EntityWrapper(entity, manager);
         }

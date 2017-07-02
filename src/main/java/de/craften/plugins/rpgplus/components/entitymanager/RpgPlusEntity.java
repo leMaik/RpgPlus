@@ -26,7 +26,7 @@ public class RpgPlusEntity<T extends Entity> {
         this.location = location;
         this.type = type;
         npc = CitizensAPI.getNPCRegistry().createNPC(type, "");
-
+        
         npc.addTrait(new NameTagTrait(type));
         
         if (type == EntityType.PLAYER) {
