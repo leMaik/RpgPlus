@@ -2,6 +2,7 @@ package de.craften.plugins.rpgplus.components.entitymanager.traits;
 
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.EulerAngle;
 
 import net.citizensnpcs.api.trait.Trait;
 
@@ -10,12 +11,17 @@ public class ArmorStandTrait extends Trait{
 	public ArmorStandTrait() {
 		super("RpgPlus ArmorStand Trait");
 	}
+	
 	private boolean visible = true;
 	private boolean small = false;
+	private boolean noGravity = false;
 	private ItemStack helmet;
 	private ItemStack chestplate;
 	private ItemStack leggings;
 	private ItemStack boots;
+	private ItemStack hand;
+	
+	private EulerAngle rightArm = new EulerAngle(0, 0, 0);
 	
 	@Override
 	public void run() {
@@ -29,7 +35,10 @@ public class ArmorStandTrait extends Trait{
 			armorStand.setChestplate(chestplate);
 			armorStand.setLeggings(leggings);
 			armorStand.setBoots(boots);
-		
+			armorStand.setItemInHand(hand);
+			armorStand.setGravity(!noGravity);
+			armorStand.setRightArmPose(rightArm);
+			
 		}
 		
 	}
@@ -40,6 +49,14 @@ public class ArmorStandTrait extends Trait{
 	
 	public boolean isSmall() {
 		return small;
+	}
+	
+	public void setNoGravity(boolean noGravity) {
+		this.noGravity = noGravity;
+	}
+	
+	public boolean isNoGravity() {
+		return noGravity;
 	}
 	
 	public void setVisible(boolean visible) {
@@ -64,6 +81,22 @@ public class ArmorStandTrait extends Trait{
 
 	public void setBoots(ItemStack boots) {
 		this.boots = boots;
+	}
+	
+	public ItemStack getHand() {
+		return hand;
+	}
+
+	public void setHand(ItemStack hand) {
+		this.hand = hand;
+	}
+	
+	public EulerAngle getRightArm() {
+		return rightArm;
+	}
+
+	public void setRightArm(EulerAngle rightArm) {
+		this.rightArm = rightArm;
 	}
 	
 }

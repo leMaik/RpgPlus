@@ -11,6 +11,7 @@ import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.util.EulerAngle;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -132,6 +133,9 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         	if (!options.get("visible").isnil()) {
         		armorstand.setVisible(options.get("visible").checkboolean());
             }
+        	if (!options.get("noGravity").isnil()) {
+        		armorstand.setNoGravity(options.get("noGravity").checkboolean());
+            }
         	if (!options.get("helmet").isnil()) {
         		armorstand.setHelmet(ScriptUtil.createItemMatcher(options.get("helmet").checktable()).getItemStack());
             }
@@ -143,6 +147,13 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             }
         	if (!options.get("boots").isnil()) {
         		armorstand.setBoots(ScriptUtil.createItemMatcher(options.get("boots").checktable()).getItemStack());
+            }
+        	if (!options.get("hand").isnil()) {
+        		armorstand.setHand(ScriptUtil.createItemMatcher(options.get("hand").checktable()).getItemStack());
+            }
+        	if (!options.get("rightArm").isnil()) {
+        		
+        		armorstand.setRightArm(new EulerAngle(options.get("rightArm").checktable().get("x").optdouble(0), options.get("rightArm").checktable().get("y").optdouble(0), options.get("rightArm").checktable().get("z").optdouble(0)));
             }
         }
         

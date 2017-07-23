@@ -7,12 +7,17 @@ import de.craften.plugins.rpgplus.components.entitymanager.RpgPlusEntity;
 import de.craften.plugins.rpgplus.scripting.api.dialogs.DialogParser;
 import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManager;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.StuckAction;
+import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+import net.citizensnpcs.api.ai.event.NavigationStuckEvent;
 import net.citizensnpcs.api.ai.tree.Behavior;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.npc.ai.CitizensNavigator;
 
 import org.bukkit.Bukkit;
@@ -22,6 +27,9 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
@@ -79,31 +87,43 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 
                 boolean hasPath = entity.getNpc().getNavigator().isNavigating();
                 final Runnable finishCallback = callback;
-                BukkitRunnable finishCheck = new BukkitRunnable() {
-					
-					@Override
-					public void run() {
-						if (hasPath) {
-							if (!entity.getNpc().getNavigator().isNavigating()) {
-								this.cancel();
-								finishCallback.run();
-							}
-						}
-					}
-				};
-				
-				finishCheck.runTaskTimer(RpgPlus.getPlugin(RpgPlus.class), 10, 10);
                 
-				entity.getNpc().getNavigator().getLocalParameters().stuckAction(new StuckAction() {
-					
-					@Override
-					public boolean run(NPC npc, Navigator navi) {
-						finishCallback.run();
-						finishCheck.cancel();
-						return false;
-					}
-				});
-				
+                RpgPlus.getPlugin(RpgPlus.class).getServer().getPluginManager().registerEvents(new Listener() {
+                	@EventHandler
+                	public void onNavComplete(NavigationCompleteEvent event) {
+                		if (event.getNPC().getUniqueId().equals(entity.getNpc().getUniqueId())) {
+                			finishCallback.run();
+                			
+                			HandlerList.unregisterAll(this);
+                		}
+                	}
+                	
+                	@EventHandler
+                	public void onNavCancelled(NavigationCancelEvent event) {
+                		if (event.getNPC().getUniqueId().equals(entity.getNpc().getUniqueId())) {
+                			finishCallback.run();
+                			
+                			HandlerList.unregisterAll(this);
+                		}
+                	}
+                	
+                	@EventHandler
+                	public void onStuck(NavigationStuckEvent event) {
+                		if (event.getNPC().getUniqueId().equals(entity.getNpc().getUniqueId())) {
+                			finishCallback.run();
+                			
+                			HandlerList.unregisterAll(this);
+                			event.setAction(new StuckAction() {
+								
+								@Override
+								public boolean run(NPC arg0, Navigator arg1) {
+									return false;
+								}
+							});
+                		}
+                	}
+				},  RpgPlus.getPlugin(RpgPlus.class));
+                
 				if (options.get("speed").isnumber()) {
                     entity.getNpc().getNavigator().getLocalParameters().baseSpeed((float)options.get("speed").checkdouble());
                 }
@@ -324,7 +344,58 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+        
 
+        set("addTrait", new OneArgFunction() {
+
+            @Override
+            public LuaValue call(LuaValue arg) {
+
+                if (arg.istable()) {
+                	
+                    String name = arg.get("name").checkjstring();
+                    LuaValue run = arg.get("run").optfunction(null);
+                    LuaValue onSpawn = arg.get("onSpawn").optfunction(null);
+                    LuaValue onDespawn = arg.get("onDespawn").optfunction(null);
+                    LuaValue onRemove = arg.get("onRemove").optfunction(null);
+                    
+                    Trait trait = new Trait(name) {
+                    	@Override
+                    	public void run() {
+                    		RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(run);
+                    	}
+                    	
+                    	@Override
+                    	public void onSpawn() {
+                    		if (onSpawn != null) {
+                        		RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(onSpawn);
+                    		}
+                    	};
+                    	
+                    	@Override
+                    	public void onDespawn() {
+                    		if (onDespawn != null) {
+                        		RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(onDespawn);
+                    		}
+                    	};
+                    	
+                    	@Override
+                    	public void onRemove() {
+                    		if (onRemove != null) {
+                        		RpgPlus.getPlugin(RpgPlus.class).getScriptingManager().invokeSafely(onRemove);
+                    		}
+                    	};  	
+                    	
+                    };
+
+                    entity.getNpc().addTrait(trait);
+
+                }
+
+                return LuaValue.NIL;
+            }
+        });
+        
     }
 
     @Override

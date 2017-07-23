@@ -4,6 +4,8 @@ import de.craften.plugins.rpgplus.components.trading.Merchant;
 import de.craften.plugins.rpgplus.components.trading.MerchantOffer;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
+
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.luaj.vm2.LuaError;
@@ -23,6 +25,7 @@ public class Trading extends LuaTable implements ScriptingModule {
             public Varargs invoke(Varargs varargs) {
                 Merchant merchant = new Merchant();
                 LuaTable offers = varargs.checktable(2);
+                merchant.setTitle(ChatColor.translateAlternateColorCodes('&', varargs.optjstring(3, "")));
                 for (int i = 1; i <= offers.length(); i++) {
                     LuaTable offerConfig = offers.get(i).checktable();
                     MerchantOffer offer;

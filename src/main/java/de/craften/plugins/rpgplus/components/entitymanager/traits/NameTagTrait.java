@@ -25,17 +25,28 @@ public class NameTagTrait extends Trait{
 	}
 	@Override
 	public void run() {
+		
 		if (nametag != null) {
-           
+			if (!nametag.isValid()) {
+				nametag.remove();
+				
+            	nametag = npc.getEntity().getWorld().spawn(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0), ArmorStand.class);
+
+    			nametag.setCustomName(name);
+                nametag.setCustomNameVisible(true);
+                nametag.setVisible(false);
+                nametag.setMarker(true);
+                nametag.setCanPickupItems(false);
+                nametag.setGravity(false);
+                
+			}
 			nametag.teleport(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0));
 		} else {
 			if (npc.getEntity() != null && type != EntityType.PLAYER) {
 	        	if (!name.isEmpty() && isNameVisible) {
 	        		Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0);
 	        		
-	            	if (nametag == null) {
-	            		nametag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
-	            	}
+	            	nametag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
 	            	
 	            	nametag.teleport(nameTagLocation);
 	            	nametag.setCustomName(name);
@@ -49,16 +60,26 @@ public class NameTagTrait extends Trait{
 	        }
 		}
 		if (secondNameTag != null) {
+			if (!secondNameTag.isValid()) {
+				secondNameTag.remove();
+				
+	            secondNameTag = npc.getEntity().getWorld().spawn(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0), ArmorStand.class);
 
+				secondNameTag.setCustomName(secondName);
+				secondNameTag.setCustomNameVisible(true);
+				secondNameTag.setVisible(false);
+				secondNameTag.setMarker(true);
+				secondNameTag.setCanPickupItems(false);
+				secondNameTag.setGravity(false);
+                
+			}
             secondNameTag.teleport(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0));
 		} else {
 			if (npc.getEntity() != null && !secondName.isEmpty() && isNameVisible) {
 	            Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
 	            
-	            if (secondNameTag == null) {
-	                secondNameTag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
-	            }
-
+	            secondNameTag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
+	            
 	            secondNameTag.teleport(nameTagLocation);
 	            secondNameTag.setCustomName(secondName);
 	            secondNameTag.setCustomNameVisible(true);
