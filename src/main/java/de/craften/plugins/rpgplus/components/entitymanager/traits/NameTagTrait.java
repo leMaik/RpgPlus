@@ -3,7 +3,6 @@ package de.craften.plugins.rpgplus.components.entitymanager.traits;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 
 import de.craften.plugins.rpgplus.util.EntityUtil;
@@ -26,13 +25,70 @@ public class NameTagTrait extends Trait{
 	}
 	@Override
 	public void run() {
+		
 		if (nametag != null) {
-           
+			if (!nametag.isValid()) {
+				nametag.remove();
+				
+            	nametag = npc.getEntity().getWorld().spawn(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0), ArmorStand.class);
+
+    			nametag.setCustomName(name);
+                nametag.setCustomNameVisible(true);
+                nametag.setVisible(false);
+                nametag.setMarker(true);
+                nametag.setCanPickupItems(false);
+                nametag.setGravity(false);
+                
+			}
 			nametag.teleport(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0));
+		} else {
+			if (npc.getEntity() != null && type != EntityType.PLAYER) {
+	        	if (!name.isEmpty() && isNameVisible) {
+	        		Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0);
+	        		
+	            	nametag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
+	            	
+	            	nametag.teleport(nameTagLocation);
+	            	nametag.setCustomName(name);
+	            	nametag.setCustomNameVisible(true);
+	            	nametag.setVisible(false);
+	            	nametag.setMarker(true);
+	            	nametag.setCanPickupItems(false);
+	            	nametag.setGravity(false);
+	            	
+	        	}
+	        }
 		}
 		if (secondNameTag != null) {
+			if (!secondNameTag.isValid()) {
+				secondNameTag.remove();
+				
+	            secondNameTag = npc.getEntity().getWorld().spawn(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0), ArmorStand.class);
 
+				secondNameTag.setCustomName(secondName);
+				secondNameTag.setCustomNameVisible(true);
+				secondNameTag.setVisible(false);
+				secondNameTag.setMarker(true);
+				secondNameTag.setCanPickupItems(false);
+				secondNameTag.setGravity(false);
+                
+			}
             secondNameTag.teleport(npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0));
+		} else {
+			if (npc.getEntity() != null && !secondName.isEmpty() && isNameVisible) {
+	            Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
+	            
+	            secondNameTag = npc.getEntity().getWorld().spawn(nameTagLocation, ArmorStand.class);
+	            
+	            secondNameTag.teleport(nameTagLocation);
+	            secondNameTag.setCustomName(secondName);
+	            secondNameTag.setCustomNameVisible(true);
+	            secondNameTag.setVisible(false);
+	            secondNameTag.setMarker(true);
+	            secondNameTag.setCanPickupItems(false);
+	            secondNameTag.setGravity(false);
+
+	        }
 		}
 	}
 	
@@ -71,7 +127,7 @@ public class NameTagTrait extends Trait{
 	@Override
 	public void onSpawn() {
 		if (type != EntityType.PLAYER) {
-        	if (npc.getEntity() instanceof LivingEntity && !name.isEmpty() && isNameVisible) {
+        	if (!name.isEmpty() && isNameVisible) {
         		Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()), 0);
         		
             	if (nametag == null) {
@@ -89,7 +145,7 @@ public class NameTagTrait extends Trait{
         	}
         }
         
-        if (npc.getEntity() != null && npc.getEntity() instanceof LivingEntity && !secondName.isEmpty() && isNameVisible) {
+        if (npc.getEntity() != null && !secondName.isEmpty() && isNameVisible) {
             Location nameTagLocation = npc.getEntity().getLocation().clone().add(0, EntityUtil.getEntityHeight(npc.getEntity()) + EntityUtil.NAME_TAG_HEIGHT + 0.1, 0);
             
             if (secondNameTag == null) {

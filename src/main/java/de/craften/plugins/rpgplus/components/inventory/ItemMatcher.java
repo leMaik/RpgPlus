@@ -28,13 +28,16 @@ public class ItemMatcher {
     private List<String> bookPages;
 
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
+    	
+    	boolean isSkull = itemStack.getType() == Material.SKULL_ITEM;
+    	
         return typeMatches(itemStack)
                 && dataMatches(itemStack)
                 && (ignoreAmount || amountMatches(itemStack))
-                && !unbreakable || (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable)
+                && (!unbreakable || (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable() == unbreakable))
                 && nameMatches(itemStack)
                 && loreMatches(itemStack)
-                && skullTextureMatches(itemStack)
+                && (!isSkull || skullTextureMatches(itemStack))
                 && bookPropertiesMatch(itemStack);
     }
 
@@ -148,7 +151,7 @@ public class ItemMatcher {
     }
 
     private boolean skullTextureMatches(ItemStack itemStack) {
-        return skullTexture == null || skullTexture.equalsIgnoreCase(CustomSkull.getTexture(itemStack));
+        return itemStack.getType() == Material.SKULL_ITEM && (skullTexture == null || skullTexture.equalsIgnoreCase(CustomSkull.getTexture(itemStack)));
     }
 
     private boolean bookPropertiesMatch(ItemStack itemStack) {

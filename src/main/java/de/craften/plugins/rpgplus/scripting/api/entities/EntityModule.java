@@ -7,9 +7,11 @@ import de.craften.plugins.rpgplus.scripting.api.entities.events.EntityEventManag
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.util.EulerAngle;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -47,7 +49,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
     public EntityWrapper spawnEntity(LuaValue entityType, LuaValue optionsArg) {
         final EntityType type = EntityType.valueOf(entityType.checkjstring().toUpperCase());
         LuaTable options = optionsArg.checktable();
-
+        
         RpgPlusEntity entity;
         if (type == EntityType.VILLAGER) {
             entity = new ManagedVillager(ScriptUtil.getLocation(optionsArg.checktable()));
@@ -59,15 +61,17 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedOcelot(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.BAT) {
             entity = new ManagedBat(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.ARMOR_STAND) {
+            entity = new ManagedArmorStand(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable()), type);
         }
-
+        
         entity.setName(ChatColor.translateAlternateColorCodes('&', options.get("name").optjstring("")));
         entity.setSecondName(ChatColor.translateAlternateColorCodes('&', options.get("secondName").optjstring("")));
         entity.setTakingDamage(!options.get("invulnerable").optboolean(false));
         entity.setNameVisible(options.get("nameVisible").optboolean(true));
-
+        
         // TODO add corresponding traits to the entities
         /*
         switch (options.get("movementType").optjstring("local")) {
@@ -80,7 +84,7 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 break;
         }
         */
-
+        
         if (entity instanceof ManagedVillager) {
             VillagerTrait villager = entity.getNpc().getTrait(VillagerTrait.class);
             if (!options.get("profession").isnil()) {
@@ -121,8 +125,38 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             if (!options.get("awake").isnil()) {
                 bat.setAwake(options.get("awake").checkboolean());
             }
+        } else if (entity instanceof ManagedArmorStand) {
+            ArmorStandTrait armorstand = entity.getNpc().getTrait(ArmorStandTrait.class);
+        	if (!options.get("small").isnil()) {
+        		armorstand.setSmall(options.get("small").checkboolean());
+            }
+        	if (!options.get("visible").isnil()) {
+        		armorstand.setVisible(options.get("visible").checkboolean());
+            }
+        	if (!options.get("noGravity").isnil()) {
+        		armorstand.setNoGravity(options.get("noGravity").checkboolean());
+            }
+        	if (!options.get("helmet").isnil()) {
+        		armorstand.setHelmet(ScriptUtil.createItemMatcher(options.get("helmet").checktable()).getItemStack());
+            }
+        	if (!options.get("chestplate").isnil()) {
+        		armorstand.setChestplate(ScriptUtil.createItemMatcher(options.get("chestplate").checktable()).getItemStack());
+            }
+        	if (!options.get("leggings").isnil()) {
+        		armorstand.setLeggings(ScriptUtil.createItemMatcher(options.get("leggings").checktable()).getItemStack());
+            }
+        	if (!options.get("boots").isnil()) {
+        		armorstand.setBoots(ScriptUtil.createItemMatcher(options.get("boots").checktable()).getItemStack());
+            }
+        	if (!options.get("hand").isnil()) {
+        		armorstand.setHand(ScriptUtil.createItemMatcher(options.get("hand").checktable()).getItemStack());
+            }
+        	if (!options.get("rightArm").isnil()) {
+        		
+        		armorstand.setRightArm(new EulerAngle(options.get("rightArm").checktable().get("x").optdouble(0), options.get("rightArm").checktable().get("y").optdouble(0), options.get("rightArm").checktable().get("z").optdouble(0)));
+            }
         }
-
+        
         entities.add(entity);
         entity.spawn();
         return EntityWrapper.create(entity, entityEventManager);

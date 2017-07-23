@@ -59,7 +59,7 @@ public class CustomSkull {
     }
 
     public static void setTexture(ItemMeta skullMeta, String texture) {
-        GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+        GameProfile profile = new GameProfile(UUID.nameUUIDFromBytes(texture.getBytes()), null);
         profile.getProperties().put("textures", new Property("textures", texture));
         Field profileField = null;
         try {
