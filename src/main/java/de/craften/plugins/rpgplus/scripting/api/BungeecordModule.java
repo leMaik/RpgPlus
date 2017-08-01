@@ -3,6 +3,7 @@ package de.craften.plugins.rpgplus.scripting.api;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
@@ -42,14 +43,12 @@ public class BungeecordModule extends LuaTable implements ScriptingModule, Plugi
 	}
 	
 	@LuaFunction("sendMessage")
-	public void sendMessage(Varargs args) {
-		String playerName = args.checkjstring(1);
-		String msg = args.checkjstring(2);
+	public void sendMessage(LuaString playerName, LuaString message) {
 		
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("Message");
-		out.writeUTF(playerName);
-		out.writeUTF(msg);
+		out.writeUTF(playerName.checkjstring());
+		out.writeUTF(message.checkjstring());
 		
 		Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 		  
@@ -57,14 +56,12 @@ public class BungeecordModule extends LuaTable implements ScriptingModule, Plugi
 	}
 	
 	@LuaFunction("kickPlayer")
-	public void kickPlayer(Varargs args) {
-		String playerName = args.checkjstring(1);
-		String msg = args.checkjstring(2);
+	public void kickPlayer(LuaString playerName, LuaString msg) {
 		
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("KickPlayer");
-		out.writeUTF(playerName);
-		out.writeUTF(msg);
+		out.writeUTF(playerName.checkjstring());
+		out.writeUTF(msg.checkjstring());
 		
 		Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 		  
@@ -72,14 +69,12 @@ public class BungeecordModule extends LuaTable implements ScriptingModule, Plugi
 	}
 	
 	@LuaFunction("connect")
-	public void connectOther(Varargs args) {
-		String playerName = args.checkjstring(1);
-		String server = args.checkjstring(2);
+	public void connectOther(LuaString playerName, LuaString server) {
 		
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF("ConnectOther");
-		out.writeUTF(playerName);
-		out.writeUTF(server);
+		out.writeUTF(playerName.checkjstring());
+		out.writeUTF(server.checkjstring());
 		
 		Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 		  
