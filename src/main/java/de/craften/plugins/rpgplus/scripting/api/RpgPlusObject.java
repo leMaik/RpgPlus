@@ -101,17 +101,17 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
                 players = LuaTable.listOf(new LuaValue[]{varargs.arg(1)});
             }
             for (int i = 1; i <= players.length(); i++) {
-                try {
-                	CommandSender sender = (CommandSender) CoerceLuaToJava.coerce(players.get(i), CommandSender.class);
-                	for (int j = 2; j <= varargs.narg(); j++) {
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
+                
+            	if (players.get(i).isuserdata(CommandSender.class)) {
+            		for (int j = 2; j <= varargs.narg(); j++) {
+                        ((CommandSender) CoerceLuaToJava.coerce(players.get(i), CommandSender.class)).sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
                     }
-                } catch(Exception e) {
-                	Player p = ScriptUtil.getPlayer(players.get(i));
+            	} else {
+            		Player p = ScriptUtil.getPlayer(players.get(i));
                     for (int j = 2; j <= varargs.narg(); j++) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
                     }
-                }
+            	}
             	
             }
         } else {
