@@ -16,6 +16,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+import org.luaj.vm2.lib.jse.CoerceLuaToJava;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,10 +101,18 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
                 players = LuaTable.listOf(new LuaValue[]{varargs.arg(1)});
             }
             for (int i = 1; i <= players.length(); i++) {
-                Player p = ScriptUtil.getPlayer(players.get(i));
-                for (int j = 2; j <= varargs.narg(); j++) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
+                try {
+                	CommandSender sender = (CommandSender) CoerceLuaToJava.coerce(players.get(i), CommandSender.class);
+                	for (int j = 2; j <= varargs.narg(); j++) {
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
+                    }
+                } catch(Exception e) {
+                	Player p = ScriptUtil.getPlayer(players.get(i));
+                    for (int j = 2; j <= varargs.narg(); j++) {
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', varargs.checkjstring(j)));
+                    }
                 }
+            	
             }
         } else {
             throw new LuaError("Invalid number of arguments. At least two arguments are required.");
