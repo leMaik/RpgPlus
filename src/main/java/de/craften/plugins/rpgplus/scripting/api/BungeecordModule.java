@@ -1,12 +1,15 @@
 package de.craften.plugins.rpgplus.scripting.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.luaj.vm2.LuaString;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
@@ -22,12 +25,16 @@ public class BungeecordModule extends LuaTable implements ScriptingModule, Plugi
 
 	private final RpgPlus plugin;
 	
+	private List<org.luaj.vm2.LuaFunction> listeners;
+	
 	public BungeecordModule(final RpgPlus plugin) {
 		
 		this.plugin = plugin;
 		
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", this);
+		
+		listeners = new ArrayList<>();
 		
 		Luaify.convertInPlace(this);
 	}
@@ -40,6 +47,15 @@ public class BungeecordModule extends LuaTable implements ScriptingModule, Plugi
 		ByteArrayDataInput in = ByteStreams.newDataInput(message);
 		String subchannel = in.readUTF();
 		
+		for (org.luaj.vm2.LuaFunction listener : listeners) {
+			this.plugin.getScriptingManager().invokeSafely(listener, CoerceJavaToLua.coerce(player), CoerceJavaToLua.coerce(subchannel), CoerceJavaToLua.coerce(in));
+		}
+		
+	}
+	
+	@LuaFunction("onMessageReceive")
+	public void onMessageReceive(org.luaj.vm2.LuaFunction listener) {
+		this.listeners.add(listener);
 	}
 	
 	@LuaFunction("sendMessage")
