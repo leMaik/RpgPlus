@@ -44,7 +44,7 @@ public class CustomCommands extends PluginComponentBase {
             cmds.remove(command);
             f.set(getCommandMap(), cmds);
         } catch (Exception e) {
-            e.printStackTrace();
+        	throw new UnsupportedOperationException("Could not unregister command " + command, e);
         }
     }
     
