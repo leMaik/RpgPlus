@@ -85,6 +85,11 @@ public class RpgPlusObject extends LuaTable implements ScriptingModule {
         });
     }
 
+    @LuaFunction("unregisterCommand")
+    public void unregisterCommand(LuaValue command) {
+    	plugin.getCommandManager().unregisterCommand(command.checkjstring());
+    }
+    
     @LuaFunction("sendMessage")
     public void sendMessage(Varargs varargs) {
         if (varargs.narg() >= 2) {

@@ -39,11 +39,6 @@ public class BungeecordModule extends LuaTable implements ScriptingModule, Plugi
 		ByteArrayDataInput in = ByteStreams.newDataInput(message);
 		String subchannel = in.readUTF();
 		
-		if (subchannel.equals("PlayerCount")) {
-			String server = in.readUTF();
-			int playerCount = in.readInt();
-		}
-		
 	}
 	
 	@LuaFunction("sendMessage")
