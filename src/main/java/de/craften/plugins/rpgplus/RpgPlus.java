@@ -5,10 +5,13 @@ import de.craften.plugins.rpgplus.components.cinematic.TrackingShotComponent;
 import de.craften.plugins.rpgplus.components.commands.CustomCommands;
 import de.craften.plugins.rpgplus.components.dialogs.DialogComponent;
 import de.craften.plugins.rpgplus.components.images.ImagesComponent;
+import de.craften.plugins.rpgplus.components.storage.MemoryStorageComponent;
+import de.craften.plugins.rpgplus.components.storage.PdsStorageComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.storage.StorageException;
 import de.craften.plugins.rpgplus.components.storage.StorageType;
+import de.craften.plugins.rpgplus.components.storage.YamlStorageComponent;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
@@ -60,7 +63,14 @@ public class RpgPlus extends JavaPlugin {
         timerManager = new TimerComponent();
         
         StorageType storageType = StorageType.valueOf(getConfig().getString("storageType", "YAML").toUpperCase());
-        storage = new StorageComponent(storageType, new File(getDataFolder(), "storage"));
+        
+        if (storageType == StorageType.MEMORY) {
+			storage = new MemoryStorageComponent();
+        } else if (storageType == StorageType.PDS) {
+			storage = new PdsStorageComponent();
+        } else {
+	        storage = new YamlStorageComponent(new File(getDataFolder(), "storage"));
+        }
         
         dialogs = new DialogComponent();
         images = new ImagesComponent();

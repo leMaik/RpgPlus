@@ -9,34 +9,16 @@ import java.util.logging.Level;
 /**
  * A component that offers a key-value storage.
  */
-public class StorageComponent extends PluginComponentBase {
-    private final StorageType type;
-	private final File directory;
-    private Storage storage;
+public abstract class StorageComponent extends PluginComponentBase {
+    protected final StorageType type;
+    protected Storage storage;
 
-    public StorageComponent(StorageType type, File directory) {
+    public StorageComponent(StorageType type) {
     	this.type = type;
-        this.directory = directory;
     }
 
     @Override
-    protected void onActivated() {
-        try {
-        	switch (type) {
-        	case MEMORY:
-				storage = new MemoryStorage();
-				break;
-        	case YAML:
-	            storage = new YamlStorage(directory);
-        		break;
-			case PDS:
-	            storage = new PDSStorage();
-				break;
-			}
-        } catch (IOException e) {
-            getLogger().log(Level.SEVERE, "Initializing the storage failed", e);
-        }
-    }
+    protected abstract void onActivated();
 
     /**
      * Get the storage.
