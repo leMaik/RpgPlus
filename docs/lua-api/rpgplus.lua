@@ -32,6 +32,10 @@ function command(command, handler) end
 --
 function playercommand(command, handler) end
 
+--- Unregisters the given command. Also works with Minecraft/Bukkit/Spigot commands.
+-- @param the command to unregister as string
+function unregisterCommand(command) end
+
 --- Sends a message to the given players.
 -- @param players a list of players to send the message to, if it is only one player, no list is required
 -- @param ... messages to send to the given players
