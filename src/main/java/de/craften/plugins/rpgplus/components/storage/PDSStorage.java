@@ -14,6 +14,8 @@ import de.craften.plugins.playerdatastore.api.PlayerDataStoreService;
  */
 public class PDSStorage implements Storage{
 	
+	private final static UUID GLOBAL_STORE_UUID = new UUID(0, 0);
+	
 	private PlayerDataStoreService getPDSService() {
 		return Bukkit.getServer().getServicesManager().getRegistration(PlayerDataStoreService.class).getProvider();
 	}
@@ -27,7 +29,7 @@ public class PDSStorage implements Storage{
 	}
 	
 	private PlayerDataStore getGlobalStore() {
-		return getStore(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+		return getStore(GLOBAL_STORE_UUID);
 	}
 	
 	@Override
