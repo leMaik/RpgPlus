@@ -1,6 +1,7 @@
 package de.craften.plugins.rpgplus.components.commands;
 
 import de.craften.plugins.rpgplus.util.components.PluginComponentBase;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * A component to register commands directly.
@@ -34,6 +36,18 @@ public class CustomCommands extends PluginComponentBase {
         dispatcher.registerCommand(Arrays.asList(commandPath), handler);
     }
 
+    public void unregisterCommand(String command) {
+    	try {
+            final Field f = getCommandMap().getClass().getDeclaredField("knownCommands");
+            f.setAccessible(true);
+            Map<String, Command> cmds = (Map<String, Command>) f.get(getCommandMap());
+            cmds.remove(command);
+            f.set(getCommandMap(), cmds);
+        } catch (Exception e) {
+        	throw new UnsupportedOperationException("Could not unregister command " + command, e);
+        }
+    }
+    
     /**
      * Remove all registered commands.
      */
