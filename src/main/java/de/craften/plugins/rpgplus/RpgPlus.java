@@ -8,6 +8,7 @@ import de.craften.plugins.rpgplus.components.images.ImagesComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.storage.StorageException;
+import de.craften.plugins.rpgplus.components.storage.StorageType;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
@@ -57,7 +58,10 @@ public class RpgPlus extends JavaPlugin {
         weakPlayerMaps = new WeakPlayerMaps();
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
-        storage = new StorageComponent(new File(getDataFolder(), "storage"));
+        
+        StorageType storageType = StorageType.valueOf(getConfig().getString("storageType", "YAML").toUpperCase());
+        storage = new StorageComponent(storageType, new File(getDataFolder(), "storage"));
+        
         dialogs = new DialogComponent();
         images = new ImagesComponent();
         trackingShots = new TrackingShotComponent();
