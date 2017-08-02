@@ -56,7 +56,12 @@
             <version>1.8.7</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <artifactId>playerdatastore-api</artifactId>
+            <groupId>de.craften.plugins.playerdatastore</groupId>
+            <version>1.0.0</version>
+        </dependency>
+		
         <!-- Other libraries we use -->
         <dependency>
             <groupId>org.luaj</groupId>
