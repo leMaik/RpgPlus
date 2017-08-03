@@ -1,5 +1,6 @@
 package de.craften.plugins.rpgplus.components.storage;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,7 +41,14 @@ public class PDSStorage implements Storage{
 
 	@Override
 	public Map<String, String> getAll(String key) throws StorageException {
-		return getGlobalStore().getAll();
+		Map<String, String> values = new HashMap<String, String>();
+		for (Map.Entry<String, String> entry : getGlobalStore().getAll().entrySet()) {
+			if (entry.getKey().startsWith(key)) {
+				values.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return values;
 	}
 
 	@Override
@@ -61,7 +69,14 @@ public class PDSStorage implements Storage{
 
 	@Override
 	public Map<String, String> getAll(OfflinePlayer player, String key) throws StorageException {
-		return getStore(player).getAll();
+		Map<String, String> values = new HashMap<String, String>();
+		for (Map.Entry<String, String> entry : getStore(player).getAll().entrySet()) {
+			if (entry.getKey().startsWith(key)) {
+				values.put(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		return values;
 	}
 
 	@Override
