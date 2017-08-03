@@ -61,11 +61,11 @@ public class RpgPlus extends JavaPlugin {
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         
-        String storageType = getConfig().getString("storageType", "YAML");
+        String storageType = getConfig().getString("storageType", "yaml");
         
-        if (storageType.equalsIgnoreCase("MEMORY")) {
+        if (storageType.equalsIgnoreCase("memory")) {
 			storage = new MemoryStorageComponent();
-        } else if (storageType.equalsIgnoreCase("PDS")) {
+        } else if (storageType.equalsIgnoreCase("pds")) {
 			storage = new PdsStorageComponent();
         } else {
 	        storage = new YamlStorageComponent(new File(getDataFolder(), "storage"));
