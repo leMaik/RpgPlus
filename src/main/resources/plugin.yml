@@ -4,7 +4,7 @@ version: VERSION
 main: de.craften.plugins.rpgplus.RpgPlus
 
 depend: [Citizens]
-softdepend: [NoteBlockAPI]
+softdepend: [NoteBlockAPI, PlayerDataStore]
 
 commands:
   rpgplus:
