@@ -10,11 +10,10 @@ import java.util.logging.Level;
  * A component that offers a key-value storage.
  */
 public abstract class StorageComponent extends PluginComponentBase {
-    protected final StorageType type;
     protected Storage storage;
 
-    public StorageComponent(StorageType type) {
-    	this.type = type;
+    public StorageComponent() {
+    	
     }
 
     @Override
@@ -29,7 +28,4 @@ public abstract class StorageComponent extends PluginComponentBase {
         return storage;
     }
     
-    public StorageType getStorageType() {
-    	return type;
-    }
 }

@@ -9,7 +9,6 @@ public class YamlStorageComponent extends StorageComponent{
 	private File directory;
 	
 	public YamlStorageComponent(File directory) {
-		super(StorageType.YAML);
 		this.directory = directory;
 	}
 	

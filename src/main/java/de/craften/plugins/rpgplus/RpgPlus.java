@@ -10,7 +10,6 @@ import de.craften.plugins.rpgplus.components.storage.PdsStorageComponent;
 import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageComponent;
 import de.craften.plugins.rpgplus.components.storage.StorageException;
-import de.craften.plugins.rpgplus.components.storage.StorageType;
 import de.craften.plugins.rpgplus.components.storage.YamlStorageComponent;
 import de.craften.plugins.rpgplus.components.timer.TimerComponent;
 import de.craften.plugins.rpgplus.scripting.ScriptErrorException;
@@ -62,11 +61,11 @@ public class RpgPlus extends JavaPlugin {
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         
-        StorageType storageType = StorageType.valueOf(getConfig().getString("storageType", "YAML").toUpperCase());
+        String storageType = getConfig().getString("storageType", "YAML");
         
-        if (storageType == StorageType.MEMORY) {
+        if (storageType.equalsIgnoreCase("MEMORY")) {
 			storage = new MemoryStorageComponent();
-        } else if (storageType == StorageType.PDS) {
+        } else if (storageType.equalsIgnoreCase("PDS")) {
 			storage = new PdsStorageComponent();
         } else {
 	        storage = new YamlStorageComponent(new File(getDataFolder(), "storage"));
