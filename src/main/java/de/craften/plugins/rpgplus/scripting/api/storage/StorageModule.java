@@ -4,7 +4,6 @@ import de.craften.plugins.rpgplus.components.storage.Storage;
 import de.craften.plugins.rpgplus.components.storage.StorageException;
 import de.craften.plugins.rpgplus.scripting.ScriptingModule;
 import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
-
 import org.bukkit.OfflinePlayer;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
@@ -67,12 +66,16 @@ public class StorageModule extends LuaTable implements ScriptingModule {
                 return new PlayerTable(ScriptUtil.getOfflinePlayer(player));
             }
         });
-        
+
         set("clear", new ZeroArgFunction() {
             @Override
             public LuaValue call() {
-                storage.clear();
-                return LuaValue.NIL;
+                try {
+                    storage.clear();
+                    return LuaValue.NIL;
+                } catch (StorageException e) {
+                    throw new LuaError(e);
+                }
             }
         });
     }
@@ -125,12 +128,16 @@ public class StorageModule extends LuaTable implements ScriptingModule {
                     }
                 }
             });
-            
+
             set("clear", new ZeroArgFunction() {
                 @Override
                 public LuaValue call() {
-                    storage.clear(player);
-                    return LuaValue.NIL;
+                    try {
+                        storage.clear(player);
+                        return LuaValue.NIL;
+                    } catch (StorageException e) {
+                        throw new LuaError(e);
+                    }
                 }
             });
         }
