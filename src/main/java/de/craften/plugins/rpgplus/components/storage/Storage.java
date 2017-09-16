@@ -94,4 +94,18 @@ public interface Storage {
      * @throws StorageException if reloading the storage doesn't succeed
      */
     void reload() throws StorageException;
+    
+    /**
+     * Clears the storage
+     *
+     */
+    void clear();
+    
+    /**
+     * Clears the storage of the given player.
+     *
+     * @param player player
+     */
+    void clear(OfflinePlayer player);
+    
 }

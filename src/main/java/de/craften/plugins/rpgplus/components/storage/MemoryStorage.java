@@ -95,6 +95,16 @@ public class MemoryStorage implements Storage {
         return playerStorage != null && playerStorage.containsKey(key);
     }
 
+    @Override
+    public void clear() {
+    	storage.clear();
+    }
+    
+    @Override
+    public void clear(OfflinePlayer player) {
+    	playerStorages.get(player.getUniqueId()).clear();
+    }
+    
     /**
      * Clears the memory storage.
      */

@@ -44,7 +44,7 @@ public class PDSStorage implements Storage{
 		Map<String, String> values = new HashMap<String, String>();
 		for (Map.Entry<String, String> entry : getGlobalStore().getAll().entrySet()) {
 			if (entry.getKey().startsWith(key)) {
-				values.put(entry.getKey(), entry.getValue());
+				values.put(entry.getKey().replace(key + ".", ""), entry.getValue());
 			}
 		}
 		
@@ -72,7 +72,7 @@ public class PDSStorage implements Storage{
 		Map<String, String> values = new HashMap<String, String>();
 		for (Map.Entry<String, String> entry : getStore(player).getAll().entrySet()) {
 			if (entry.getKey().startsWith(key)) {
-				values.put(entry.getKey(), entry.getValue());
+				values.put(entry.getKey().replace(key + ".", ""), entry.getValue());
 			}
 		}
 		
@@ -88,7 +88,17 @@ public class PDSStorage implements Storage{
 	public boolean contains(OfflinePlayer player, String key) throws StorageException {
 		return getStore(player).get(key) != null;
 	}
-
+	
+	@Override
+	public void clear() {
+		getGlobalStore().clear();
+	}
+	
+	@Override
+	public void clear(OfflinePlayer player) {
+		getStore(player).clear();
+	}
+	
 	@Override
 	public void reload() throws StorageException {
 		//nothing to do there.

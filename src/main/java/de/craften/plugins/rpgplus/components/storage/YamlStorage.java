@@ -143,6 +143,24 @@ public class YamlStorage implements Storage {
     }
 
     @Override
+    public void clear() {
+    	for (String key : storage.getKeys(false)) {
+    		storage.set(key, null);
+    	}
+    }
+    
+    @Override
+    public void clear(OfflinePlayer player) {
+    	try {
+			for (String key : playerStorages.get(player.getUniqueId()).getKeys(false)) {
+				storage.set(key, null);
+			}
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    @Override
     public void reload() throws StorageException {
         playerStorages.invalidateAll();
 
