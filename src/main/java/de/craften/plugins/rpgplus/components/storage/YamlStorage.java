@@ -143,6 +143,33 @@ public class YamlStorage implements Storage {
     }
 
     @Override
+    public void clear() throws StorageException {
+        for (String key : storage.getKeys(false)) {
+            storage.set(key, null);
+        }
+        try {
+            storage.save(storageFile);
+        } catch (IOException e) {
+            throw new StorageException("Could not save global storage", e);
+        }
+    }
+
+    @Override
+    public void clear(OfflinePlayer player) throws StorageException {
+        try {
+            FileConfiguration playerStorage = playerStorages.get(player.getUniqueId());
+            for (String key : playerStorage.getKeys(false)) {
+                playerStorage.set(key, null);
+            }
+            playerStorage.save(getFile(player.getUniqueId()));
+        } catch (ExecutionException e) {
+            throw new StorageException(e);
+        } catch (IOException e) {
+            throw new StorageException("Could not save player storage", e);
+        }
+    }
+
+    @Override
     public void reload() throws StorageException {
         playerStorages.invalidateAll();
 

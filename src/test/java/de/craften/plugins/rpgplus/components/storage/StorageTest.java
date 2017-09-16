@@ -77,4 +77,22 @@ public abstract class StorageTest {
         assertEquals("value", values.get("bar"));
         assertEquals("value2", values.get("a.test"));
     }
+
+    @Test
+    public void testClear() throws Exception {
+        OfflinePlayer mockPlayer = mock(OfflinePlayer.class);
+        UUID uuid = UUID.randomUUID();
+        when(mockPlayer.getUniqueId()).thenReturn(uuid);
+
+        storage.set("foo", "bar");
+        storage.set(mockPlayer, "foo", "bar");
+
+        storage.clear(mockPlayer);
+        assertFalse(storage.contains(mockPlayer, "foo"));
+        assertTrue(storage.contains("foo"));
+
+        storage.clear();
+        assertFalse(storage.contains(mockPlayer, "foo"));
+        assertFalse(storage.contains("foo"));
+    }
 }

@@ -10,6 +10,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
+import org.luaj.vm2.lib.ZeroArgFunction;
 
 import java.util.Map;
 
@@ -65,6 +66,18 @@ public class StorageModule extends LuaTable implements ScriptingModule {
                 return new PlayerTable(ScriptUtil.getOfflinePlayer(player));
             }
         });
+
+        set("clear", new ZeroArgFunction() {
+            @Override
+            public LuaValue call() {
+                try {
+                    storage.clear();
+                    return LuaValue.NIL;
+                } catch (StorageException e) {
+                    throw new LuaError(e);
+                }
+            }
+        });
     }
 
     @Override
@@ -109,6 +122,18 @@ public class StorageModule extends LuaTable implements ScriptingModule {
                         } else {
                             storage.set(player, key.checkjstring(), LuaValueConverter.convert(value));
                         }
+                        return LuaValue.NIL;
+                    } catch (StorageException e) {
+                        throw new LuaError(e);
+                    }
+                }
+            });
+
+            set("clear", new ZeroArgFunction() {
+                @Override
+                public LuaValue call() {
+                    try {
+                        storage.clear(player);
                         return LuaValue.NIL;
                     } catch (StorageException e) {
                         throw new LuaError(e);
