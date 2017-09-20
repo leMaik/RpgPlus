@@ -52,7 +52,7 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
     protected EntityWrapper(final RpgPlusEntity<T> entity, EntityEventManager entityEventManager) {
         this.entity = entity;
         this.entityEventManager = entityEventManager;
-
+        
         set("navigateTo", new VarArgFunction() {
             @Override
             public Varargs invoke(final Varargs varargs) {
@@ -462,6 +462,13 @@ public class EntityWrapper<T extends Entity> extends LuaTable {
                     entity.setNameVisible(value.checkboolean());
                     break;
                 case "target":
+                	getEntity().getNpc().getNavigator().getLocalParameters().stuckAction(new StuckAction() {
+            			
+            			@Override
+            			public boolean run(NPC npc, Navigator nav) {
+            				return true;
+            			}
+            		});
                     entity.setTarget(value == LuaValue.NIL ? null : ScriptUtil.getPlayer(value));
                     break;
             }
