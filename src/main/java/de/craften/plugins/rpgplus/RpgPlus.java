@@ -33,11 +33,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.InvalidPluginException;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -55,9 +61,11 @@ public class RpgPlus extends JavaPlugin {
     private final ScriptEventManager scriptEventManager;
     private final EntityEventManager entityEventManager;
     private final InventoryEventManager inventoryEventManager;
-
+       
+    private final List<Plugin> subplugins = new ArrayList<Plugin>();
+    
     public RpgPlus() {
-        weakPlayerMaps = new WeakPlayerMaps();
+    	weakPlayerMaps = new WeakPlayerMaps();
         commandManager = new CustomCommands();
         timerManager = new TimerComponent();
         
@@ -145,7 +153,32 @@ public class RpgPlus extends JavaPlugin {
         if (getConfig().getBoolean("bungeecord", false)) {
         	scriptingManager.registerModule("rpgplus.bungeecord", new BungeecordModule(this));
         }
-
+        
+        File subPluginsDir = new File(getDataFolder(), "subplugins");
+        subPluginsDir.mkdirs();
+        
+        for (File subPlugin : subPluginsDir.listFiles(new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+				if (pathname.getName().endsWith(".jar")) {
+					return true;
+				}
+				return false;
+			}
+		})) {
+        	try {
+				Plugin p = getPluginLoader().loadPlugin(subPlugin);
+				p.onLoad();
+				getPluginLoader().enablePlugin(p);
+				subplugins.add(p);
+			} catch (UnknownDependencyException e) {
+				e.printStackTrace();
+			} catch (InvalidPluginException e) {
+				e.printStackTrace();
+			}
+        }
+        
         executeMainScript();
     }
 
@@ -217,6 +250,11 @@ public class RpgPlus extends JavaPlugin {
     @Override
     public void onDisable() {
         CitizensAPI.getNPCRegistry().deregisterAll();
+        
+        for (Plugin p : subplugins) {
+        	getServer().getPluginManager().disablePlugin(p);
+        }
+        
     }
 
     public ScriptingManager getScriptingManager() {
