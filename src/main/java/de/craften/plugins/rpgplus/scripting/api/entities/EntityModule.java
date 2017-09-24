@@ -176,12 +176,10 @@ public class EntityModule extends LuaTable implements ScriptingModule {
 
     public RpgPlusEntity getEntity(Entity entity) {
         for (RpgPlusEntity rpgPlusEntity : entities) {
-        	if (rpgPlusEntity == null || rpgPlusEntity.getEntity() == null) {
-        		continue;
-        	} else if (entity == null) {
-        		throw new IllegalArgumentException("Entity musn't be null.");
+        	if (entity == null) {
+        		throw new IllegalArgumentException("Entity may not be null");
         	}
-            if (rpgPlusEntity.getEntity().getUniqueId().equals(entity.getUniqueId())) {
+            if (rpgPlusEntity != null && rpgPlusEntity.getEntity() != null && rpgPlusEntity.getEntity().getUniqueId().equals(entity.getUniqueId())) {
                 return rpgPlusEntity;
             }
         }
