@@ -48,7 +48,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 				new ArrayList<>(playerAbilities.get(player)).forEach((abilityClass) -> {
 					Ability ability = abilities.get(abilityClass);
 					try {
-						if (getEndTime(store, ability).get() < now) {
+						if (getEndTime(store, ability).get() < now && getEndTime(store, ability).get() != -1) {
 							ability.removeFrom(player);
 							ability.onExpired(player);
 							playerAbilities.get(player).remove(abilityClass);
@@ -77,20 +77,25 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 		final long now = new Date().getTime();
 		AtomicBoolean renewed = new AtomicBoolean(false);
 		getStore(player).update(ability.getIdentifier(), (oldEndTimeString) -> {
-			if (oldEndTimeString == null) {
-				return Long.toString(now + durationSeconds * 1000);
-			} else {
-				try {
-					Long oldEndTime = Long.parseLong(oldEndTimeString);
-					if (oldEndTime < now) {
-						return Long.toString(now + durationSeconds * 1000);
-					} else {
-						renewed.set(true);
-						return Long.toString(oldEndTime + durationSeconds * 1000);
-					}
-				} catch (NumberFormatException e) {
+			if (durationSeconds != -1) {
+				
+				if (oldEndTimeString == null) {
 					return Long.toString(now + durationSeconds * 1000);
+				} else {
+					try {
+						Long oldEndTime = Long.parseLong(oldEndTimeString);
+						if (oldEndTime < now) {
+							return Long.toString(now + durationSeconds * 1000);
+						} else {
+							renewed.set(true);
+							return Long.toString(oldEndTime + durationSeconds * 1000);
+						}					
+					} catch (NumberFormatException e) {
+						return Long.toString(now + durationSeconds * 1000);
+					}
 				}
+			}else {
+				return Long.toString(-1);
 			}
 		});
 
@@ -130,7 +135,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 			PlayerDataStore store = getStore(player);
 			Ability ability = abilities.get(identifier);
 			try {
-				if (getEndTime(store, ability).get() > now) {
+				if (getEndTime(store, ability).get() > now || getEndTime(store, ability).get() == -1) {
 					ability.giveTo(player);
 					playerAbilities.get(player).add(identifier);
 				}
@@ -149,7 +154,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 		final long now = new Date().getTime();
 		PlayerDataStore store = getStore(event.getPlayer());
 		abilities.values().parallelStream().forEach((ability) -> getEndTime(store, ability).thenAccept((endTime) -> {
-			if (endTime > now) {
+			if (endTime > now || endTime == -1) {
 				Bukkit.getScheduler().runTask(plugin, () -> {
 					if (event.getPlayer().isOnline()) {
 						playerAbilities.put(event.getPlayer(), ability.getIdentifier());
