@@ -11,7 +11,7 @@ function giveEffect(playerName, effect, duration, amplifier)
 --- Removes an effect from a player
 -- @param playerName player
 -- @param effect effect
-function takeEffect(playerName, effect)
+function removeEffect(playerName, effect)
 
 --- Checks if the player has the effect
 -- @param playerName player

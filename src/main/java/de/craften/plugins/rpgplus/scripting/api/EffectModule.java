@@ -33,8 +33,8 @@ public class EffectModule  extends LuaTable implements ScriptingModule {
 		
 	}
 	
-	@LuaFunction("takeEffect")
-	public void takeEffect(LuaValue playerValue, LuaString effectType) {
+	@LuaFunction("removeEffect")
+	public void removeEffect(LuaValue playerValue, LuaString effectType) {
 		
 		Player player = ScriptUtil.getPlayer(playerValue);
 		
