@@ -28,7 +28,8 @@ public class ItemMatcher {
     private String bookTitle;
     private String bookAuthor;
     private List<String> bookPages;
-
+    private boolean hideFlags;
+    
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
     	
     	boolean isSkull = itemStack.getType() == Material.SKULL_ITEM;
@@ -91,7 +92,9 @@ public class ItemMatcher {
             }
         }
         
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+        if (hideFlags) {
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+        }
         
         itemStack.setItemMeta(meta);
 
@@ -265,7 +268,12 @@ public class ItemMatcher {
             matcher.bookAuthor = author;
             return this;
         }
-
+        
+        public Builder hideFlags(boolean hideFlags) {
+            matcher.hideFlags = hideFlags;
+            return this;
+        }
+        
         public ItemMatcher build() {
             return matcher;
         }
