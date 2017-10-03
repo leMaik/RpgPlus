@@ -51,6 +51,17 @@ public class EffectModule  extends LuaTable implements ScriptingModule {
 		
 	}
 	
+	@LuaFunction("clearEffects")
+	public void clearEffects(LuaValue playerValue) {
+		
+		Player p = ScriptUtil.getPlayer(playerValue);
+		
+		p.getActivePotionEffects().forEach((PotionEffect effect) -> {
+			p.removePotionEffect(effect.getType());
+		});
+		
+	}
+	
 	@Override
 	public LuaValue getModule() {
 		return this;
