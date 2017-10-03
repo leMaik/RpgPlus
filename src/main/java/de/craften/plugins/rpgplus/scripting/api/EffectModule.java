@@ -16,7 +16,7 @@ import de.craften.plugins.rpgplus.scripting.util.ScriptUtil;
 import de.craften.plugins.rpgplus.scripting.util.luaify.LuaFunction;
 import de.craften.plugins.rpgplus.scripting.util.luaify.Luaify;
 
-public class EffectModule  extends LuaTable implements ScriptingModule {
+public class EffectModule extends LuaTable implements ScriptingModule {
 	
 	public EffectModule(final RpgPlus plugin) {
 		Luaify.convertInPlace(this);
