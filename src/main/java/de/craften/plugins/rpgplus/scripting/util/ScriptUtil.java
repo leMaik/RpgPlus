@@ -206,6 +206,9 @@ public class ScriptUtil {
                         .collect(Collectors.toList()));
             }
         }
+        if (itemstack.get("hideFlags").optboolean(true)) {
+            builder.hideFlags(true);
+        }
         return builder.build();
     }
 

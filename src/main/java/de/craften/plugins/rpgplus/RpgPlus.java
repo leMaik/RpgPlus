@@ -142,6 +142,8 @@ public class RpgPlus extends JavaPlugin {
         scriptingManager.registerModule("rpgplus.particle", new ParticleModule(this));
         scriptingManager.registerModule("rpgplus.cinematic", new CinematicModule(this));
         scriptingManager.registerModule("rpgplus.regions", new RegionModule(this));
+        scriptingManager.registerModule("rpgplus.effect", new EffectModule(this));
+        
         if (getConfig().getBoolean("bungeecord", false)) {
         	scriptingManager.registerModule("rpgplus.bungeecord", new BungeecordModule(this));
         }

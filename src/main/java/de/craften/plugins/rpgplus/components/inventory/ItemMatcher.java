@@ -1,9 +1,11 @@
 package de.craften.plugins.rpgplus.components.inventory;
 
 import de.craften.plugins.rpgplus.util.CustomSkull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -26,7 +28,8 @@ public class ItemMatcher {
     private String bookTitle;
     private String bookAuthor;
     private List<String> bookPages;
-
+    private boolean hideFlags;
+    
     public boolean matches(ItemStack itemStack, boolean ignoreAmount) {
     	
     	boolean isSkull = itemStack.getType() == Material.SKULL_ITEM;
@@ -88,7 +91,11 @@ public class ItemMatcher {
                 book.setPages(bookPages);
             }
         }
-
+        
+        if (hideFlags) {
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+        }
+        
         itemStack.setItemMeta(meta);
 
         return itemStack;
@@ -261,7 +268,12 @@ public class ItemMatcher {
             matcher.bookAuthor = author;
             return this;
         }
-
+        
+        public Builder hideFlags(boolean hideFlags) {
+            matcher.hideFlags = hideFlags;
+            return this;
+        }
+        
         public ItemMatcher build() {
             return matcher;
         }
