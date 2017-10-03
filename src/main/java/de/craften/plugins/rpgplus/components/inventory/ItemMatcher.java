@@ -1,9 +1,11 @@
 package de.craften.plugins.rpgplus.components.inventory;
 
 import de.craften.plugins.rpgplus.util.CustomSkull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -88,7 +90,9 @@ public class ItemMatcher {
                 book.setPages(bookPages);
             }
         }
-
+        
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
+        
         itemStack.setItemMeta(meta);
 
         return itemStack;

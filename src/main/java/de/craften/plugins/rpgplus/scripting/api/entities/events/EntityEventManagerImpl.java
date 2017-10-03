@@ -33,6 +33,10 @@ abstract class EntityEventManagerImpl {
     }
 
     private Multimap<String, LuaFunction> getHandlers(Entity entity) {
+    	if (entity == null) {
+    		return null;
+    	}
+    	
         RpgPlusEntity managedEntity = getEntityModule().getEntity(entity);
         return managedEntity != null ? eventHandlers.get(managedEntity) : null;
     }
