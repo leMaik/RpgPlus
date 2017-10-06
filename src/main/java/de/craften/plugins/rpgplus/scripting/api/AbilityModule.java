@@ -110,13 +110,8 @@ public class AbilityModule extends LuaTable implements ScriptingModule, Listener
 		return this;
 	}
 
-	@Override
-	public void reset() {
-		// nothing to do here
-	}
-
 	private AbilityComponent getAbilityManager() {
-		return plugin.getAbility();
+		return plugin.getAbilities();
 	}
 	
 }

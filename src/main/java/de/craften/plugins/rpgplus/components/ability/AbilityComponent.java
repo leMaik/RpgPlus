@@ -71,7 +71,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 		Ability ability = abilities.get(identifier);
 
 		if (ability == null) {
-			throw new IllegalStateException("Tried to give unregistered ability " + identifier + " to a player");
+			throw new IllegalArgumentException("Tried to give unregistered ability " + identifier + " to a player");
 		}
 
 		final long now = new Date().getTime();
@@ -112,7 +112,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 	}
 
 	public boolean hasAbility(Player player, String identifier) {
-		return playerAbilities.containsEntry(player, identifier);
+		return playerAbilities.containsEntry(player, identifier) || pausedAbilities.containsEntry(player, identifier);
 	}
 
 	public void pauseAbility(Player player, String identifier) {
@@ -184,7 +184,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 	private static PlayerDataStore getStore(OfflinePlayer player) {
 		return Bukkit.getServicesManager().getRegistration(PlayerDataStoreService.class).getProvider().getStore(player);
 	}
-
+	
 	public void reset() {
 		//nothing to do here
 	}

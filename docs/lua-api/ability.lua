@@ -2,7 +2,7 @@
 -- @module rpgplus.ability
 
 --- Registers a new ability.
--- @param options a table with options for the ability.
+-- @param options a table with options for the ability. It has to contain a identifier string, a displayName string and those function: "giveTo", "removeFrom", "onActivated", "onExpired"
 --
 function registerAbility(options) end
 

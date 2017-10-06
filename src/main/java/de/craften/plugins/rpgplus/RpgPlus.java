@@ -52,7 +52,7 @@ public class RpgPlus extends JavaPlugin {
     private final StorageComponent storage;
     private final DialogComponent dialogs;
     private final ImagesComponent images;
-    private final AbilityComponent ability;
+    private final AbilityComponent abilities;
      private final TrackingShotComponent trackingShots;
     private final ScriptEventManager scriptEventManager;
     private final EntityEventManager entityEventManager;
@@ -76,7 +76,7 @@ public class RpgPlus extends JavaPlugin {
         dialogs = new DialogComponent();
         images = new ImagesComponent();
         trackingShots = new TrackingShotComponent();
-        ability = new  AbilityComponent(this);
+        abilities = new  AbilityComponent(this);
         
         Path scriptDirectory = Paths.get(getDataFolder().getAbsolutePath()).resolve(getConfig().getString("scriptDirectory", ""));
         ScriptingManager.StrictModeOption strictMode;
@@ -130,7 +130,7 @@ public class RpgPlus extends JavaPlugin {
         dialogs.activateFor(this);
         images.activateFor(this);
         trackingShots.activateFor(this);
-        ability.activateFor(this);
+        abilities.activateFor(this);
         
         scriptingManager.registerModule("rpgplus", rpgPlusObject);
         scriptingManager.registerModule("rpgplus.image", new ImageModule(this));
@@ -173,7 +173,7 @@ public class RpgPlus extends JavaPlugin {
         timerManager.removeAll();
         dialogs.reset();
         trackingShots.reset();
-        ability.reset();
+        abilities.reset();
         weakPlayerMaps.reset();
         try {
             storage.getStorage().reload();
@@ -289,7 +289,7 @@ public class RpgPlus extends JavaPlugin {
         return trackingShots;
     }
     
-    public AbilityComponent getAbility() {
-    	return ability;
+    public AbilityComponent getAbilities() {
+    	return abilities;
     }
 }

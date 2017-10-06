@@ -16,5 +16,5 @@ public interface ScriptingModule {
     /**
      * Resets the module.
      */
-    void reset();
+    default void reset() {}
 }

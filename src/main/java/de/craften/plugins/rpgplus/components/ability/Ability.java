@@ -6,8 +6,8 @@ public interface Ability {
 
 	String getIdentifier();
 	String getDisplayName();
-	default void giveTo(Player player) { }
-	default void removeFrom(Player player) { }
+	void giveTo(Player player);
+	void removeFrom(Player player);
 	default void onActivated(Player player) { }
 	default void onExpired(Player player) { }
 }
