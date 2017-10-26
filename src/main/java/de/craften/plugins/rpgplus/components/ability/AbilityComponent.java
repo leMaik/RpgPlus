@@ -51,6 +51,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 						if (getEndTime(store, ability).get() < now && getEndTime(store, ability).get() != -1) {
 							ability.removeFrom(player);
 							ability.onExpired(player);
+							removeActiveKey(store, ability);
 							playerAbilities.get(player).remove(abilityClass);
 						}
 					} catch (InterruptedException | ExecutionException e) {
@@ -76,10 +77,11 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 
 		final long now = new Date().getTime();
 		AtomicBoolean renewed = new AtomicBoolean(false);
-		getStore(player).update(ability.getIdentifier(), (oldEndTimeString) -> {
+		getStore(player).update(getStoreKey(ability) + ".endTime", (oldEndTimeString) -> {
 			if (durationSeconds != -1) {
 				
 				if (oldEndTimeString == null) {
+					setActive(getStore(player), ability);
 					return Long.toString(now + durationSeconds * 1000);
 				} else {
 					try {
@@ -116,9 +118,11 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 	}
 
 	public void pauseAbility(Player player, String identifier) {
+		Ability ability = abilities.get(identifier);
 		pausedAbilities.put(player, identifier);
+		setInactive(getStore(player), ability);
+		
 		if (playerAbilities.get(player).contains(identifier)) {
-			Ability ability = abilities.get(identifier);
 			ability.removeFrom(player);
 			playerAbilities.get(player).remove(identifier);
 		}
@@ -130,10 +134,11 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 
 	public void unpauseAbility(Player player, String identifier) {
 		pausedAbilities.remove(player, identifier);
+		Ability ability = abilities.get(identifier);
+		PlayerDataStore store = getStore(player);
+		setActive(store, ability);
 		if (!playerAbilities.get(player).contains(identifier)) {
 			final long now = new Date().getTime();
-			PlayerDataStore store = getStore(player);
-			Ability ability = abilities.get(identifier);
 			try {
 				if (getEndTime(store, ability).get() > now || getEndTime(store, ability).get() == -1) {
 					ability.giveTo(player);
@@ -157,10 +162,20 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 			if (endTime > now || endTime == -1) {
 				Bukkit.getScheduler().runTask(plugin, () -> {
 					if (event.getPlayer().isOnline()) {
-						playerAbilities.put(event.getPlayer(), ability.getIdentifier());
-						ability.giveTo(event.getPlayer());
+						try {
+							if (isActive(store, ability)) {
+								playerAbilities.put(event.getPlayer(), ability.getIdentifier());
+								ability.giveTo(event.getPlayer());
+							} else {
+								pausedAbilities.put(event.getPlayer(), ability.getIdentifier());
+							}
+						} catch (Exception e) {
+							//ignore
+						}
 					}
 				});
+			} else {
+				removeActiveKey(store, ability);
 			}
 		}));
 	}
@@ -172,7 +187,7 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 	}
 
 	private static CompletableFuture<Long> getEndTime(PlayerDataStore store, Ability ability) {
-		return store.getAsync(ability.getIdentifier()).thenApply((oldEndTimeString) -> {
+		return store.getAsync(getStoreKey(ability) + ".endTime").thenApply((oldEndTimeString) -> {
 			try {
 				return oldEndTimeString == null ? 0 : Long.parseLong(oldEndTimeString);
 			} catch (NumberFormatException e) {
@@ -181,6 +196,34 @@ public class AbilityComponent extends PluginComponentBase implements Listener {
 		});
 	}
 
+	private static boolean isActive(PlayerDataStore store, Ability ability) {
+		try {
+			String result = store.get(getStoreKey(ability) + ".active");
+			if (result == null) {
+				result = "false";
+			}
+			return Boolean.parseBoolean(result);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not check if ability is active", e);
+		}
+	}
+	
+	private static void setActive(PlayerDataStore store, Ability ability) {
+		store.put(getStoreKey(ability) + ".active", "true");
+	}
+	
+	private static void setInactive(PlayerDataStore store, Ability ability) {
+		store.put(getStoreKey(ability) + ".active", "false");
+	}
+	
+	private static void removeActiveKey(PlayerDataStore store, Ability ability) {
+		store.put(getStoreKey(ability) + ".active", null);
+	}
+	
+	private static String getStoreKey(Ability ability) {
+		return "abilitymanager." + ability.getIdentifier();
+	}
+	
 	private static PlayerDataStore getStore(OfflinePlayer player) {
 		return Bukkit.getServicesManager().getRegistration(PlayerDataStoreService.class).getProvider().getStore(player);
 	}
