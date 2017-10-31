@@ -762,7 +762,12 @@ public class ScriptEventManager extends ScriptEventManagerImpl implements Listen
     public void onServiceRegister(ServiceRegisterEvent event) {
         callHandlers("server.service.register", event);
     }
-
+    
+    @EventHandler
+    public void onServiceUnRegister(ServiceUnregisterEvent event) {
+        callHandlers("server.service.unregister", event);
+    }
+    
     @EventHandler
     public void onNPCDeath(NPCDeathEvent event) {
         callHandlers("npc.death", event);

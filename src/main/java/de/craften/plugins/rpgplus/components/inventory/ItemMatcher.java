@@ -79,7 +79,7 @@ public class ItemMatcher {
             CustomSkull.setTexture(meta, skullTexture);
         }
 
-        if (meta != null && meta instanceof BookMeta) {
+        if (meta instanceof BookMeta) {
             BookMeta book = (BookMeta) meta;
             if (bookTitle != null) {
                 book.setTitle(bookTitle);
