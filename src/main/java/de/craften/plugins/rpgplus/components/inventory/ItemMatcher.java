@@ -92,12 +92,13 @@ public class ItemMatcher {
             }
         }
         
-        if (hideFlags) {
+        if (hideFlags && meta != null) {
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE);
         }
+        if (meta != null) {
+        	itemStack.setItemMeta(meta);
+        }
         
-        itemStack.setItemMeta(meta);
-
         return itemStack;
     }
 
