@@ -2,6 +2,19 @@ package de.craften.plugins.rpgplus.scripting.api.events;
 
 import de.craften.plugins.rpgplus.scripting.ScriptingManager;
 import de.craften.plugins.rpgplus.scripting.util.SafeInvoker;
+import net.citizensnpcs.api.event.EntityTargetNPCEvent;
+import net.citizensnpcs.api.event.NPCClickEvent;
+import net.citizensnpcs.api.event.NPCCreateEvent;
+import net.citizensnpcs.api.event.NPCDamageByBlockEvent;
+import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
+import net.citizensnpcs.api.event.NPCDamageEvent;
+import net.citizensnpcs.api.event.NPCDeathEvent;
+import net.citizensnpcs.api.event.NPCLeftClickEvent;
+import net.citizensnpcs.api.event.NPCRemoveEvent;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.event.NPCSelectEvent;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
@@ -751,7 +764,62 @@ public class ScriptEventManager extends ScriptEventManagerImpl implements Listen
     }
 
     @EventHandler
-    public void onServiceUnregister(ServiceUnregisterEvent event) {
-        callHandlers("server.service.unregister", event);
+    public void onNPCDeath(NPCDeathEvent event) {
+        callHandlers("npc.death", event);
+    }
+    
+    @EventHandler
+    public void onNPCClick(NPCClickEvent event) {
+        callHandlers("npc.click", event);
+    }
+    
+    @EventHandler
+    public void onNPCRightClick(NPCRightClickEvent event) {
+        callHandlers("npc.click.right", event);
+    }
+    
+    @EventHandler
+    public void onNPCLeftClick(NPCLeftClickEvent event) {
+        callHandlers("npc.click.left", event);
+    }
+    
+    @EventHandler
+    public void onNPCCreate(NPCCreateEvent event) {
+        callHandlers("npc.create", event);
+    }
+    
+    @EventHandler
+    public void onNPCSpawn(NPCSpawnEvent event) {
+        callHandlers("npc.spawn", event);
+    }
+    
+    @EventHandler
+    public void onNPCSelect(NPCSelectEvent event) {
+        callHandlers("npc.select", event);
+    }
+    
+    @EventHandler
+    public void onNPCRemove(NPCRemoveEvent event) {
+        callHandlers("npc.remove", event);
+    }
+    
+    @EventHandler
+    public void onNPCDamage(NPCDamageEvent event) {
+        callHandlers("npc.damage", event);
+    }
+    
+    @EventHandler
+    public void onNPCDamageByBlock(NPCDamageByBlockEvent event) {
+        callHandlers("npc.damage.byBlock", event);
+    }
+    
+    @EventHandler
+    public void onNPCDamageByEntity(NPCDamageByEntityEvent event) {
+        callHandlers("npc.damage.byEntity", event);
+    }
+    
+    @EventHandler
+    public void onNPCTarget(EntityTargetNPCEvent event) {
+        callHandlers("npc.target", event);
     }
 }
