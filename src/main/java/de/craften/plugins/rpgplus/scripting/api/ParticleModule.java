@@ -42,12 +42,25 @@ public class ParticleModule extends LuaTable implements ScriptingModule {
 		int particleCount = options.get("count").optint(1);
 
 		int radius = options.get("radius").optint(1);
+		
+		LuaTable players = varargs.opttable(4, null);
+		
+		if (players == null) {
 
-		loc.getWorld()
-				.spigot()
-				.playEffect(loc, effect, id, data, offsetX, offsetY, offsetZ,
+			loc.getWorld()
+					.spigot()
+					.playEffect(loc, effect, id, data, offsetX, offsetY, offsetZ,
+							speed, particleCount, radius);
+
+		} else {
+			
+			ScriptUtil.toListTableStream(players).forEach((LuaValue value) -> {
+				ScriptUtil.getPlayer(value).spigot().playEffect(loc, effect, id, data, offsetX, offsetY, offsetZ,
 						speed, particleCount, radius);
-
+			});
+			
+		}
+		
 	}
 
 	@Override
