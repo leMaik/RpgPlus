@@ -15,3 +15,10 @@ function spawn(type, options) end
 -- @treturn Entity[] list of nearby entities
 --
 function getNearby(location, radius) end
+
+--- Gets the players in the given radius near the given location. 
+-- @param location center location
+-- @param radius radius around that location, in blocks
+-- @treturn Player[] list of nearby players
+--
+function getNearbyPlayers(location, radius) end

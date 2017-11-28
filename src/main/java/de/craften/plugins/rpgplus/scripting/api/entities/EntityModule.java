@@ -14,6 +14,7 @@ import org.bukkit.entity.*;
 import org.bukkit.util.EulerAngle;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,7 +174,18 @@ public class EntityModule extends LuaTable implements ScriptingModule {
                 .map((entity) -> EntityWrapper.create(entity, entityEventManager))
                 .collect(ScriptUtil.asListTable());
     }
+    
+    @LuaFunction("getNearbyPlayers")
+    public LuaTable getNearbyPlayers(LuaValue locationParam, LuaValue radius) {
+        final double radiusSquared = radius.checkdouble() * radius.checkdouble();
+        Location location = ScriptUtil.getLocation(locationParam);
 
+        return location.getWorld().getPlayers().stream()
+                .filter((player) -> player.getLocation().distanceSquared(location) <= radiusSquared)
+                .map((player) -> CoerceJavaToLua.coerce(player))
+                .collect(ScriptUtil.asListTable());
+    }
+    
     public RpgPlusEntity getEntity(Entity entity) {
         if (entity == null) {
             throw new IllegalArgumentException("Entity may not be null");
