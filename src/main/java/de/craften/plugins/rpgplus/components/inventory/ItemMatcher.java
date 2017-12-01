@@ -107,13 +107,15 @@ public class ItemMatcher {
         ItemStack[] contents = inventory.getContents();
         for (int i = 0; i < contents.length; i++) {
             ItemStack itemStack = contents[i];
-            if (matches(itemStack, true)) {
-                if (itemStack.getAmount() <= amount) {
-                    amount -= itemStack.getAmount();
-                    contents[i] = null;
-                } else {
-                    itemStack.setAmount(itemStack.getAmount() - amount);
-                    amount = 0;
+            if (itemStack != null) {
+            	if (matches(itemStack, true)) {
+                    if (itemStack.getAmount() <= amount) {
+                        amount -= itemStack.getAmount();
+                        contents[i] = null;
+                    } else {
+                        itemStack.setAmount(itemStack.getAmount() - amount);
+                        amount = 0;
+                    }
                 }
             }
             if (amount == 0) {
