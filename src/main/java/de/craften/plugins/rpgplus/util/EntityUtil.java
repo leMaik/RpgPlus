@@ -3,6 +3,8 @@ package de.craften.plugins.rpgplus.util;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Painting;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Slime;
 
 public class EntityUtil {
@@ -116,7 +118,7 @@ public class EntityUtil {
             case SILVERFISH:
                 return 0.7;
             case SKELETON:
-                return 1.8;
+            	return ((Skeleton)entity).getSkeletonType() == SkeletonType.NORMAL ? 1.8 : 2.2;
             case SLIME:
                 return ((Slime) entity).getSize() * 0.6;
             case SMALL_FIREBALL:
