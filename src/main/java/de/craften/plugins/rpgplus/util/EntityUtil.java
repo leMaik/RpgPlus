@@ -118,7 +118,7 @@ public class EntityUtil {
             case SILVERFISH:
                 return 0.7;
             case SKELETON:
-            	return ((Skeleton)entity).getSkeletonType() == SkeletonType.NORMAL ? 1.8 : 2.2;
+            	return ((Skeleton)entity).getSkeletonType() == SkeletonType.NORMAL ? 1.8 : 2.2; //The height of wither skeletons is 2.2 blocks.
             case SLIME:
                 return ((Slime) entity).getSize() * 0.6;
             case SMALL_FIREBALL:
