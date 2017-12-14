@@ -64,6 +64,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedBat(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.ARMOR_STAND) {
             entity = new ManagedArmorStand(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.SKELETON) {
+            entity = new ManagedSkeleton(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable()), type);
         }
@@ -126,6 +128,11 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             if (!options.get("awake").isnil()) {
                 bat.setAwake(options.get("awake").checkboolean());
             }
+        } else if (entity instanceof ManagedSkeleton) {
+            SkeletonTrait skeleton = entity.getNpc().getTrait(SkeletonTrait.class);
+            if (!options.get("isWitherSkeleton").isnil()) {
+            	skeleton.setWitherSkeleton(options.get("isWitherSkeleton").checkboolean());
+            }
         } else if (entity instanceof ManagedArmorStand) {
             ArmorStandTrait armorstand = entity.getNpc().getTrait(ArmorStandTrait.class);
         	if (!options.get("small").isnil()) {
@@ -137,25 +144,31 @@ public class EntityModule extends LuaTable implements ScriptingModule {
         	if (!options.get("noGravity").isnil()) {
         		armorstand.setNoGravity(options.get("noGravity").checkboolean());
             }
-        	if (!options.get("helmet").isnil()) {
-        		armorstand.setHelmet(ScriptUtil.createItemMatcher(options.get("helmet").checktable()).getItemStack());
-            }
-        	if (!options.get("chestplate").isnil()) {
-        		armorstand.setChestplate(ScriptUtil.createItemMatcher(options.get("chestplate").checktable()).getItemStack());
-            }
-        	if (!options.get("leggings").isnil()) {
-        		armorstand.setLeggings(ScriptUtil.createItemMatcher(options.get("leggings").checktable()).getItemStack());
-            }
-        	if (!options.get("boots").isnil()) {
-        		armorstand.setBoots(ScriptUtil.createItemMatcher(options.get("boots").checktable()).getItemStack());
-            }
-        	if (!options.get("hand").isnil()) {
-        		armorstand.setHand(ScriptUtil.createItemMatcher(options.get("hand").checktable()).getItemStack());
-            }
         	if (!options.get("rightArm").isnil()) {
         		
         		armorstand.setRightArm(new EulerAngle(options.get("rightArm").checktable().get("x").optdouble(0), options.get("rightArm").checktable().get("y").optdouble(0), options.get("rightArm").checktable().get("z").optdouble(0)));
             }
+        }
+        
+        if (LivingEntity.class.isAssignableFrom(type.getEntityClass())) {
+        	entity.getNpc().addTrait(new EquipmentTrait());
+        	EquipmentTrait equipment = entity.getNpc().getTrait(EquipmentTrait.class);
+        	if (!options.get("helmet").isnil()) {
+        		equipment.setHelmet(ScriptUtil.createItemMatcher(options.get("helmet").checktable()).getItemStack());
+            }
+        	if (!options.get("chestplate").isnil()) {
+        		equipment.setChestplate(ScriptUtil.createItemMatcher(options.get("chestplate").checktable()).getItemStack());
+            }
+        	if (!options.get("leggings").isnil()) {
+        		equipment.setLeggings(ScriptUtil.createItemMatcher(options.get("leggings").checktable()).getItemStack());
+            }
+        	if (!options.get("boots").isnil()) {
+        		equipment.setBoots(ScriptUtil.createItemMatcher(options.get("boots").checktable()).getItemStack());
+            }
+        	if (!options.get("hand").isnil()) {
+        		equipment.setHand(ScriptUtil.createItemMatcher(options.get("hand").checktable()).getItemStack());
+            }
+        	
         }
         
         entities.add(entity);
