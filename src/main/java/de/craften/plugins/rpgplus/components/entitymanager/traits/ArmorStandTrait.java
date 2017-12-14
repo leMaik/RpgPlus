@@ -24,7 +24,7 @@ public class ArmorStandTrait extends Trait{
 	private EulerAngle rightArm = new EulerAngle(0, 0, 0);
 	
 	@Override
-	public void run() {
+	public void onSpawn() {
 		
 		if (getNPC().getEntity() != null) {
 		

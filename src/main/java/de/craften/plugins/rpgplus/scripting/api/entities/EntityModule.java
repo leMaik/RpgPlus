@@ -64,6 +64,8 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             entity = new ManagedBat(ScriptUtil.getLocation(optionsArg.checktable()));
         } else if (type == EntityType.ARMOR_STAND) {
             entity = new ManagedArmorStand(ScriptUtil.getLocation(optionsArg.checktable()));
+        } else if (type == EntityType.SKELETON) {
+            entity = new ManagedSkeleton(ScriptUtil.getLocation(optionsArg.checktable()));
         } else {
             entity = new RpgPlusEntity(ScriptUtil.getLocation(optionsArg.checktable()), type);
         }
@@ -125,6 +127,11 @@ public class EntityModule extends LuaTable implements ScriptingModule {
             BatTrait bat = entity.getNpc().getTrait(BatTrait.class);
             if (!options.get("awake").isnil()) {
                 bat.setAwake(options.get("awake").checkboolean());
+            }
+        } else if (entity instanceof ManagedSkeleton) {
+            SkeletonTrait skeleton = entity.getNpc().getTrait(SkeletonTrait.class);
+            if (!options.get("isWitherSkeleton").isnil()) {
+            	skeleton.setWitherSkeleton(options.get("isWitherSkeleton").checkboolean());
             }
         } else if (entity instanceof ManagedArmorStand) {
             ArmorStandTrait armorstand = entity.getNpc().getTrait(ArmorStandTrait.class);
