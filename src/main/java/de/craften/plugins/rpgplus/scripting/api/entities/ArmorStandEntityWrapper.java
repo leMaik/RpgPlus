@@ -15,12 +15,25 @@ class ArmorStandEntityWrapper extends EntityWrapper<ArmorStand> {
 
     @Override
     public LuaValue rawget(LuaValue key) {
+    	if (key.isstring()) {
+            switch (key.checkjstring()) {
+                case "visible":
+                    return LuaValue.valueOf(getArmorStandTrait().isVisible());
+            }
+        }
         return super.rawget(key);
     }
 
 
     @Override
     public void rawset(LuaValue key, LuaValue value) {
+    	if (key.isstring()) {
+            switch (key.checkjstring()) {
+                case "visible":
+                    getArmorStandTrait().setVisible(value.checkboolean());
+                    break;
+            }
+        }
         super.rawset(key, value);
     }
 
